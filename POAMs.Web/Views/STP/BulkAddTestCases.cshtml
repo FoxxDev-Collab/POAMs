@@ -1,0 +1,93 @@
+@{
+    ViewData["Title"] = "Bulk Import Test Cases";
+    var stp = ViewBag.STP as POAMs.Web.Models.Domain.SecurityTestPlan;
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Test Plans</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@stp?.Id">@stp?.STPIdentifier</a></li>
+        <li class="breadcrumb-item active">Bulk Import</li>
+    </ol>
+</nav>
+
+<h1 class="h3 mb-4">
+    <i class="bi bi-upload me-2"></i>Bulk Import STIG Test Cases
+</h1>
+
+<div class="alert alert-info">
+    <i class="bi bi-info-circle me-2"></i>
+    <strong>Instructions:</strong> Paste tab-separated data from STIG Viewer or Excel. The expected format is:
+    <br />
+    <code>Vuln ID &lt;tab&gt; Rule ID &lt;tab&gt; Title &lt;tab&gt; Severity &lt;tab&gt; Rule Version</code>
+</div>
+
+<form asp-action="BulkAddTestCases" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="stpId" value="@stp?.Id" />
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="bi bi-table me-2"></i>Paste Test Case Data
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">Test Case Data (Tab-Separated)</label>
+                <textarea name="bulkData" class="form-control font-monospace" rows="15"
+                          placeholder="Vuln ID&#9;Rule ID&#9;Title&#9;Severity&#9;Rule Version
+V-230221&#9;SV-230221r627750_rule&#9;RHEL 8 must implement NIST FIPS-validated cryptography&#9;CAT I&#9;RHEL-08-010000
+V-230222&#9;SV-230222r627750_rule&#9;RHEL 8 must encrypt...&#9;CAT II&#9;RHEL-08-010010
+..."></textarea>
+                <div class="form-text">
+                    First row is treated as a header and will be skipped. Include at least Vuln ID and Title columns.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="bi bi-lightbulb me-2"></i>Example Format
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Vuln ID</th>
+                            <th>Rule ID</th>
+                            <th>Title</th>
+                            <th>Severity</th>
+                            <th>Rule Version</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>V-230221</code></td>
+                            <td><code>SV-230221r627750_rule</code></td>
+                            <td>RHEL 8 must implement NIST FIPS-validated cryptography</td>
+                            <td>CAT I</td>
+                            <td>RHEL-08-010000</td>
+                        </tr>
+                        <tr>
+                            <td><code>V-230222</code></td>
+                            <td><code>SV-230222r627750_rule</code></td>
+                            <td>RHEL 8 must encrypt all stored passwords</td>
+                            <td>CAT II</td>
+                            <td>RHEL-08-010010</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <a asp-action="Details" asp-route-id="@stp?.Id" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Cancel
+        </a>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-upload me-1"></i>Import Test Cases
+        </button>
+    </div>
+</form>

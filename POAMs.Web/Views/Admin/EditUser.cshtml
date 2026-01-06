@@ -1,0 +1,114 @@
+@model POAMs.Web.Models.ViewModels.UserEditViewModel
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item"><a asp-action="Users">Users</a></li>
+            <li class="breadcrumb-item active">Edit @Model.Username</li>
+        </ol>
+    </nav>
+    <h1 class="h3"><i class="bi bi-pencil me-2"></i>Edit User</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <form asp-action="EditUser" method="post">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="IsWindowsAuth" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-person me-2"></i>User Information
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label"></label>
+                        <input asp-for="Username" class="form-control" readonly />
+                        <div class="form-text">Username cannot be changed</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="DisplayName" class="form-label"></label>
+                        <input asp-for="DisplayName" class="form-control" />
+                        <span asp-validation-for="DisplayName" class="text-danger"></span>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" type="email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Phone" class="form-label"></label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Role" class="form-label"></label>
+                            <select asp-for="Role" class="form-select" asp-items="Html.GetEnumSelectList<POAMs.Web.Models.Domain.UserRole>()"></select>
+                            <span asp-validation-for="Role" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Status</label>
+                            <div class="form-check mt-2">
+                                <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                                <label asp-for="IsActive" class="form-check-label">Active</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (!Model.IsWindowsAuth)
+            {
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="bi bi-key me-2"></i>Change Password
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted small">Leave blank to keep current password</p>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">New Password</label>
+                            <input asp-for="Password" type="password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                            <div class="form-text">Min 12 chars, uppercase, lowercase, number, special char</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-windows me-2"></i>
+                    This user authenticates via Windows/Active Directory. Password cannot be changed here.
+                </div>
+            }
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-2"></i>Save Changes
+                </button>
+                <a asp-action="Users" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

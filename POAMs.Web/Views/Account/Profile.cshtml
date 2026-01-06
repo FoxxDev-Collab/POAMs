@@ -1,0 +1,58 @@
+@model POAMs.Web.Models.Domain.User
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-person-circle me-2"></i>My Profile
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <i class="bi bi-person-circle text-secondary" style="font-size: 5rem;"></i>
+                    <h4 class="mt-2">@Model.DisplayName</h4>
+                    <span class="badge bg-primary">@Model.Role</span>
+                </div>
+
+                <dl class="row">
+                    <dt class="col-sm-4">Username</dt>
+                    <dd class="col-sm-8">@Model.Username</dd>
+
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8">@Model.Email</dd>
+
+                    <dt class="col-sm-4">Phone</dt>
+                    <dd class="col-sm-8">@(Model.Phone ?? "-")</dd>
+
+                    <dt class="col-sm-4">Authentication</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.IsWindowsAuth)
+                        {
+                            <span class="badge bg-info"><i class="bi bi-windows me-1"></i>Windows</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary"><i class="bi bi-key me-1"></i>Local</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">Member Since</dt>
+                    <dd class="col-sm-8">@Model.CreatedDate.ToString("MMMM dd, yyyy")</dd>
+                </dl>
+            </div>
+            <div class="card-footer">
+                @if (!Model.IsWindowsAuth)
+                {
+                    <a asp-action="ChangePassword" class="btn btn-outline-primary">
+                        <i class="bi bi-key me-2"></i>Change Password
+                    </a>
+                }
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

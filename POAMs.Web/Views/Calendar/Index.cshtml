@@ -1,0 +1,180 @@
+@{
+    ViewData["Title"] = "Calendar";
+}
+
+<div class="mb-4">
+    <h1 class="h3"><i class="bi bi-calendar3 me-2"></i>Calendar</h1>
+    <p class="text-muted mb-0">View POAMs and milestones by due date</p>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card mb-3">
+            <div class="card-body py-2">
+                <div class="d-flex flex-wrap gap-2 align-items-center small">
+                    <span class="fw-bold">Legend:</span>
+                    <span class="badge" style="background-color: #dc3545;">High Risk</span>
+                    <span class="badge" style="background-color: #fd7e14;">Moderate</span>
+                    <span class="badge" style="background-color: #0d6efd;">Low Risk</span>
+                    <span class="badge" style="background-color: #198754;">Completed</span>
+                    <span class="badge" style="background-color: #0dcaf0;">In Progress</span>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-clock-history me-2"></i>Upcoming (Next 30 Days)
+            </div>
+            <div class="card-body p-0">
+                <div id="upcoming-list" style="max-height: 580px; overflow-y: auto;">
+                    <div class="text-center py-4 text-muted">
+                        <div class="spinner-border spinner-border-sm" role="status"></div>
+                        <div class="small mt-2">Loading...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet" />
+    <style>
+        #calendar {
+            font-size: 0.85em;
+        }
+        .fc-event {
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+        .fc-daygrid-event {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .fc-toolbar-title {
+            font-size: 1.1rem !important;
+        }
+        .fc-daygrid-day-frame {
+            min-height: 80px !important;
+        }
+        .fc-col-header-cell {
+            padding: 4px 0 !important;
+        }
+        .upcoming-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 15px;
+        }
+        .upcoming-item:last-child {
+            border-bottom: none;
+        }
+        .upcoming-item:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                contentHeight: 500,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,dayGridWeek,listMonth'
+                },
+                events: '@Url.Action("GetEvents", "Calendar")',
+                eventClick: function(info) {
+                    if (info.event.url) {
+                        window.location.href = info.event.url;
+                        info.jsEvent.preventDefault();
+                    }
+                },
+                eventDidMount: function(info) {
+                    var props = info.event.extendedProps;
+                    var tooltip = '';
+                    if (props.type === 'poam') {
+                        tooltip = 'POAM: ' + info.event.title + '\nStatus: ' + props.status + '\nRisk: ' + props.risk;
+                        if (props.system) tooltip += '\nSystem: ' + props.system;
+                    } else {
+                        tooltip = 'Milestone: ' + info.event.title + '\nStatus: ' + props.status;
+                        if (props.poamId) tooltip += '\nPOAM: ' + props.poamId;
+                    }
+                    info.el.setAttribute('title', tooltip);
+                },
+                dayMaxEvents: 3,
+                moreLinkClick: 'popover',
+                nowIndicator: true,
+                navLinks: true
+            });
+            calendar.render();
+
+            // Load upcoming events
+            loadUpcoming();
+        });
+
+        function loadUpcoming() {
+            var today = new Date();
+            var endDate = new Date();
+            endDate.setDate(today.getDate() + 30);
+
+            var start = today.toISOString().split('T')[0];
+            var end = endDate.toISOString().split('T')[0];
+
+            fetch('@Url.Action("GetEvents", "Calendar")?start=' + start + '&end=' + end)
+                .then(response => response.json())
+                .then(events => {
+                    var listEl = document.getElementById('upcoming-list');
+
+                    if (events.length === 0) {
+                        listEl.innerHTML = '<div class="text-center py-4 text-muted small">No upcoming items in the next 30 days</div>';
+                        return;
+                    }
+
+                    // Sort by date
+                    events.sort((a, b) => new Date(a.start) - new Date(b.start));
+
+                    var html = '';
+                    events.forEach(function(event) {
+                        var date = new Date(event.start);
+                        var dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        var daysUntil = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
+                        var daysLabel = daysUntil === 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : daysUntil + ' days';
+                        var props = event.extendedProps;
+                        var icon = props.type === 'poam' ? 'bi-list-task' : 'bi-flag';
+
+                        html += '<a href="' + event.url + '" class="upcoming-item d-block text-decoration-none text-dark">';
+                        html += '<div class="d-flex justify-content-between align-items-start">';
+                        html += '<div class="flex-grow-1">';
+                        html += '<div class="small fw-bold"><i class="bi ' + icon + ' me-1" style="color:' + event.backgroundColor + '"></i>' + event.title + '</div>';
+                        html += '<div class="text-muted" style="font-size:0.75em;">' + props.status;
+                        if (props.system) html += ' - ' + props.system;
+                        html += '</div>';
+                        html += '</div>';
+                        html += '<div class="text-end">';
+                        html += '<div class="small">' + dateStr + '</div>';
+                        html += '<div class="text-muted" style="font-size:0.7em;">' + daysLabel + '</div>';
+                        html += '</div>';
+                        html += '</div>';
+                        html += '</a>';
+                    });
+
+                    listEl.innerHTML = html;
+                })
+                .catch(() => {
+                    document.getElementById('upcoming-list').innerHTML = '<div class="text-center py-4 text-danger small">Error loading events</div>';
+                });
+        }
+    </script>
+}

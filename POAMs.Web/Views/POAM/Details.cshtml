@@ -1,0 +1,313 @@
+@model POAMs.Web.Models.Domain.POAM
+@{
+    ViewData["Title"] = $"POAM {Model.ItemIdentifier}";
+    var isOverdue = Model.ScheduledCompletionDate < DateTime.UtcNow &&
+                   Model.Status != POAMs.Web.Models.Domain.POAMStatus.Completed &&
+                   Model.Status != POAMs.Web.Models.Domain.POAMStatus.Closed;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a asp-action="Index">POAMs</a></li>
+                <li class="breadcrumb-item active">@Model.ItemIdentifier</li>
+            </ol>
+        </nav>
+        <h1 class="h3">@Model.ItemIdentifier</h1>
+    </div>
+    <div class="btn-group">
+        @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                <i class="bi bi-pencil me-1"></i>Edit
+            </a>
+        }
+        <a asp-controller="Export" asp-action="ExportSingle" asp-route-id="@Model.Id" class="btn btn-outline-success">
+            <i class="bi bi-download me-1"></i>Export
+        </a>
+        @if (User.IsInRole("Admin") || User.IsInRole("ISSM"))
+        {
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
+                <i class="bi bi-trash me-1"></i>Delete
+            </a>
+        }
+    </div>
+</div>
+
+<div class="row">
+    <!-- Main Details -->
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-info-circle me-2"></i>POAM Details
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted small">Weakness or Deficiency</label>
+                        <p class="mb-0">@Model.WeaknessOrDeficiency</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-muted small">Security Control</label>
+                        <p class="mb-0">@(Model.SecurityControl ?? "-")</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-muted small">System</label>
+                        <p class="mb-0">@Model.System?.SystemName</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <label class="form-label text-muted small">Status</label>
+                        <p class="mb-0">
+                            @{
+                                var statusClass = Model.Status switch
+                                {
+                                    POAMs.Web.Models.Domain.POAMStatus.Draft => "bg-secondary",
+                                    POAMs.Web.Models.Domain.POAMStatus.Open => "bg-info",
+                                    POAMs.Web.Models.Domain.POAMStatus.Ongoing => "bg-primary",
+                                    POAMs.Web.Models.Domain.POAMStatus.Completed => "bg-success",
+                                    POAMs.Web.Models.Domain.POAMStatus.Closed => "bg-dark",
+                                    _ => "bg-secondary"
+                                };
+                            }
+                            <span class="badge @statusClass">@Model.Status</span>
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-muted small">Risk Level</label>
+                        <p class="mb-0">
+                            @{
+                                var riskClass = Model.RiskLevel switch
+                                {
+                                    POAMs.Web.Models.Domain.RiskLevel.High => "bg-danger",
+                                    POAMs.Web.Models.Domain.RiskLevel.Moderate => "bg-warning text-dark",
+                                    POAMs.Web.Models.Domain.RiskLevel.Low => "bg-success",
+                                    _ => "bg-secondary"
+                                };
+                            }
+                            <span class="badge @riskClass">@Model.RiskLevel</span>
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-muted small">Scheduled Completion</label>
+                        <p class="mb-0 @(isOverdue ? "text-danger fw-bold" : "")">
+                            @Model.ScheduledCompletionDate.ToString("MM/dd/yyyy")
+                            @if (isOverdue)
+                            {
+                                <i class="bi bi-exclamation-circle ms-1"></i>
+                            }
+                        </p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-muted small">Original Date</label>
+                        <p class="mb-0">@Model.OriginalPOAMDate.ToString("MM/dd/yyyy")</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small">Point of Contact</label>
+                        <p class="mb-0">@(Model.POC?.DisplayName ?? "-")</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small">Identified By</label>
+                        <p class="mb-0">@(Model.IdentifiedBy ?? "-")</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small">Estimated Cost</label>
+                        <p class="mb-0">@(Model.EstimatedCost?.ToString("C") ?? "-")</p>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <label class="form-label text-muted small">Resources Required</label>
+                        <p class="mb-0">@(Model.ResourcesRequired ?? "-")</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <label class="form-label text-muted small">Comments</label>
+                        <p class="mb-0">@(Model.Comments ?? "-")</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-muted small">
+                Last updated: @Model.ModifiedDate.ToString("MM/dd/yyyy HH:mm") UTC
+            </div>
+        </div>
+
+        <!-- Milestones -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-flag me-2"></i>Milestones</span>
+                @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+                {
+                    <a asp-controller="Milestone" asp-action="Create" asp-route-poamId="@Model.Id" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-plus me-1"></i>Add Milestone
+                    </a>
+                }
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Milestones.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 50px;">#</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Due Date</th>
+                                    <th>Assigned To</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var milestone in Model.Milestones)
+                                {
+                                    var milestoneOverdue = milestone.DueDate < DateTime.UtcNow &&
+                                                          milestone.Status != POAMs.Web.Models.Domain.MilestoneStatus.Completed;
+                                    <tr class="@(milestoneOverdue ? "table-warning" : "")">
+                                        <td>@milestone.MilestoneNumber</td>
+                                        <td>@milestone.Title</td>
+                                        <td>
+                                            @{
+                                                var msStatusClass = milestone.Status switch
+                                                {
+                                                    POAMs.Web.Models.Domain.MilestoneStatus.NotStarted => "bg-secondary",
+                                                    POAMs.Web.Models.Domain.MilestoneStatus.InProgress => "bg-primary",
+                                                    POAMs.Web.Models.Domain.MilestoneStatus.Completed => "bg-success",
+                                                    POAMs.Web.Models.Domain.MilestoneStatus.Blocked => "bg-danger",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge @msStatusClass">@milestone.Status</span>
+                                        </td>
+                                        <td class="@(milestoneOverdue ? "text-danger fw-bold" : "")">
+                                            @milestone.DueDate.ToString("MM/dd/yyyy")
+                                        </td>
+                                        <td>@(milestone.AssignedTo?.DisplayName ?? "-")</td>
+                                        <td class="text-end">
+                                            @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+                                            {
+                                                <div class="btn-group btn-group-sm">
+                                                    <a asp-controller="Milestone" asp-action="Edit" asp-route-id="@milestone.Id" class="btn btn-outline-secondary" title="Edit">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <a asp-controller="Milestone" asp-action="Delete" asp-route-id="@milestone.Id" class="btn btn-outline-danger" title="Delete">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-flag" style="font-size: 2rem;"></i>
+                        <p class="mt-2">No milestones defined for this POAM.</p>
+                        @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+                        {
+                            <a asp-controller="Milestone" asp-action="Create" asp-route-poamId="@Model.Id" class="btn btn-sm btn-primary">
+                                Add First Milestone
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <!-- Progress -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-pie-chart me-2"></i>Progress
+            </div>
+            <div class="card-body">
+                @{
+                    var completedMilestones = Model.Milestones.Count(m => m.Status == POAMs.Web.Models.Domain.MilestoneStatus.Completed);
+                    var totalMilestones = Model.Milestones.Count;
+                    var progressPercent = totalMilestones > 0 ? (completedMilestones * 100 / totalMilestones) : 0;
+                }
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Milestones</span>
+                        <span>@completedMilestones / @totalMilestones</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: @progressPercent%"
+                             aria-valuenow="@progressPercent" aria-valuemin="0" aria-valuemax="100">
+                            @progressPercent%
+                        </div>
+                    </div>
+                </div>
+                @if (isOverdue)
+                {
+                    <div class="alert alert-danger mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Overdue!</strong> This POAM was due @((DateTime.UtcNow - Model.ScheduledCompletionDate).Days) days ago.
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Assignments -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-people me-2"></i>Assignments</span>
+                @if (User.IsInRole("Admin") || User.IsInRole("ISSM"))
+                {
+                    <a asp-controller="Assignment" asp-action="Create" asp-route-poamId="@Model.Id" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-plus"></i>
+                    </a>
+                }
+            </div>
+            <ul class="list-group list-group-flush">
+                @if (Model.UserAssignments.Any())
+                {
+                    @foreach (var assignment in Model.UserAssignments)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-person me-2"></i>@assignment.User.DisplayName
+                            </div>
+                            <span class="badge bg-secondary">@assignment.AssignmentType</span>
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li class="list-group-item text-center text-muted">
+                        No users assigned
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-lightning me-2"></i>Quick Actions
+            </div>
+            <div class="card-body d-grid gap-2">
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to List
+                </a>
+                @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+                {
+                    <a asp-controller="Milestone" asp-action="Create" asp-route-poamId="@Model.Id" class="btn btn-outline-primary">
+                        <i class="bi bi-flag me-2"></i>Add Milestone
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

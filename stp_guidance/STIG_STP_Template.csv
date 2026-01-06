@@ -1,0 +1,30 @@
+SECURITY TEST PLAN (STP),,,
+,,,
+Test Plan Identification,,,
+,,,
+System Name:,[Enter System Name],Host/Asset Name:,[Enter Hostname]
+STIG Name:,"[e.g., Red Hat Enterprise Linux 8 STIG]",IP Address:,[Enter IP]
+STIG Version/Release:,"[e.g., V1R14]",OS/Platform:,"[e.g., RHEL 8.9]"
+STIG Release Date:,"[e.g., 2024-07-24]",Environment:,[Dev/Test/Prod]
+Test Plan Version:,1.0,Classification:,[Unclassified/CUI/Secret]
+Test Plan Date:,[Enter Date],MAC/CAL:,"[e.g., MAC II / CAL II]"
+,,,
+Testing Information,,,
+,,,
+Lead Assessor:,[Name],Authorizing Official:,[Name]
+Assessment Team:,[Names],ISSM:,[Name]
+Test Start Date:,[Enter Date],System Owner:,[Name]
+Test End Date:,[Enter Date],,
+,,,
+Reference Documents,,,
+,,,
+This Security Test Plan references check procedures from the applicable DISA STIG.,,,
+"Detailed check text, discussion, and fix text are available in STIG Viewer or the STIG Compliance Workbook.",,,
+,,,
+Approval Signatures,,,
+,,,
+Lead Assessor:,________________________,Date:,____________
+,,,
+ISSM:,________________________,Date:,____________
+,,,
+Authorizing Official:,________________________,Date:,____________

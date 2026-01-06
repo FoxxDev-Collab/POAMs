@@ -1,0 +1,167 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                  SECURITY TEST PLAN (STP) QUICK REFERENCE                    ║
+║                     ACDS Spectral Raptor IS Program                          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ CRITICAL: We use TWO different STP types - know which one to use!           │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────┬────────────────────────────────────────────┐
+│  TECHNICAL STP (STIG/Nessus)    │  SECURITY CONTROLS STP                     │
+│  Template: Excel                │  Template: Word Doc                        │
+└─────────────────────────────────┴────────────────────────────────────────────┘
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                          TECHNICAL STP (STIG/Nessus)                      ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+PURPOSE:     Test remediation of specific vulnerability findings
+WHEN:        POA&M Milestone MS-01 (after vulnerability identified)
+TEMPLATE:    STIG_STP_Template.xlsx
+APPROVER:    ISSM
+DRIVER:      RA-5 (Vulnerability Management) + POA&M Process
+OUTPUT:      Remediation evidence for POA&M closure
+
+USE WHEN YOU SEE:
+  ✓ ConfigOS STIG finding (V-XXXXXX)
+  ✓ Nessus vulnerability (Plugin ID, CVE)
+  ✓ POA&M created for technical issue
+  ✓ Need to test patch/config change
+  ✓ Before deploying fix to production
+
+SCOPE:
+  • Single finding or related finding group
+  • Specific system(s) affected
+  • Technical check: Command → Result
+  • Pass/Fail/Not Applicable status
+
+EXAMPLE:
+  Finding:    V-230221 - RHEL must use FIPS crypto
+  POA&M:      25-O-0067
+  Test:       Execute fips-mode-setup, verify enabled
+  Evidence:   Command output, ConfigOS rescan
+  Result:     Pass = Not_A_Finding on rescan
+
+LIFECYCLE:   Single-use (create → test → archive with POA&M)
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                        SECURITY CONTROLS STP                              ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+PURPOSE:     Annual assessment of control implementation/effectiveness
+WHEN:        Annual assessment cycle (CA-2 requirement)
+TEMPLATE:    Security_Control_Assessment_Template.docx
+APPROVER:    Independent Assessor + AO
+DRIVER:      CA-2 (Control Assessments) + Authorization Process
+OUTPUT:      Security Assessment Report (SAR)
+
+USE WHEN YOU SEE:
+  ✓ Annual assessment due
+  ✓ Testing entire control family (AC, AU, IA, etc.)
+  ✓ Post-implementation assessment
+  ✓ Significant change assessment
+  ✓ Independent assessor on-site
+
+SCOPE:
+  • Control family or system-wide
+  • All systems in authorization boundary
+  • Comprehensive assessment
+  • Implementation AND effectiveness
+
+METHODS (per NIST 800-53A):
+  1. EXAMINE:   Review docs, policies, configs
+  2. INTERVIEW: Talk to admins, users, management
+  3. TEST:      Technical validation of controls
+
+EXAMPLE:
+  Control:    AC-2 (Account Management)
+  Examine:    Account procedures, user list
+  Interview:  Admins on account workflow
+  Test:       Create test account, verify approval
+  Evidence:   Docs + Interview notes + Test results
+  Result:     SAR finding (satisfactory/deficient)
+
+LIFECYCLE:   Recurring annually (continuous monitoring)
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                            DECISION TREE                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  START: What needs to be tested?
+    │
+    ├─► Vulnerability finding (STIG/Nessus)?
+    │   └─► POA&M created?
+    │       └─► YES → USE TECHNICAL STP
+    │
+    └─► Annual assessment due?
+        └─► Testing control implementation?
+            └─► YES → USE SECURITY CONTROLS STP
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                        COMMON MISTAKES TO AVOID                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+❌ DON'T: Use Technical STP for annual assessment
+    → Too limited, missing interview/examine procedures
+
+❌ DON'T: Use Security Controls STP for single STIG finding
+    → Excessive overhead, delays POA&M closure
+
+❌ DON'T: Skip STP creation for POA&M
+    → Auditors require documented test procedures
+
+❌ DON'T: Use same template for both purposes
+    → Different approval authorities, different evidence requirements
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                        SIDE-BY-SIDE COMPARISON                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Aspect           ┃ Technical STP        ┃ Security Controls STP  ┃
+┣━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ Trigger          ┃ Vuln finding         ┃ Annual cycle           ┃
+┃ Frequency        ┃ On-demand            ┃ Annual                 ┃
+┃ Scope            ┃ Single issue         ┃ Control family         ┃
+┃ Template         ┃ Excel                ┃ Word Doc               ┃
+┃ Approval         ┃ ISSM                 ┃ Assessor + AO          ┃
+┃ Evidence         ┃ Technical only       ┃ Docs + Interviews      ┃
+┃ Output           ┃ POA&M evidence       ┃ SAR                    ┃
+┃ NIST Control     ┃ RA-5                 ┃ CA-2                   ┃
+┃ Process          ┃ POA&M MS-01          ┃ Assessment cycle       ┃
+┗━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       TEMPLATE LOCATIONS                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+STIG_STP_Template.xlsx
+  → \\[Server]\SME_Share\RMF\Templates\
+  → Use for: POA&M remediation testing
+
+Security_Control_Assessment_Template.docx
+  → \\[Server]\SME_Share\RMF\Templates\
+  → Use for: Annual control assessments
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                        WHO TO ASK FOR HELP                                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Technical STP questions:
+  → ISSM (POA&M process owner)
+  → ISSO (technical testing support)
+
+Security Controls STP questions:
+  → Independent Assessor (assessment methodology)
+  → AO (assessment scope and schedule)
+
+Still not sure which to use?
+  → Ask yourself: "Is this for a POA&M or annual assessment?"
+     POA&M = Technical STP
+     Annual Assessment = Security Controls STP
+
+═══════════════════════════════════════════════════════════════════════════════
+ PRINT THIS PAGE AND POST IN YOUR WORK AREA FOR QUICK REFERENCE
+═══════════════════════════════════════════════════════════════════════════════
+Version 1.0 | December 2025 | ACDS Spectral Raptor IS Program

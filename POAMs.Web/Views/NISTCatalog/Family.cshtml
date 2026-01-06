@@ -1,0 +1,224 @@
+@model POAMs.Web.Models.ViewModels.NISTFamilyViewModel
+@using POAMs.Web.Models.Domain
+@{
+    ViewData["Title"] = $"{Model.Family} - {Model.FamilyName}";
+}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-route-systemId="@Model.SelectedSystemId">NIST Catalog</a></li>
+        <li class="breadcrumb-item active">@Model.Family - @Model.FamilyName</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3">
+            <span class="badge bg-dark me-2">@Model.Family</span>
+            @Model.FamilyName
+        </h1>
+        <p class="text-muted mb-0">@Model.Summary.TotalControls controls &bull; @Model.Summary.TotalCCIs CCIs</p>
+    </div>
+    <a asp-action="Index" asp-route-systemId="@Model.SelectedSystemId" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Back to Catalog
+    </a>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <input type="hidden" name="id" value="@Model.Family" />
+            <div class="col-md-3">
+                <label class="form-label">System (ATO Package)</label>
+                <select name="systemId" class="form-select">
+                    <option value="">-- View Catalog Only --</option>
+                    @foreach (var system in ViewBag.Systems as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)
+                    {
+                        <option value="@system.Value" selected="@system.Selected">@system.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Search</label>
+                <input type="text" name="search" class="form-control" value="@Model.SearchTerm" placeholder="Control ID or name...">
+            </div>
+            @if (Model.SelectedSystemId.HasValue)
+            {
+                <div class="col-md-3">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select" asp-items="@(ViewBag.StatusList as SelectList)">
+                    </select>
+                </div>
+            }
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-funnel me-1"></i>Filter
+                </button>
+                <a asp-action="Family" asp-route-id="@Model.Family" asp-route-systemId="@Model.SelectedSystemId" class="btn btn-outline-secondary">
+                    Clear
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Summary Stats (if system selected) -->
+@if (Model.SelectedSystemId.HasValue)
+{
+    <div class="row g-3 mb-4">
+        <div class="col">
+            <div class="card border-success">
+                <div class="card-body text-center py-2">
+                    <span class="h4 text-success">@Model.Summary.Compliant</span>
+                    <small class="d-block text-muted">Compliant</small>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card border-danger">
+                <div class="card-body text-center py-2">
+                    <span class="h4 text-danger">@Model.Summary.NonCompliant</span>
+                    <small class="d-block text-muted">Non-Compliant</small>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card border-secondary">
+                <div class="card-body text-center py-2">
+                    <span class="h4 text-secondary">@Model.Summary.NotApplicable</span>
+                    <small class="d-block text-muted">N/A</small>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card border-info">
+                <div class="card-body text-center py-2">
+                    <span class="h4 text-info">@Model.Summary.Inherited</span>
+                    <small class="d-block text-muted">Inherited</small>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card border-warning">
+                <div class="card-body text-center py-2">
+                    <span class="h4 text-warning">@Model.Summary.NotAssessed</span>
+                    <small class="d-block text-muted">Not Assessed</small>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Controls Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 120px;">Control ID</th>
+                    <th>Name</th>
+                    <th style="width: 80px;" class="text-center">CCIs</th>
+                    @if (Model.SelectedSystemId.HasValue)
+                    {
+                        <th style="width: 140px;">Status</th>
+                        <th style="width: 100px;">Risk</th>
+                    }
+                    <th style="width: 100px;" class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Controls.Any())
+                {
+                    <tr>
+                        <td colspan="@(Model.SelectedSystemId.HasValue ? 6 : 4)" class="text-center py-5 text-muted">
+                            <i class="bi bi-search" style="font-size: 2rem;"></i>
+                            <p class="mt-2 mb-0">No controls found matching your criteria.</p>
+                        </td>
+                    </tr>
+                }
+                @foreach (var control in Model.Controls)
+                {
+                    var rowClass = control.IsWithdrawn ? "table-secondary text-muted" : "";
+                    var indent = control.IsEnhancement ? "ps-4" : "";
+
+                    <tr class="@rowClass">
+                        <td class="@indent">
+                            @if (control.IsEnhancement)
+                            {
+                                <i class="bi bi-arrow-return-right text-muted me-1"></i>
+                            }
+                            <strong>@control.ControlId</strong>
+                        </td>
+                        <td>
+                            @control.Name
+                            @if (control.IsWithdrawn)
+                            {
+                                <span class="badge bg-secondary ms-1">Withdrawn</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-light text-dark">@control.CCICount</span>
+                        </td>
+                        @if (Model.SelectedSystemId.HasValue)
+                        {
+                            <td>
+                                @if (control.Status.HasValue)
+                                {
+                                    var statusClass = control.Status switch
+                                    {
+                                        ControlAssessmentStatus.Compliant => "bg-success",
+                                        ControlAssessmentStatus.NonCompliant => "bg-danger",
+                                        ControlAssessmentStatus.NotApplicable => "bg-secondary",
+                                        ControlAssessmentStatus.Inherited => "bg-info",
+                                        _ => "bg-warning"
+                                    };
+                                    <span class="badge @statusClass">@control.Status</span>
+                                    @if (control.POAMId.HasValue)
+                                    {
+                                        <a asp-controller="POAM" asp-action="Details" asp-route-id="@control.POAMId" class="badge bg-primary ms-1" title="View POAM">
+                                            <i class="bi bi-link-45deg"></i>
+                                        </a>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="badge bg-light text-dark">Not Assessed</span>
+                                }
+                            </td>
+                            <td>
+                                @if (control.RiskLevel.HasValue)
+                                {
+                                    var riskClass = control.RiskLevel switch
+                                    {
+                                        RiskLevel.High => "text-danger",
+                                        RiskLevel.Moderate => "text-warning",
+                                        RiskLevel.Low => "text-success",
+                                        _ => ""
+                                    };
+                                    <span class="@riskClass fw-bold">@control.RiskLevel</span>
+                                }
+                            </td>
+                        }
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a asp-action="Details" asp-route-id="@control.ControlId" asp-route-systemId="@Model.SelectedSystemId"
+                                   class="btn btn-outline-primary" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                @if (Model.SelectedSystemId.HasValue && !control.IsWithdrawn)
+                                {
+                                    <a asp-action="Assess" asp-route-controlId="@control.ControlId" asp-route-systemId="@Model.SelectedSystemId"
+                                       class="btn btn-outline-success" title="Assess">
+                                        <i class="bi bi-clipboard-check"></i>
+                                    </a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,394 @@
+@model POAMs.Web.Models.ViewModels.NISTControlDetailViewModel
+@using POAMs.Web.Models.Domain
+@{
+    ViewData["Title"] = $"{Model.ControlId} - {Model.Name}";
+    var selectedSystemId = ViewBag.SelectedSystemId as int?;
+}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-route-systemId="@selectedSystemId">NIST Catalog</a></li>
+        <li class="breadcrumb-item"><a asp-action="Family" asp-route-id="@Model.Family" asp-route-systemId="@selectedSystemId">@Model.Family - @Model.FamilyName</a></li>
+        <li class="breadcrumb-item active">@Model.ControlId</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <h1 class="h3">
+            <span class="badge bg-dark me-2">@Model.ControlId</span>
+            @Model.Name
+        </h1>
+        <p class="text-muted mb-0">
+            @Model.FamilyName
+            @if (Model.IsWithdrawn)
+            {
+                <span class="badge bg-secondary ms-2">Withdrawn</span>
+            }
+            @if (Model.ParentControlId != null)
+            {
+                <span class="ms-2">
+                    <i class="bi bi-arrow-return-right me-1"></i>Enhancement of
+                    <a asp-action="Details" asp-route-id="@Model.ParentControlId" asp-route-systemId="@selectedSystemId">@Model.ParentControlId</a>
+                </span>
+            }
+        </p>
+    </div>
+    <div class="btn-group">
+        @if (selectedSystemId.HasValue && !Model.IsWithdrawn)
+        {
+            <a asp-action="Assess" asp-route-controlId="@Model.ControlId" asp-route-systemId="@selectedSystemId" class="btn btn-success">
+                <i class="bi bi-clipboard-check me-1"></i>Assess Control
+            </a>
+        }
+        <a asp-action="Family" asp-route-id="@Model.Family" asp-route-systemId="@selectedSystemId" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to @Model.Family
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Main Content -->
+    <div class="col-lg-8">
+        <!-- Control Requirement -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-file-text me-2"></i>Control Requirement
+            </div>
+            <div class="card-body">
+                <div class="control-text" style="white-space: pre-wrap;">@Model.ControlText</div>
+            </div>
+        </div>
+
+        <!-- Discussion -->
+        @if (!string.IsNullOrEmpty(Model.Discussion))
+        {
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-chat-text me-2"></i>Discussion / Supplemental Guidance
+                </div>
+                <div class="card-body">
+                    <div class="text-muted" style="white-space: pre-wrap;">@Model.Discussion</div>
+                </div>
+            </div>
+        }
+
+        <!-- CCIs -->
+        @if (Model.CCIs.Any())
+        {
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-list-check me-2"></i>Control Correlation Identifiers (CCIs)</span>
+                    <span class="badge bg-primary">@Model.CCIs.Count</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 130px;">CCI Number</th>
+                                    <th>Definition</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var cci in Model.CCIs)
+                                {
+                                    <tr>
+                                        <td><code>@cci.CCINumber</code></td>
+                                        <td class="small">@cci.Definition</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Documentation Requirements -->
+        @if (Model.HasDocumentationRequirements)
+        {
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-file-earmark-text me-2"></i>Documentation Requirements</span>
+                    <div>
+                        <span class="badge bg-success me-1">@Model.DocumentationComplete Complete</span>
+                        <span class="badge bg-primary">@Model.DocumentationCount Total</span>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 100px;">Type</th>
+                                    <th>Description</th>
+                                    <th style="width: 90px;">Priority</th>
+                                    <th style="width: 110px;">Status</th>
+                                    <th style="width: 60px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var doc in Model.Documentation)
+                                {
+                                    <tr>
+                                        <td>
+                                            <i class="bi @doc.DocTypeIcon me-1"></i>
+                                            <span class="small">@doc.DocType</span>
+                                        </td>
+                                        <td class="small">
+                                            @doc.Description
+                                            @if (!string.IsNullOrEmpty(doc.EvidenceLocation))
+                                            {
+                                                <br />
+                                                <small class="text-muted"><i class="bi bi-link-45deg"></i> @doc.EvidenceLocation</small>
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class="badge @doc.PriorityBadgeClass">@doc.Priority</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge @doc.StatusBadgeClass">@doc.Status</span>
+                                        </td>
+                                        <td>
+                                            <a asp-action="EditDocumentation" asp-route-id="@doc.Id"
+                                               asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString"
+                                               class="btn btn-sm btn-outline-secondary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else if (selectedSystemId.HasValue)
+        {
+            <div class="card mb-4 border-light">
+                <div class="card-body text-center py-4 text-muted">
+                    <i class="bi bi-file-earmark-x" style="font-size: 2rem;"></i>
+                    <p class="mt-2 mb-0">No documentation requirements defined for this control.</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <!-- System Selector -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-hdd-stack me-2"></i>Select System
+            </div>
+            <div class="card-body">
+                <form method="get">
+                    <input type="hidden" name="id" value="@Model.ControlId" />
+                    <select name="systemId" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- View Catalog Only --</option>
+                        @foreach (var system in ViewBag.Systems as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)
+                        {
+                            <option value="@system.Value" selected="@system.Selected">@system.Text</option>
+                        }
+                    </select>
+                </form>
+            </div>
+        </div>
+
+        <!-- Assessment Status by System -->
+        @if (Model.AssessmentsBySystem.Any())
+        {
+            @foreach (var systemHistory in Model.AssessmentsBySystem)
+            {
+                var latestAssessment = systemHistory.LatestAssessment;
+                var latestStatusClass = latestAssessment?.Status switch
+                {
+                    ControlAssessmentStatus.Compliant => "success",
+                    ControlAssessmentStatus.NonCompliant => "danger",
+                    ControlAssessmentStatus.NotApplicable => "secondary",
+                    ControlAssessmentStatus.Inherited => "info",
+                    _ => "warning"
+                };
+
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-hdd-stack me-2"></i>@systemHistory.SystemName</span>
+                        @if (latestAssessment != null)
+                        {
+                            <span class="badge bg-@latestStatusClass">@latestAssessment.Status</span>
+                        }
+                    </div>
+                    <div class="card-body pb-2">
+                        @if (latestAssessment != null)
+                        {
+                            @if (latestAssessment.RiskLevel.HasValue)
+                            {
+                                <small class="d-block mb-1">
+                                    Risk: <span class="fw-bold @(latestAssessment.RiskLevel == RiskLevel.High ? "text-danger" : latestAssessment.RiskLevel == RiskLevel.Moderate ? "text-warning" : "text-success")">@latestAssessment.RiskLevel</span>
+                                </small>
+                            }
+                            @if (latestAssessment.POAMId.HasValue)
+                            {
+                                <a asp-controller="POAM" asp-action="Details" asp-route-id="@latestAssessment.POAMId" class="btn btn-sm btn-outline-primary mb-2">
+                                    <i class="bi bi-link-45deg me-1"></i>@latestAssessment.POAMIdentifier
+                                </a>
+                            }
+                        }
+                        <div class="d-flex gap-2 flex-wrap">
+                            @if (!Model.IsWithdrawn)
+                            {
+                                <a asp-action="Assess" asp-route-controlId="@Model.ControlId" asp-route-systemId="@systemHistory.SystemId"
+                                   class="btn btn-sm btn-success">
+                                    <i class="bi bi-plus-circle me-1"></i>New Assessment
+                                </a>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Assessment History -->
+                    @if (systemHistory.Assessments.Count > 0)
+                    {
+                        <div class="card-header bg-light py-2 border-top">
+                            <small class="text-muted"><i class="bi bi-clock-history me-1"></i>Assessment History (@systemHistory.Assessments.Count)</small>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            @foreach (var assessment in systemHistory.Assessments)
+                            {
+                                var statusClass = assessment.Status switch
+                                {
+                                    ControlAssessmentStatus.Compliant => "success",
+                                    ControlAssessmentStatus.NonCompliant => "danger",
+                                    ControlAssessmentStatus.NotApplicable => "secondary",
+                                    ControlAssessmentStatus.Inherited => "info",
+                                    _ => "warning"
+                                };
+
+                                <div class="list-group-item @(assessment.IsLatest ? "bg-light" : "")">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="badge bg-@statusClass me-2">@assessment.Status</span>
+                                            @if (assessment.IsLatest)
+                                            {
+                                                <span class="badge bg-dark">Current</span>
+                                            }
+                                            @if (assessment.RiskLevel.HasValue)
+                                            {
+                                                <small class="ms-2 text-muted">
+                                                    Risk: <span class="@(assessment.RiskLevel == RiskLevel.High ? "text-danger" : assessment.RiskLevel == RiskLevel.Moderate ? "text-warning" : "text-success")">@assessment.RiskLevel</span>
+                                                </small>
+                                            }
+                                        </div>
+                                        <div class="btn-group btn-group-sm">
+                                            <a asp-action="EditAssessment" asp-route-id="@assessment.Id" class="btn btn-outline-secondary" title="Edit">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-danger" title="Delete"
+                                                    data-bs-toggle="modal" data-bs-target="#deleteModal-@assessment.Id">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted d-block mt-1">
+                                        @if (assessment.AssessedByName != null)
+                                        {
+                                            <text>by @assessment.AssessedByName</text>
+                                        }
+                                        @if (assessment.AssessedDate.HasValue)
+                                        {
+                                            <text> on @assessment.AssessedDate.Value.ToString("MMM dd, yyyy 'at' h:mm tt")</text>
+                                        }
+                                    </small>
+                                </div>
+
+                                <!-- Delete Confirmation Modal -->
+                                <div class="modal fade" id="deleteModal-@assessment.Id" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Delete Assessment</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Are you sure you want to delete this assessment?</p>
+                                                <p class="text-muted small mb-0">
+                                                    <strong>Status:</strong> @assessment.Status<br />
+                                                    <strong>Date:</strong> @(assessment.AssessedDate?.ToString("MMM dd, yyyy") ?? "N/A")<br />
+                                                    <strong>Assessed by:</strong> @(assessment.AssessedByName ?? "Unknown")
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                <form asp-action="DeleteAssessment" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" value="@assessment.Id" />
+                                                    <input type="hidden" name="controlId" value="@Model.ControlId" />
+                                                    <input type="hidden" name="systemId" value="@assessment.SystemId" />
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        }
+        else if (selectedSystemId.HasValue)
+        {
+            <div class="card mb-4">
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-clipboard-x text-muted" style="font-size: 2rem;"></i>
+                    <p class="mt-2 mb-3">No assessment for this system yet.</p>
+                    @if (!Model.IsWithdrawn)
+                    {
+                        <a asp-action="Assess" asp-route-controlId="@Model.ControlId" asp-route-systemId="@selectedSystemId" class="btn btn-success">
+                            <i class="bi bi-clipboard-check me-1"></i>Assess Control
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card mb-4">
+                <div class="card-body text-center py-4 text-muted">
+                    <i class="bi bi-info-circle" style="font-size: 2rem;"></i>
+                    <p class="mt-2 mb-0">Select a system above to view or create assessments.</p>
+                </div>
+            </div>
+        }
+
+        <!-- Related Controls -->
+        @if (Model.RelatedControls.Any())
+        {
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-diagram-3 me-2"></i>Related Controls
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var related in Model.RelatedControls)
+                        {
+                            <a asp-action="Details" asp-route-id="@related.Trim()" asp-route-systemId="@selectedSystemId" class="btn btn-sm btn-outline-dark">
+                                @related.Trim()
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+<style>
+    .control-text {
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+</style>
+}

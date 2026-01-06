@@ -1,0 +1,61 @@
+@model POAMs.Web.Models.Domain.POAM
+@{
+    ViewData["Title"] = $"Delete POAM {Model.ItemIdentifier}";
+}
+
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item"><a asp-action="Index">POAMs</a></li>
+            <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id">@Model.ItemIdentifier</a></li>
+            <li class="breadcrumb-item active">Delete</li>
+        </ol>
+    </nav>
+    <h1 class="h3 text-danger"><i class="bi bi-trash me-2"></i>Delete POAM</h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-exclamation-triangle me-2"></i>Confirm Deletion
+            </div>
+            <div class="card-body">
+                <p class="lead">Are you sure you want to delete this POAM?</p>
+
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone. All associated milestones (@Model.Milestones.Count) will also be deleted.
+                </div>
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Item Identifier</dt>
+                    <dd class="col-sm-8">@Model.ItemIdentifier</dd>
+
+                    <dt class="col-sm-4">Weakness</dt>
+                    <dd class="col-sm-8">@Model.WeaknessOrDeficiency</dd>
+
+                    <dt class="col-sm-4">System</dt>
+                    <dd class="col-sm-8">@Model.System?.SystemName</dd>
+
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8">@Model.Status</dd>
+
+                    <dt class="col-sm-4">Milestones</dt>
+                    <dd class="col-sm-8">@Model.Milestones.Count</dd>
+                </dl>
+            </div>
+            <div class="card-footer">
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash me-2"></i>Yes, Delete POAM
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

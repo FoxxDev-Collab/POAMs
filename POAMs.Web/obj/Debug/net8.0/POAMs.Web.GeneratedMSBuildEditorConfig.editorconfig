@@ -1,0 +1,233 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = POAMs.Web
+build_property.RootNamespace = POAMs.Web
+build_property.ProjectDir = C:\Users\jeremiah.price\Documents\3. Local-Dev\Compliance_Tools\POAMs\POAMs.Web\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\jeremiah.price\Documents\3. Local-Dev\Compliance_Tools\POAMs\POAMs.Web
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Account/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxBY2Nlc3NEZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Account/ChangePassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxDaGFuZ2VQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Account/Profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxQcm9maWxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Admin/AuditLogs.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQXVkaXRMb2dzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Admin/CreateSystem.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlU3lzdGVtLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Admin/CreateUser.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQ3JlYXRlVXNlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Admin/DeleteUser.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGVsZXRlVXNlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Admin/EditSystem.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdFN5c3RlbS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Admin/EditUser.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRWRpdFVzZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Admin/Systems.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cU3lzdGVtcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Admin/Users.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlcnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Calendar/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2FsZW5kYXJcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/DataImport/DocumentationMatrix.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGF0YUltcG9ydFxEb2N1bWVudGF0aW9uTWF0cml4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/DataImport/ImportResult.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGF0YUltcG9ydFxJbXBvcnRSZXN1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/DataImport/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGF0YUltcG9ydFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/DataImport/NISTCatalog.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGF0YUltcG9ydFxOSVNUQ2F0YWxvZy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Documentation/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRG9jdW1lbnRhdGlvblxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Documentation/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRG9jdW1lbnRhdGlvblxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Documentation/Summary.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRG9jdW1lbnRhdGlvblxTdW1tYXJ5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Export/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRXhwb3J0XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Kanban/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2FuYmFuXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Milestone/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWlsZXN0b25lXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Milestone/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWlsZXN0b25lXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Milestone/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWlsZXN0b25lXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/NISTCatalog/Assess.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTklTVENhdGFsb2dcQXNzZXNzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/NISTCatalog/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTklTVENhdGFsb2dcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/NISTCatalog/EditDocumentation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTklTVENhdGFsb2dcRWRpdERvY3VtZW50YXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/NISTCatalog/Family.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTklTVENhdGFsb2dcRmFtaWx5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/NISTCatalog/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTklTVENhdGFsb2dcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/POAM/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUE9BTVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/POAM/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUE9BTVxEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/POAM/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUE9BTVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/POAM/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUE9BTVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/POAM/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUE9BTVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/STP/AddControlTestCase.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1RQXEFkZENvbnRyb2xUZXN0Q2FzZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/STP/AddNessusTestCase.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1RQXEFkZE5lc3N1c1Rlc3RDYXNlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/STP/AddTestCase.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1RQXEFkZFRlc3RDYXNlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/STP/BulkAddTestCases.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1RQXEJ1bGtBZGRUZXN0Q2FzZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/STP/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1RQXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/STP/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1RQXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/STP/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1RQXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/STP/EditControlTestCase.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1RQXEVkaXRDb250cm9sVGVzdENhc2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/STP/EditNessusTestCase.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1RQXEVkaXROZXNzdXNUZXN0Q2FzZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/STP/EditTestCase.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1RQXEVkaXRUZXN0Q2FzZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/STP/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1RQXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-vi0eygmvam

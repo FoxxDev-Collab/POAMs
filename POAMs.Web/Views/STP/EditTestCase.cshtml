@@ -1,0 +1,172 @@
+@model POAMs.Web.Models.Domain.STPTestCase
+@{
+    ViewData["Title"] = $"Edit Test Case: {Model.VulnId}";
+    var stp = ViewBag.STP as POAMs.Web.Models.Domain.SecurityTestPlan;
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Test Plans</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@stp?.Id">@stp?.STPIdentifier</a></li>
+        <li class="breadcrumb-item active">Edit @Model.VulnId</li>
+    </ol>
+</nav>
+
+<h1 class="h3 mb-4">
+    <i class="bi bi-pencil me-2"></i>Edit Test Case: @Model.VulnId
+</h1>
+
+<form asp-action="EditTestCase" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="SecurityTestPlanId" />
+    <input type="hidden" asp-for="CreatedDate" />
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-shield-check me-2"></i>STIG Finding Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="VulnId" class="form-label">Vulnerability ID <span class="text-danger">*</span></label>
+                            <input asp-for="VulnId" class="form-control" />
+                            <span asp-validation-for="VulnId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="RuleId" class="form-label">Rule ID</label>
+                            <input asp-for="RuleId" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label">Title <span class="text-danger">*</span></label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Severity" class="form-label">Severity</label>
+                            <select asp-for="Severity" class="form-select">
+                                <option value="CAT_I">CAT I (High)</option>
+                                <option value="CAT_II">CAT II (Medium)</option>
+                                <option value="CAT_III">CAT III (Low)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="RuleVersion" class="form-label">Rule Version</label>
+                            <input asp-for="RuleVersion" class="form-control" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CheckContent" class="form-label">Check Content</label>
+                        <textarea asp-for="CheckContent" class="form-control" rows="4"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="FixText" class="form-label">Fix Text</label>
+                        <textarea asp-for="FixText" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-clipboard-check me-2"></i>Test Results
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Status" class="form-label">Status</label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="NotTested">Not Tested</option>
+                            <option value="Pass">Pass</option>
+                            <option value="Fail">Fail</option>
+                            <option value="NotApplicable">Not Applicable</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ExpectedResult" class="form-label">Expected Result</label>
+                        <textarea asp-for="ExpectedResult" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ActualResult" class="form-label">Actual Result</label>
+                        <textarea asp-for="ActualResult" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Evidence" class="form-label">Evidence</label>
+                        <textarea asp-for="Evidence" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Comments" class="form-label">Comments</label>
+                        <textarea asp-for="Comments" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="TesterId" class="form-label">Tested By</label>
+                            <select asp-for="TesterId" asp-items="@ViewBag.Users" class="form-select">
+                                <option value="">-- Select --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="TestDate" class="form-label">Test Date</label>
+                            <input asp-for="TestDate" type="date" class="form-control"
+                                   value="@(Model.TestDate?.ToString("yyyy-MM-dd"))" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <a asp-action="Details" asp-route-id="@Model.SecurityTestPlanId" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Cancel
+        </a>
+        <div>
+            <button type="button" class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <i class="bi bi-trash me-1"></i>Delete
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-1"></i>Save Changes
+            </button>
+        </div>
+    </div>
+</form>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete test case <strong>@Model.VulnId</strong>?</p>
+                <p class="text-danger">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form asp-action="DeleteTestCase" asp-route-id="@Model.Id" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

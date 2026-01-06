@@ -1,0 +1,241 @@
+@model POAMs.Web.Models.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3"><i class="bi bi-speedometer2 me-2"></i>Dashboard</h1>
+        <p class="text-muted">Overview of Plan of Action and Milestones</p>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card border-primary h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2 text-muted">Total POAMs</h6>
+                        <h2 class="card-title mb-0">@Model.TotalPOAMs</h2>
+                    </div>
+                    <div class="text-primary">
+                        <i class="bi bi-list-task" style="font-size: 2.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card border-success h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2 text-muted">Open/Ongoing</h6>
+                        <h2 class="card-title mb-0">@Model.OpenPOAMs</h2>
+                    </div>
+                    <div class="text-success">
+                        <i class="bi bi-hourglass-split" style="font-size: 2.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card border-danger h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2 text-muted">Overdue</h6>
+                        <h2 class="card-title mb-0 @(Model.OverduePOAMs > 0 ? "text-danger" : "")">@Model.OverduePOAMs</h2>
+                    </div>
+                    <div class="text-danger">
+                        <i class="bi bi-exclamation-triangle" style="font-size: 2.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3 mb-3">
+        <div class="card border-warning h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-subtitle mb-2 text-muted">High Risk</h6>
+                        <h2 class="card-title mb-0 @(Model.HighRiskPOAMs > 0 ? "text-warning" : "")">@Model.HighRiskPOAMs</h2>
+                    </div>
+                    <div class="text-warning">
+                        <i class="bi bi-shield-exclamation" style="font-size: 2.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Recent POAMs -->
+    <div class="col-lg-8 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-clock-history me-2"></i>Recent POAMs</span>
+                <a asp-controller="POAM" asp-action="Index" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.RecentPOAMs.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Weakness</th>
+                                    <th>Status</th>
+                                    <th>Risk</th>
+                                    <th>Due Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var poam in Model.RecentPOAMs)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a asp-controller="POAM" asp-action="Details" asp-route-id="@poam.Id">
+                                                @poam.ItemIdentifier
+                                            </a>
+                                        </td>
+                                        <td class="text-truncate" style="max-width: 250px;" title="@poam.WeaknessOrDeficiency">
+                                            @poam.WeaknessOrDeficiency
+                                        </td>
+                                        <td>
+                                            @{
+                                                var statusClass = poam.Status switch
+                                                {
+                                                    POAMs.Web.Models.Domain.POAMStatus.Draft => "bg-secondary",
+                                                    POAMs.Web.Models.Domain.POAMStatus.Open => "bg-info",
+                                                    POAMs.Web.Models.Domain.POAMStatus.Ongoing => "bg-primary",
+                                                    POAMs.Web.Models.Domain.POAMStatus.Completed => "bg-success",
+                                                    POAMs.Web.Models.Domain.POAMStatus.Closed => "bg-dark",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge @statusClass">@poam.Status</span>
+                                        </td>
+                                        <td>
+                                            @{
+                                                var riskClass = poam.RiskLevel switch
+                                                {
+                                                    POAMs.Web.Models.Domain.RiskLevel.High => "bg-danger",
+                                                    POAMs.Web.Models.Domain.RiskLevel.Moderate => "bg-warning text-dark",
+                                                    POAMs.Web.Models.Domain.RiskLevel.Low => "bg-success",
+                                                    _ => "bg-secondary"
+                                                };
+                                            }
+                                            <span class="badge @riskClass">@poam.RiskLevel</span>
+                                        </td>
+                                        <td>
+                                            @{
+                                                var isOverdue = poam.ScheduledCompletionDate < DateTime.UtcNow &&
+                                                               poam.Status != POAMs.Web.Models.Domain.POAMStatus.Completed &&
+                                                               poam.Status != POAMs.Web.Models.Domain.POAMStatus.Closed;
+                                            }
+                                            <span class="@(isOverdue ? "text-danger fw-bold" : "")">
+                                                @poam.ScheduledCompletionDate.ToString("MM/dd/yyyy")
+                                                @if (isOverdue)
+                                                {
+                                                    <i class="bi bi-exclamation-circle ms-1"></i>
+                                                }
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                        <p class="mt-3">No POAMs found. <a asp-controller="POAM" asp-action="Create">Create your first POAM</a></p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Milestones -->
+    <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="bi bi-flag me-2"></i>Upcoming Milestones (30 days)
+            </div>
+            <div class="card-body p-0">
+                @if (Model.UpcomingMilestones.Any())
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var milestone in Model.UpcomingMilestones)
+                        {
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <div class="fw-bold">@milestone.Title</div>
+                                        <small class="text-muted">
+                                            <a asp-controller="POAM" asp-action="Details" asp-route-id="@milestone.POAMId">
+                                                @milestone.POAM.ItemIdentifier
+                                            </a>
+                                        </small>
+                                    </div>
+                                    <span class="badge bg-info">@milestone.DueDate.ToString("MM/dd")</span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-calendar-check" style="font-size: 2rem;"></i>
+                        <p class="mt-2 small">No upcoming milestones</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-lightning me-2"></i>Quick Actions
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <a asp-controller="POAM" asp-action="Create" class="btn btn-primary w-100">
+                            <i class="bi bi-plus-circle me-2"></i>New POAM
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a asp-controller="Calendar" asp-action="Index" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-calendar3 me-2"></i>View Calendar
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a asp-controller="Export" asp-action="Index" class="btn btn-outline-success w-100">
+                            <i class="bi bi-download me-2"></i>Export to XACTA
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a asp-controller="POAM" asp-action="Index" asp-route-filter="overdue" class="btn btn-outline-danger w-100">
+                            <i class="bi bi-exclamation-triangle me-2"></i>View Overdue
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

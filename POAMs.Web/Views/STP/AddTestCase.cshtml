@@ -1,0 +1,130 @@
+@model POAMs.Web.Models.Domain.STPTestCase
+@{
+    ViewData["Title"] = "Add STIG Test Case";
+    var stp = ViewBag.STP as POAMs.Web.Models.Domain.SecurityTestPlan;
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Test Plans</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@stp?.Id">@stp?.STPIdentifier</a></li>
+        <li class="breadcrumb-item active">Add Test Case</li>
+    </ol>
+</nav>
+
+<h1 class="h3 mb-4">
+    <i class="bi bi-plus-circle me-2"></i>Add STIG Test Case
+</h1>
+
+<form asp-action="AddTestCase" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="SecurityTestPlanId" />
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-shield-check me-2"></i>STIG Finding Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="VulnId" class="form-label">Vulnerability ID</label>
+                            <input asp-for="VulnId" class="form-control" placeholder="e.g., V-230221" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="RuleId" class="form-label">Rule ID</label>
+                            <input asp-for="RuleId" class="form-control" placeholder="e.g., SV-230221r1234_rule" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label">Title</label>
+                        <input asp-for="Title" class="form-control" />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Severity" class="form-label">Severity</label>
+                            <select asp-for="Severity" class="form-select">
+                                <option value="CAT_I">CAT I (High)</option>
+                                <option value="CAT_II" selected>CAT II (Medium)</option>
+                                <option value="CAT_III">CAT III (Low)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="RuleVersion" class="form-label">Rule Version</label>
+                            <input asp-for="RuleVersion" class="form-control" placeholder="e.g., RHEL-08-010000" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CheckContent" class="form-label">Check Content</label>
+                        <textarea asp-for="CheckContent" class="form-control" rows="4"
+                                  placeholder="Verification steps from the STIG..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="FixText" class="form-label">Fix Text</label>
+                        <textarea asp-for="FixText" class="form-control" rows="4"
+                                  placeholder="Remediation steps from the STIG..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-clipboard-check me-2"></i>Test Results
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Status" class="form-label">Status</label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="NotTested">Not Tested</option>
+                            <option value="Pass">Pass</option>
+                            <option value="Fail">Fail</option>
+                            <option value="NotApplicable">Not Applicable</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ExpectedResult" class="form-label">Expected Result</label>
+                        <textarea asp-for="ExpectedResult" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ActualResult" class="form-label">Actual Result</label>
+                        <textarea asp-for="ActualResult" class="form-control" rows="3"
+                                  placeholder="Document the actual findings..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Evidence" class="form-label">Evidence</label>
+                        <textarea asp-for="Evidence" class="form-control" rows="3"
+                                  placeholder="Screenshots, command outputs, etc..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Comments" class="form-label">Comments</label>
+                        <textarea asp-for="Comments" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <a asp-action="Details" asp-route-id="@Model.SecurityTestPlanId" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Cancel
+        </a>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-circle me-1"></i>Add Test Case
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

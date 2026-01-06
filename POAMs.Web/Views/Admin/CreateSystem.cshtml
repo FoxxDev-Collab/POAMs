@@ -1,0 +1,73 @@
+@model POAMs.Web.Models.ViewModels.SystemEditViewModel
+@{
+    ViewData["Title"] = "Add System";
+}
+
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item"><a asp-action="Systems">Systems</a></li>
+            <li class="breadcrumb-item active">Add System</li>
+        </ol>
+    </nav>
+    <h1 class="h3"><i class="bi bi-plus-circle me-2"></i>Add System</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <form asp-action="CreateSystem" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-hdd-network me-2"></i>System Information
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="SystemName" class="form-label"></label>
+                        <input asp-for="SystemName" class="form-control" placeholder="e.g., Enterprise Resource System" />
+                        <span asp-validation-for="SystemName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="OrganizationName" class="form-label"></label>
+                        <input asp-for="OrganizationName" class="form-control" placeholder="e.g., Department of Example" />
+                        <span asp-validation-for="OrganizationName" class="text-danger"></span>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="ISType" class="form-label"></label>
+                            <input asp-for="ISType" class="form-control" placeholder="e.g., Major Application" />
+                            <span asp-validation-for="ISType" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="UID" class="form-label"></label>
+                            <input asp-for="UID" class="form-control" placeholder="e.g., SYS-001" />
+                            <span asp-validation-for="UID" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ISSMId" class="form-label"></label>
+                        <select asp-for="ISSMId" class="form-select" asp-items="@ViewBag.ISSMs">
+                            <option value="">-- Select ISSM --</option>
+                        </select>
+                        <span asp-validation-for="ISSMId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-2"></i>Create System
+                </button>
+                <a asp-action="Systems" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

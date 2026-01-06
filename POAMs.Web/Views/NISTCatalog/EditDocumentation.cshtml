@@ -1,0 +1,168 @@
+@model POAMs.Web.Models.ViewModels.DocumentationEditViewModel
+@using POAMs.Web.Models.Domain
+@{
+    ViewData["Title"] = $"Edit Documentation - {Model.DocTypeName}";
+}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-route-systemId="@Model.SystemId">NIST Catalog</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.ControlId" asp-route-systemId="@Model.SystemId">@Model.ControlId</a></li>
+        <li class="breadcrumb-item active">Edit Documentation</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-file-earmark-text me-2"></i>
+                Edit Documentation Status
+            </div>
+            <div class="card-body">
+                <form asp-action="EditDocumentation" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="ControlId" />
+                    <input type="hidden" asp-for="SystemId" />
+                    <input type="hidden" asp-for="ReturnUrl" />
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <!-- Document Info (read-only) -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">Control</label>
+                            <div class="form-control-plaintext">
+                                <strong>@Model.ControlId</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">System</label>
+                            <div class="form-control-plaintext">
+                                <strong>@Model.SystemName</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-muted">Document Type</label>
+                        <div class="form-control-plaintext">
+                            <span class="badge bg-secondary me-2">@Model.DocTypeName</span>
+                            <span class="badge @(Model.Priority == DocumentationPriority.Critical ? "bg-danger" : Model.Priority == DocumentationPriority.High ? "bg-warning" : Model.Priority == DocumentationPriority.Medium ? "bg-info" : "bg-secondary")">@Model.Priority Priority</span>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-light mb-4">
+                        <strong>Requirement:</strong> @Model.RequirementDescription
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <!-- Editable Fields -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Status" class="form-label">Status <span class="text-danger">*</span></label>
+                            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<DocumentationStatus>()">
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="OwnerId" class="form-label">Owner</label>
+                            <select asp-for="OwnerId" class="form-select" asp-items="@(ViewBag.Owners as IEnumerable<SelectListItem>)">
+                            </select>
+                            <span asp-validation-for="OwnerId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="TargetDate" class="form-label">Target Completion Date</label>
+                            <input type="date" asp-for="TargetDate" class="form-control" />
+                            <span asp-validation-for="TargetDate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="EvidenceLocation" class="form-label">Evidence Location / Document Link</label>
+                        <input asp-for="EvidenceLocation" class="form-control" placeholder="File path, URL, or artifact reference..." />
+                        <span asp-validation-for="EvidenceLocation" class="text-danger"></span>
+                        <small class="text-muted">Enter the location where this document/evidence can be found.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Notes" class="form-label">Notes</label>
+                        <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Additional notes about this documentation..."></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <!-- Actions -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle me-1"></i>Save Changes
+                        </button>
+                        @if (!string.IsNullOrEmpty(Model.ReturnUrl))
+                        {
+                            <a href="@Model.ReturnUrl" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-action="Details" asp-route-id="@Model.ControlId" asp-route-systemId="@Model.SystemId" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+                        }
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tips Sidebar -->
+    <div class="col-lg-4">
+        <div class="card bg-light">
+            <div class="card-header">
+                <i class="bi bi-lightbulb me-2"></i>Documentation Tips
+            </div>
+            <div class="card-body">
+                <h6>Status Definitions</h6>
+                <dl class="small">
+                    <dt class="text-secondary">Not Started</dt>
+                    <dd>Work has not begun on this documentation.</dd>
+
+                    <dt class="text-primary">In Progress</dt>
+                    <dd>Documentation is actively being developed.</dd>
+
+                    <dt class="text-info">Draft</dt>
+                    <dd>Initial version complete, awaiting review.</dd>
+
+                    <dt class="text-warning">Under Review</dt>
+                    <dd>Document is being reviewed for approval.</dd>
+
+                    <dt class="text-success">Approved</dt>
+                    <dd>Document has been formally approved.</dd>
+
+                    <dt class="text-success">Complete</dt>
+                    <dd>Documentation is finalized and in place.</dd>
+                </dl>
+
+                <hr />
+
+                <h6>Evidence Locations</h6>
+                <ul class="small mb-0">
+                    <li>SharePoint/Teams links</li>
+                    <li>File server paths</li>
+                    <li>Document management system IDs</li>
+                    <li>eMASS artifact references</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

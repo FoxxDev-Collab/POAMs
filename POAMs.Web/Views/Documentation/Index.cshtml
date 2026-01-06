@@ -1,0 +1,414 @@
+@model POAMs.Web.Models.ViewModels.DocumentationMatrixViewModel
+@using POAMs.Web.Models.Domain
+@using POAMs.Web.Models.ViewModels
+@{
+    ViewData["Title"] = "Documentation Matrix";
+    var reviewsDue = Model.Items.Count(i => i.IsReviewDue);
+    var reviewsUpcoming = Model.Items.Count(i => i.IsReviewUpcoming);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">
+            <i class="bi bi-file-earmark-text me-2"></i>Documentation Matrix
+        </h1>
+        <p class="text-muted mb-0">
+            Track and manage all documentation requirements across NIST 800-53 controls
+        </p>
+    </div>
+    <div>
+        <a asp-action="Summary" asp-route-systemId="@Model.SystemId" class="btn btn-outline-secondary">
+            <i class="bi bi-bar-chart me-1"></i>Summary View
+        </a>
+    </div>
+</div>
+
+<!-- System Selector & Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" id="filterForm">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">System</label>
+                    <select name="systemId" class="form-select" onchange="this.form.submit()">
+                        @foreach (var system in ViewBag.Systems as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>())
+                        {
+                            <option value="@system.Value" selected="@system.Selected">@system.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Family</label>
+                    <select name="family" class="form-select">
+                        <option value="">All Families</option>
+                        @foreach (var fam in ViewBag.Families as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>())
+                        {
+                            <option value="@fam.Value" selected="@fam.Selected">@fam.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Doc Type</label>
+                    <select name="docType" class="form-select">
+                        <option value="">All Types</option>
+                        @foreach (var dt in ViewBag.DocTypes as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>())
+                        {
+                            <option value="@dt.Value" selected="@dt.Selected">@dt.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">All Statuses</option>
+                        @foreach (var st in ViewBag.Statuses as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>())
+                        {
+                            <option value="@st.Value" selected="@st.Selected">@st.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Priority</label>
+                    <select name="priority" class="form-select">
+                        <option value="">All Priorities</option>
+                        @foreach (var pr in ViewBag.Priorities as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>())
+                        {
+                            <option value="@pr.Value" selected="@pr.Selected">@pr.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-1 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Search control ID, name, or notes..."
+                               value="@Model.SearchTerm" />
+                        <button type="submit" class="btn btn-outline-secondary">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6 text-end">
+                    @if (Model.SystemId.HasValue)
+                    {
+                        <a asp-action="Index" asp-route-systemId="@Model.SystemId" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i>Clear Filters
+                        </a>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (!Model.SystemId.HasValue)
+{
+    <!-- No System Selected -->
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-hdd-stack text-muted" style="font-size: 3rem;"></i>
+            <h4 class="mt-3">Select a System</h4>
+            <p class="text-muted">Choose a system above to view and manage its documentation requirements.</p>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Stats Summary -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-2">
+            <div class="card bg-light">
+                <div class="card-body text-center py-3">
+                    <div class="h2 mb-0">@Model.TotalCount</div>
+                    <small class="text-muted">Total Requirements</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card border-secondary">
+                <div class="card-body text-center py-3">
+                    <div class="h2 mb-0 text-secondary">@Model.NotStartedCount</div>
+                    <small class="text-muted">Not Started</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card border-primary">
+                <div class="card-body text-center py-3">
+                    <div class="h2 mb-0 text-primary">@Model.InProgressCount</div>
+                    <small class="text-muted">In Progress</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card border-warning">
+                <div class="card-body text-center py-3">
+                    <div class="h2 mb-0 text-warning">@Model.UnderReviewCount</div>
+                    <small class="text-muted">Under Review</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card border-success">
+                <div class="card-body text-center py-3">
+                    <div class="h2 mb-0 text-success">@Model.CompleteCount</div>
+                    <small class="text-muted">Complete</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center py-3">
+                    <div class="h2 mb-0">@Model.CompletionRate%</div>
+                    <small>Completion</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.CriticalNotStarted > 0 || Model.HighNotStarted > 0 || reviewsDue > 0)
+    {
+        <div class="alert alert-warning d-flex align-items-center mb-4">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <div>
+                <strong>Attention Required:</strong>
+                @if (Model.CriticalNotStarted > 0)
+                {
+                    <span class="badge bg-danger mx-1">@Model.CriticalNotStarted Critical</span>
+                }
+                @if (Model.HighNotStarted > 0)
+                {
+                    <span class="badge bg-warning mx-1">@Model.HighNotStarted High</span>
+                }
+                @if (Model.CriticalNotStarted > 0 || Model.HighNotStarted > 0)
+                {
+                    <text>priority items not started.</text>
+                }
+                @if (reviewsDue > 0)
+                {
+                    <span class="badge bg-info mx-1">@reviewsDue Reviews Due</span>
+                }
+            </div>
+        </div>
+    }
+
+    <!-- Documentation Matrix Table -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>
+                <i class="bi bi-table me-2"></i>Documentation Requirements
+                <span class="badge bg-secondary ms-2">@Model.Items.Count items</span>
+            </span>
+            @if (reviewsUpcoming > 0)
+            {
+                <span class="badge bg-info">
+                    <i class="bi bi-calendar-event me-1"></i>@reviewsUpcoming reviews upcoming (30 days)
+                </span>
+            }
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Items.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-sm mb-0" id="docMatrix">
+                        <thead class="table-light sticky-top">
+                            <tr>
+                                <th style="width: 90px;">Control</th>
+                                <th style="width: 55px;">Family</th>
+                                <th style="width: 110px;">Type</th>
+                                <th style="width: 70px;">Priority</th>
+                                <th style="width: 115px;">Status</th>
+                                <th style="width: 100px;">Owner</th>
+                                <th style="width: 85px;">Target</th>
+                                <th style="width: 85px;">Completed</th>
+                                <th style="width: 85px;">Last Review</th>
+                                <th style="width: 85px;">Next Review</th>
+                                <th style="width: 60px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Items)
+                            {
+                                var rowClass = "";
+                                if (item.IsOverdue) rowClass = "table-danger";
+                                else if (item.IsReviewDue) rowClass = "table-warning";
+                                else if (item.Status == DocumentationStatus.Complete || item.Status == DocumentationStatus.Approved) rowClass = "table-success-subtle";
+
+                                <tr class="@rowClass">
+                                    <td>
+                                        <a asp-controller="NISTCatalog" asp-action="Details"
+                                           asp-route-id="@item.ControlId" asp-route-systemId="@Model.SystemId"
+                                           class="text-decoration-none fw-bold" title="@item.ControlName">
+                                            @item.ControlId
+                                        </a>
+                                    </td>
+                                    <td><span class="badge bg-dark">@item.Family</span></td>
+                                    <td>
+                                        <i class="bi @item.DocTypeIcon me-1" title="@item.DocTypeName"></i>
+                                        <small>@item.DocTypeName</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-@item.PriorityBadgeClass">@item.PriorityName</span>
+                                    </td>
+                                    <td>
+                                        <select class="form-select form-select-sm status-select"
+                                                data-id="@item.Id"
+                                                data-original="@((int)item.Status)">
+                                            @foreach (DocumentationStatus status in Enum.GetValues(typeof(DocumentationStatus)))
+                                            {
+                                                <option value="@((int)status)" selected="@(status == item.Status)">@status</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td class="small text-truncate" style="max-width: 100px;" title="@item.OwnerName">
+                                        @(item.OwnerName ?? "-")
+                                    </td>
+                                    <td class="small">
+                                        @if (item.TargetDate.HasValue)
+                                        {
+                                            <span class="@(item.IsOverdue ? "text-danger fw-bold" : "")" title="Target completion date">
+                                                @item.TargetDate.Value.ToString("MM/dd/yy")
+                                            </span>
+                                            @if (item.IsOverdue)
+                                            {
+                                                <i class="bi bi-exclamation-circle text-danger" title="Overdue"></i>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td class="small">
+                                        @if (item.CompletedDate.HasValue)
+                                        {
+                                            <span class="text-success" title="Date completed">
+                                                @item.CompletedDate.Value.ToString("MM/dd/yy")
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td class="small">
+                                        @if (item.ReviewedDate.HasValue)
+                                        {
+                                            <span title="Last reviewed by @(item.ReviewedByName ?? "Unknown")">
+                                                @item.ReviewedDate.Value.ToString("MM/dd/yy")
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td class="small">
+                                        @if (item.NextReviewDate.HasValue)
+                                        {
+                                            <span class="@(item.IsReviewDue ? "text-danger fw-bold" : item.IsReviewUpcoming ? "text-warning" : "")"
+                                                  title="@(item.IsReviewDue ? "Review overdue!" : item.IsReviewUpcoming ? "Review due soon" : "Next review date")">
+                                                @item.NextReviewDate.Value.ToString("MM/dd/yy")
+                                                @if (item.IsReviewDue)
+                                                {
+                                                    <i class="bi bi-clock-history text-danger"></i>
+                                                }
+                                                else if (item.IsReviewUpcoming)
+                                                {
+                                                    <i class="bi bi-clock text-warning"></i>
+                                                }
+                                            </span>
+                                        }
+                                        else if (item.ReviewCycleMonths.HasValue)
+                                        {
+                                            <span class="text-muted" title="Review cycle: @item.ReviewCycleMonths months">
+                                                (@item.ReviewCycleMonths mo)
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.Id"
+                                           asp-route-returnUrl="@Context.Request.Path@Context.Request.QueryString"
+                                           class="btn btn-sm btn-outline-secondary" title="Edit">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-file-earmark-x text-muted" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3">No Documentation Found</h5>
+                    <p class="text-muted">No documentation requirements match your current filters.</p>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@section Styles {
+<style>
+    .table-success-subtle {
+        background-color: rgba(25, 135, 84, 0.1) !important;
+    }
+    .status-select {
+        min-width: 110px;
+    }
+</style>
+}
+
+@section Scripts {
+<script>
+    // Quick status update via AJAX
+    document.querySelectorAll('.status-select').forEach(select => {
+        select.addEventListener('change', async function() {
+            const id = this.dataset.id;
+            const newStatus = this.value;
+            const originalStatus = this.dataset.original;
+
+            try {
+                const response = await fetch('@Url.Action("QuickUpdate")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                    },
+                    body: `id=${id}&status=${newStatus}`
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    this.dataset.original = newStatus;
+                    // Update row styling
+                    const row = this.closest('tr');
+                    row.classList.remove('table-success', 'table-success-subtle', 'table-warning', 'table-danger');
+                    if (newStatus === '5' || newStatus === '4') { // Complete or Approved
+                        row.classList.add('table-success-subtle');
+                    }
+                } else {
+                    alert('Failed to update status');
+                    this.value = originalStatus;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to update status');
+                this.value = originalStatus;
+            }
+        });
+    });
+</script>
+}

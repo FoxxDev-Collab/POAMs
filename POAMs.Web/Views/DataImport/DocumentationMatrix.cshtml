@@ -1,0 +1,128 @@
+@model POAMs.Web.Models.ViewModels.FileImportViewModel
+@{
+    ViewData["Title"] = "Import Documentation Matrix";
+}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Data Import</a></li>
+        <li class="breadcrumb-item active">Documentation Matrix</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-file-earmark-spreadsheet me-2"></i>Import Documentation Matrix
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>File Requirements:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>CSV file format</li>
+                        <li>Header row expected (will be skipped)</li>
+                        <li>Required columns at positions: [1] Control ID, [3] Doc Type, [4] Priority</li>
+                        <li>Optional: [11] Notes/Description</li>
+                        <li>Valid Doc Types: Policy, Procedure, Plan, Report, Record, Template, Evidence</li>
+                        <li>Valid Priorities: Critical, High, Medium, Low</li>
+                    </ul>
+                </div>
+
+                <form asp-action="DocumentationMatrix" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="mb-4">
+                        <label asp-for="File" class="form-label">Select CSV File <span class="text-danger">*</span></label>
+                        <input asp-for="File" type="file" class="form-control" accept=".csv" />
+                        <span asp-validation-for="File" class="text-danger"></span>
+                        <small class="text-muted">Accepts .csv files only</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input asp-for="ReplaceExisting" class="form-check-input" type="checkbox" />
+                            <label asp-for="ReplaceExisting" class="form-check-label">
+                                Replace existing data
+                            </label>
+                        </div>
+                        <small class="text-muted">
+                            <i class="bi bi-exclamation-triangle text-warning me-1"></i>
+                            Warning: This will delete ALL existing documentation requirements and documentation tracking instances.
+                        </small>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-upload me-1"></i>Import Matrix
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Column Reference -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <i class="bi bi-table me-2"></i>Expected CSV Column Order
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 60px;">Index</th>
+                            <th>Column Name</th>
+                            <th>Usage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-muted">0</td>
+                            <td>Family</td>
+                            <td><span class="badge bg-secondary">Ignored</span> - derived from Control ID</td>
+                        </tr>
+                        <tr>
+                            <td><strong>1</strong></td>
+                            <td>Control ID</td>
+                            <td><span class="badge bg-primary">Required</span> - e.g., AC-1, AC-2(1)</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">2</td>
+                            <td>Control Name</td>
+                            <td><span class="badge bg-secondary">Ignored</span> - from NIST catalog</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3</strong></td>
+                            <td>Doc Type</td>
+                            <td><span class="badge bg-primary">Required</span> - Policy, Procedure, Plan, etc.</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4</strong></td>
+                            <td>Priority</td>
+                            <td><span class="badge bg-primary">Required</span> - Critical, High, Medium, Low</td>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">5-10</td>
+                            <td>(Various)</td>
+                            <td><span class="badge bg-secondary">Ignored</span></td>
+                        </tr>
+                        <tr>
+                            <td>11</td>
+                            <td>Notes</td>
+                            <td><span class="badge bg-info">Optional</span> - Description/notes</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,229 @@
+@model POAMs.Web.Models.Domain.SecurityControlTestCase
+@{
+    ViewData["Title"] = "Add Security Control Test Case";
+    var stp = ViewBag.STP as POAMs.Web.Models.Domain.SecurityTestPlan;
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Test Plans</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@stp?.Id">@stp?.STPIdentifier</a></li>
+        <li class="breadcrumb-item active">Add Control</li>
+    </ol>
+</nav>
+
+<h1 class="h3 mb-4">
+    <i class="bi bi-shield-lock me-2"></i>Add Security Control Test Case
+</h1>
+
+<form asp-action="AddControlTestCase" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="SecurityTestPlanId" />
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-info-circle me-2"></i>Control Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="ControlFamily" class="form-label">Control Family</label>
+                            <select asp-for="ControlFamily" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option value="AC">AC - Access Control</option>
+                                <option value="AT">AT - Awareness and Training</option>
+                                <option value="AU">AU - Audit and Accountability</option>
+                                <option value="CA">CA - Assessment, Authorization, and Monitoring</option>
+                                <option value="CM">CM - Configuration Management</option>
+                                <option value="CP">CP - Contingency Planning</option>
+                                <option value="IA">IA - Identification and Authentication</option>
+                                <option value="IR">IR - Incident Response</option>
+                                <option value="MA">MA - Maintenance</option>
+                                <option value="MP">MP - Media Protection</option>
+                                <option value="PE">PE - Physical and Environmental Protection</option>
+                                <option value="PL">PL - Planning</option>
+                                <option value="PM">PM - Program Management</option>
+                                <option value="PS">PS - Personnel Security</option>
+                                <option value="PT">PT - PII Processing and Transparency</option>
+                                <option value="RA">RA - Risk Assessment</option>
+                                <option value="SA">SA - System and Services Acquisition</option>
+                                <option value="SC">SC - System and Communications Protection</option>
+                                <option value="SI">SI - System and Information Integrity</option>
+                                <option value="SR">SR - Supply Chain Risk Management</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="ControlId" class="form-label">Control ID</label>
+                            <input asp-for="ControlId" class="form-control" placeholder="e.g., AC-2, AC-6(10)" />
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label asp-for="ControlEnhancement" class="form-label">Enhancement</label>
+                            <input asp-for="ControlEnhancement" class="form-control" placeholder="e.g., (2), (7)" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ControlTitle" class="form-label">Control Title</label>
+                        <input asp-for="ControlTitle" class="form-control" placeholder="e.g., ACCOUNT MANAGEMENT" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="RelatedSTIGIds" class="form-label">Related STIG IDs</label>
+                        <input asp-for="RelatedSTIGIds" class="form-control" placeholder="e.g., RHEL-08-010040, RHEL-08-010049" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-diagram-3 me-2"></i>Inheritance & Monitoring
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Inheritance" class="form-label">Inheritance</label>
+                        <select asp-for="Inheritance" class="form-select">
+                            <option value="None">None</option>
+                            <option value="AFIC_CCP">AF.100.AFIC CCP</option>
+                            <option value="AFIC_SCI_CCP">AF.207.AFIC SCI Only CCP</option>
+                            <option value="AFMC_IR_CCP">AF.208.AFMC IR CCP</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="InheritedFrom" class="form-label">Inherited From</label>
+                        <input asp-for="InheritedFrom" class="form-control" placeholder="e.g., AF.100.AFIC CCP" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="MonitoringType" class="form-label">Monitoring Requirement</label>
+                        <select asp-for="MonitoringType" class="form-select">
+                            <option value="None">None</option>
+                            <option value="Annual">* Annual</option>
+                            <option value="ContinuousMon1">** Continuous Monitoring 1st Year</option>
+                            <option value="ContinuousMon2">** Continuous Monitoring 2nd Year</option>
+                            <option value="ContinuousMon3">** Continuous Monitoring 3rd Year</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-check2-square me-2"></i>Assessment Methods
+                </div>
+                <div class="card-body">
+                    <div class="form-check mb-2">
+                        <input asp-for="AssessExamine" class="form-check-input" type="checkbox" />
+                        <label asp-for="AssessExamine" class="form-check-label">
+                            <strong>EXAMINE</strong> - Review documents, records, artifacts
+                        </label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input asp-for="AssessInterview" class="form-check-input" type="checkbox" />
+                        <label asp-for="AssessInterview" class="form-check-label">
+                            <strong>INTERVIEW</strong> - Discussion with personnel
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input asp-for="AssessTest" class="form-check-input" type="checkbox" />
+                        <label asp-for="AssessTest" class="form-check-label">
+                            <strong>TEST</strong> - Technical testing and verification
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-card-checklist me-2"></i>Assessment Objective
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="AssessmentObjective" class="form-label">Assessment Objective</label>
+                        <textarea asp-for="AssessmentObjective" class="form-control" rows="4"
+                                  placeholder="Determine if..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="AssessmentObjectiveItems" class="form-label">Objective Items (JSON)</label>
+                        <textarea asp-for="AssessmentObjectiveItems" class="form-control font-monospace" rows="3"
+                                  placeholder='["AC-6(10)[1]: Item 1", "AC-6(10)[2]: Item 2"]'></textarea>
+                        <div class="form-text">JSON array of assessment objective sub-items</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-clipboard-check me-2"></i>Test Results
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Status" class="form-label">Status</label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="NotAssessed">Not Assessed</option>
+                            <option value="Deferred">Deferred</option>
+                            <option value="NotExecuted">Not Executed</option>
+                            <option value="Passed">Passed</option>
+                            <option value="Failed">Failed</option>
+                            <option value="NotApplicable">Not Applicable</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="OverallResult" class="form-label">Overall Result</label>
+                        <input asp-for="OverallResult" class="form-control" placeholder="Pass/Fail summary" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Comments" class="form-label">Comments</label>
+                        <textarea asp-for="Comments" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ReviewerName" class="form-label">Reviewer Name</label>
+                            <input asp-for="ReviewerName" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ReviewDate" class="form-label">Review Date</label>
+                            <input asp-for="ReviewDate" type="date" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-list-ol me-2"></i>Test Steps (JSON)
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="TestSteps" class="form-label">Test Steps</label>
+                        <textarea asp-for="TestSteps" class="form-control font-monospace" rows="6"
+                                  placeholder='[{"StepNumber": 1, "RequiredAction": "EXAMINE...", "ExpectedResults": "...", "Result": "NotTested"}]'></textarea>
+                        <div class="form-text">JSON array of test steps following the EXAMINE/INTERVIEW/TEST methodology</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <a asp-action="Details" asp-route-id="@Model.SecurityTestPlanId" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Cancel
+        </a>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-circle me-1"></i>Add Control Test Case
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

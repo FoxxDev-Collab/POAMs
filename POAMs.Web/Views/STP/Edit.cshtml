@@ -1,0 +1,315 @@
+@model POAMs.Web.Models.Domain.SecurityTestPlan
+@{
+    ViewData["Title"] = $"Edit {Model.STPIdentifier}";
+    var stpType = Model.Type;
+    var typeLabel = stpType switch
+    {
+        STPType.STIG => "STIG Assessment",
+        STPType.Nessus => "Vulnerability Assessment",
+        STPType.SecurityControl => "Security Controls Assessment",
+        _ => "Security Test Plan"
+    };
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Test Plans</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id">@Model.STPIdentifier</a></li>
+        <li class="breadcrumb-item active">Edit</li>
+    </ol>
+</nav>
+
+<h1 class="h3 mb-4">
+    <i class="bi bi-pencil me-2"></i>Edit @Model.STPIdentifier
+    <span class="badge bg-secondary ms-2">@typeLabel</span>
+</h1>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Type" />
+    <input type="hidden" asp-for="STPIdentifier" />
+    <input type="hidden" asp-for="CreatedById" />
+    <input type="hidden" asp-for="CreatedDate" />
+
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-lg-6">
+            <!-- Basic Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-info-circle me-2"></i>Basic Information
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">STP Identifier</label>
+                        <input class="form-control" value="@Model.STPIdentifier" disabled />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="SystemId" class="form-label">System <span class="text-danger">*</span></label>
+                        <select asp-for="SystemId" asp-items="@ViewBag.Systems" class="form-select">
+                            <option value="">-- Select System --</option>
+                        </select>
+                        <span asp-validation-for="SystemId" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="TestPlanVersion" class="form-label">Version</label>
+                            <input asp-for="TestPlanVersion" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="TestPlanDate" class="form-label">Plan Date</label>
+                            <input asp-for="TestPlanDate" type="date" class="form-control" value="@Model.TestPlanDate.ToString("yyyy-MM-dd")" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="POAMId" class="form-label">Linked POAM (Optional)</label>
+                        <select asp-for="POAMId" asp-items="@ViewBag.POAMs" class="form-select">
+                            <option value="">-- No linked POAM --</option>
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Classification" class="form-label">Classification</label>
+                            <select asp-for="Classification" class="form-select">
+                                <option value="Unclassified">Unclassified</option>
+                                <option value="CUI">CUI</option>
+                                <option value="Secret">Secret</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="MACCAL" class="form-label">MAC/CAL Level</label>
+                            <input asp-for="MACCAL" class="form-control" placeholder="e.g., MAC II / CAL II" />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Status" class="form-label">Status</label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="Draft">Draft</option>
+                            <option value="InProgress">In Progress</option>
+                            <option value="PendingReview">Pending Review</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Archived">Archived</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Type-specific fields -->
+            @if (stpType == STPType.STIG)
+            {
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="bi bi-shield-check me-2"></i>STIG Information
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="STIGName" class="form-label">STIG Name</label>
+                            <input asp-for="STIGName" class="form-control" placeholder="e.g., Red Hat Enterprise Linux 8 STIG" />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="STIGVersion" class="form-label">STIG Version</label>
+                                <input asp-for="STIGVersion" class="form-control" placeholder="e.g., V1R14" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="STIGReleaseDate" class="form-label">Release Date</label>
+                                <input asp-for="STIGReleaseDate" type="date" class="form-control"
+                                       value="@(Model.STIGReleaseDate?.ToString("yyyy-MM-dd"))" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (stpType == STPType.Nessus)
+            {
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="bi bi-bug me-2"></i>Scan Information
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="ScanPolicyName" class="form-label">Scan Policy Name</label>
+                            <input asp-for="ScanPolicyName" class="form-control" placeholder="e.g., Advanced Network Scan" />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ScannerVersion" class="form-label">Scanner Version</label>
+                                <input asp-for="ScannerVersion" class="form-control" placeholder="e.g., Tenable.sc 6.2" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ScanDate" class="form-label">Scan Date</label>
+                                <input asp-for="ScanDate" type="date" class="form-control"
+                                       value="@(Model.ScanDate?.ToString("yyyy-MM-dd"))" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-6">
+            <!-- Host Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-pc-display me-2"></i>Host Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="HostName" class="form-label">Hostname</label>
+                            <input asp-for="HostName" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="IPAddress" class="form-label">IP Address</label>
+                            <input asp-for="IPAddress" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="OSPlatform" class="form-label">OS/Platform</label>
+                            <input asp-for="OSPlatform" class="form-control" placeholder="e.g., RHEL 8.9" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Environment" class="form-label">Environment</label>
+                            <select asp-for="Environment" class="form-select">
+                                <option value="">-- Select --</option>
+                                <option value="Development">Development</option>
+                                <option value="Test">Test</option>
+                                <option value="Production">Production</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personnel -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-people me-2"></i>Personnel
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="LeadAssessorId" class="form-label">Lead Assessor</label>
+                        <select asp-for="LeadAssessorId" asp-items="@ViewBag.Users" class="form-select">
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ISSMId" class="form-label">ISSM</label>
+                        <select asp-for="ISSMId" asp-items="@ViewBag.Users" class="form-select">
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="SystemOwner" class="form-label">System Owner</label>
+                        <input asp-for="SystemOwner" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AuthorizingOfficial" class="form-label">Authorizing Official</label>
+                        <input asp-for="AuthorizingOfficial" class="form-control" />
+                    </div>
+
+                    @if (stpType == STPType.SecurityControl)
+                    {
+                        <div class="mb-3">
+                            <label asp-for="PrivilegedUser" class="form-label">Privileged User</label>
+                            <input asp-for="PrivilegedUser" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="AuthorizedUser" class="form-label">Authorized User</label>
+                            <input asp-for="AuthorizedUser" class="form-control" />
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Testing Schedule -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-calendar-event me-2"></i>Testing Schedule
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="TestStartDate" class="form-label">Start Date</label>
+                            <input asp-for="TestStartDate" type="date" class="form-control"
+                                   value="@(Model.TestStartDate?.ToString("yyyy-MM-dd"))" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="TestEndDate" class="form-label">End Date</label>
+                            <input asp-for="TestEndDate" type="date" class="form-control"
+                                   value="@(Model.TestEndDate?.ToString("yyyy-MM-dd"))" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Executive Summary -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="bi bi-file-text me-2"></i>Executive Summary
+        </div>
+        <div class="card-body">
+            <textarea asp-for="ExecutiveSummary" class="form-control" rows="4"
+                      placeholder="Provide a summary of the test plan objectives and scope..."></textarea>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex justify-content-between">
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Cancel
+        </a>
+        <div>
+            @if (User.IsInRole("Admin") || User.IsInRole("ISSM"))
+            {
+                <button type="button" class="btn btn-outline-danger me-2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="bi bi-trash me-1"></i>Delete
+                </button>
+            }
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle me-1"></i>Save Changes
+            </button>
+        </div>
+    </div>
+</form>
+
+<!-- Delete Confirmation Modal -->
+@if (User.IsInRole("Admin") || User.IsInRole("ISSM"))
+{
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete <strong>@Model.STPIdentifier</strong>?</p>
+                    <p class="text-danger">This will also delete all associated test cases. This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,70 @@
+@model POAMs.Web.Models.ViewModels.FileImportViewModel
+@{
+    ViewData["Title"] = "Import NIST Catalog";
+}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Data Import</a></li>
+        <li class="breadcrumb-item active">NIST Catalog</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-shield-check me-2"></i>Import NIST 800-53 Catalog
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>File Requirements:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>JSON file format</li>
+                        <li>Control IDs as keys (e.g., "AC-1", "AC-2(1)")</li>
+                        <li>Each control should have: Name, ControlText, Discussion (optional), RelatedControls (optional), CCIs (optional)</li>
+                    </ul>
+                </div>
+
+                <form asp-action="NISTCatalog" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="mb-4">
+                        <label asp-for="File" class="form-label">Select JSON File <span class="text-danger">*</span></label>
+                        <input asp-for="File" type="file" class="form-control" accept=".json" />
+                        <span asp-validation-for="File" class="text-danger"></span>
+                        <small class="text-muted">Accepts .json files only</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input asp-for="ReplaceExisting" class="form-check-input" type="checkbox" />
+                            <label asp-for="ReplaceExisting" class="form-check-label">
+                                Replace existing data
+                            </label>
+                        </div>
+                        <small class="text-muted">
+                            <i class="bi bi-exclamation-triangle text-warning me-1"></i>
+                            Warning: This will delete ALL existing NIST controls, CCIs, assessments, documentation requirements, and documentation instances.
+                        </small>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-upload me-1"></i>Import Catalog
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

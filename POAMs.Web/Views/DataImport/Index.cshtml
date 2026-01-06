@@ -1,0 +1,180 @@
+@model POAMs.Web.Models.ViewModels.DataImportDashboardViewModel
+@{
+    ViewData["Title"] = "Data Import";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">
+            <i class="bi bi-database-fill-up me-2"></i>Data Import
+        </h1>
+        <p class="text-muted mb-0">
+            Import NIST 800-53 catalog and documentation requirements from external files.
+        </p>
+    </div>
+</div>
+
+<!-- Current Data Summary -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="h1 mb-0 text-primary">@Model.NISTControlCount</div>
+                <small class="text-muted">NIST Controls</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="h1 mb-0 text-info">@Model.CCICount</div>
+                <small class="text-muted">CCIs</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="h1 mb-0 text-success">@Model.DocumentationRequirementCount</div>
+                <small class="text-muted">Documentation Requirements</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Import Options -->
+<div class="row g-4">
+    <!-- NIST Catalog Import -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="bi bi-shield-check me-2"></i>NIST 800-53 Catalog
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    Import the NIST 800-53 control catalog from a JSON file. This includes all control families,
+                    control text, discussion sections, and associated CCIs.
+                </p>
+
+                @if (Model.NISTControlCount > 0)
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>@Model.NISTControlCount controls</strong> and <strong>@Model.CCICount CCIs</strong> currently loaded.
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        No NIST controls imported yet. This is required before importing the Documentation Matrix.
+                    </div>
+                }
+
+                <h6 class="mt-3">Expected File Format</h6>
+                <p class="small text-muted mb-2">
+                    JSON file with control IDs as keys. Each control should have: <code>Name</code>, <code>ControlText</code>,
+                    <code>Discussion</code>, <code>RelatedControls</code>, and <code>CCIs</code> array.
+                </p>
+                <pre class="bg-light p-2 small rounded"><code>{
+  "AC-1": {
+    "Name": "Policy and Procedures",
+    "ControlText": "...",
+    "Discussion": "...",
+    "CCIs": [{"CCI": "CCI-000001", "Definition": "..."}]
+  }
+}</code></pre>
+            </div>
+            <div class="card-footer">
+                <a asp-action="NISTCatalog" class="btn btn-primary">
+                    <i class="bi bi-upload me-1"></i>Import NIST Catalog
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documentation Matrix Import -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="bi bi-file-earmark-spreadsheet me-2"></i>Documentation Matrix
+            </div>
+            <div class="card-body">
+                <p class="text-muted">
+                    Import documentation requirements from a CSV file. This defines which document types
+                    are required for each NIST control and their priorities.
+                </p>
+
+                @if (Model.DocumentationRequirementCount > 0)
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>@Model.DocumentationRequirementCount requirements</strong> currently loaded.
+                    </div>
+                }
+                else if (Model.NISTControlCount == 0)
+                {
+                    <div class="alert alert-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        Import the NIST Catalog first before importing documentation requirements.
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        No documentation requirements imported yet.
+                    </div>
+                }
+
+                <h6 class="mt-3">Expected File Format</h6>
+                <p class="small text-muted mb-2">
+                    CSV file with columns: Family, Control ID, Control Name, Doc Type, Priority, and optionally Notes.
+                    Doc Types: <code>Policy</code>, <code>Procedure</code>, <code>Plan</code>, <code>Report</code>, <code>Record</code>, <code>Template</code>, <code>Evidence</code>.
+                </p>
+                <pre class="bg-light p-2 small rounded"><code>Family,Control ID,Control Name,Doc Type,Priority,...,Notes
+AC,AC-1,Policy and Procedures,Policy,Critical,...,Access control policy
+AC,AC-1,Policy and Procedures,Procedure,High,...,Access procedures</code></pre>
+            </div>
+            <div class="card-footer">
+                @if (Model.NISTControlCount > 0)
+                {
+                    <a asp-action="DocumentationMatrix" class="btn btn-primary">
+                        <i class="bi bi-upload me-1"></i>Import Documentation Matrix
+                    </a>
+                }
+                else
+                {
+                    <button class="btn btn-secondary" disabled title="Import NIST Catalog first">
+                        <i class="bi bi-upload me-1"></i>Import Documentation Matrix
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Help Section -->
+<div class="card mt-4">
+    <div class="card-header">
+        <i class="bi bi-question-circle me-2"></i>Import Help
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Import Order</h6>
+                <ol class="small text-muted">
+                    <li><strong>NIST Catalog</strong> must be imported first - it provides the control definitions that documentation requirements link to.</li>
+                    <li><strong>Documentation Matrix</strong> can then be imported - it links document types to controls.</li>
+                </ol>
+            </div>
+            <div class="col-md-6">
+                <h6>Replace vs. Skip Duplicates</h6>
+                <ul class="small text-muted">
+                    <li><strong>Replace existing data</strong>: Deletes all existing data before importing. Use for fresh imports.</li>
+                    <li><strong>Skip duplicates</strong> (default): Keeps existing data, only adds new records. Use for incremental updates.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

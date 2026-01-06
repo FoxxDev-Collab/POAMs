@@ -1,0 +1,319 @@
+# POAMs Web Application - Implementation Plan
+
+## Overview
+A .NET 8 LTS web application for managing Plan of Action and Milestones (POAMs) for a small cybersecurity team. Replaces existing PowerShell/MS Access solution.
+
+## Technology Stack
+- **Framework**: ASP.NET Core 8 MVC + Razor Pages
+- **Database**: SQLite with Entity Framework Core
+- **Authentication**: Windows Auth (AD) + Local Identity fallback
+- **Deployment**: IIS Web Deploy
+- **CSS Framework**: Bootstrap 5 (clean, professional UI)
+
+## Role Structure
+| Role | Access Level |
+|------|--------------|
+| Admin | Super user - full system access, user management, all CRUD |
+| ISSM | Manager - create/edit POAMs, assign users, view all data |
+| ISSO | User - work on assigned POAMs/milestones, update status |
+| SysAdmin | User - same as ISSO |
+| Auditor | Read-only - view all POAMs, milestones, reports, exports |
+
+## Project Structure
+```
+POAMs/
+├── POAMs.Web/                    # Main web application
+│   ├── Controllers/
+│   │   ├── HomeController.cs
+│   │   ├── AdminController.cs
+│   │   ├── POAMController.cs
+│   │   ├── MilestoneController.cs
+│   │   ├── ExportController.cs
+│   │   └── (CalendarController.cs - TODO)
+│   ├── Models/
+│   │   ├── Domain/              # Entity models
+│   │   └── ViewModels/          # View-specific models
+│   ├── Views/
+│   │   ├── Shared/
+│   │   ├── Home/
+│   │   ├── Admin/
+│   │   ├── POAM/
+│   │   ├── Milestone/
+│   │   └── Export/
+│   ├── Data/
+│   │   ├── ApplicationDbContext.cs
+│   │   ├── DbInitializer.cs
+│   │   └── Migrations/
+│   ├── Services/
+│   │   ├── IUserService.cs / UserService.cs
+│   │   ├── IAuditService.cs / AuditService.cs
+│   │   └── IExportService.cs / XactaExportService.cs
+│   ├── wwwroot/
+│   └── Program.cs
+└── POAMs.sln
+```
+
+## Data Models (Mapped to XACTA Format)
+
+### User
+- Id, Username, Email, DisplayName, Phone, PasswordHash, Role, IsWindowsAuth, IsActive, CreatedDate, ModifiedDate
+
+### SystemInfo
+- Id, SystemName, OrganizationName, ISType, UID, ISSMId, CreatedDate, ModifiedDate
+
+### POAM
+- Id, SystemId, ItemIdentifier, WeaknessOrDeficiency, SecurityControl, POCId, ResourcesRequired, ScheduledCompletionDate, IdentifiedBy, RiskLevel, EstimatedCost, Status, Comments, OriginalPOAMDate, LastUpdateDate, CreatedDate, ModifiedDate
+
+### Milestone
+- Id, POAMId, MilestoneNumber, Title, DueDate, CompletedDate, Status, Changes, AssignedToId, CreatedDate, ModifiedDate
+
+### UserAssignment
+- Id, POAMId, UserId, AssignmentType, AssignedDate, AssignedById
+
+### AuditLog
+- Id, UserId, Action, EntityType, EntityId, OldValues, NewValues, Timestamp, IpAddress
+
+## Security by Design Features
+1. **Authentication**: Hybrid Windows Auth + Local Identity
+2. **Authorization**: Role-based with policy enforcement
+3. **Audit Logging**: All CRUD operations logged
+4. **Input Validation**: Server-side validation, anti-forgery tokens
+5. **SQL Injection Prevention**: EF Core parameterized queries
+6. **XSS Prevention**: Razor auto-encoding, Security headers
+7. **HTTPS Enforcement**: Required in production
+8. **Password Policy**: Strong passwords for local accounts (12+ chars, complexity)
+9. **Session Security**: Secure cookies
+
+## Implementation Phases
+
+### Phase 1: Foundation [COMPLETED]
+1. [x] Create solution and project structure
+2. [x] Configure Entity Framework Core + SQLite
+3. [x] Implement data models and migrations
+4. [x] Set up hybrid authentication (Windows + Local)
+5. [x] Implement role-based authorization policies
+6. [x] Create base layout and navigation
+
+### Phase 2: Core CRUD [COMPLETED]
+1. [x] Dashboard with statistics
+2. [x] POAM CRUD operations (Create, Read, Update, Delete)
+3. [x] Milestone CRUD operations
+4. [x] Admin user management
+5. [x] Admin system management
+6. [x] Audit logging
+
+### Phase 3: Export [COMPLETED]
+1. [x] XACTA-formatted Excel export (by system, single, all)
+
+### Phase 4: Nice-to-Have [PENDING]
+1. [x] Calendar view (FullCalendar.js integration)
+2. [x] Kanban board
+3. [ ] PDF reports (Not a priority nice to have)
+
+### Phase 5: Deployment [PENDING]
+1. [x] IIS configuration and web.config
+2. [x] Publish profile for Web Deploy
+3. [ ] Production database setup
+
+## Getting Started
+
+### Default Admin Account
+- **Username**: admin
+- **Password**: ChangeMe123!@#
+- **IMPORTANT**: Change this password immediately after first login!
+
+### Run the Application
+```bash
+cd POAMs.Web
+dotnet run
+```
+
+### Access Points
+- Dashboard: https://localhost:5001/
+- POAMs: https://localhost:5001/POAM
+- Admin: https://localhost:5001/Admin/Users
+- Export: https://localhost:5001/Export
+
+## Key Dependencies (NuGet)
+- Microsoft.AspNetCore.Identity.EntityFrameworkCore (8.0.*)
+- Microsoft.EntityFrameworkCore.Sqlite (8.0.*)
+- Microsoft.EntityFrameworkCore.Tools (8.0.*)
+- Microsoft.AspNetCore.Authentication.Negotiate (8.0.*)
+- ClosedXML (0.102.*)
+- Serilog.AspNetCore (8.*)
+
+
+Plan Summary: Site & Host Management with Nessus Import
+Data Model:
+SystemInfo (ATO Package) → Site → Host → HostVulnerability
+Hosts identified by DNS/NetBIOS name (not IP, since hosts can have multiple NICs)
+New Components:
+3 new domain entities (Site, Host, HostVulnerability)
+2 new services (SiteHostService, NessusImportService)
+1 new controller (SiteController) with CRUD for Sites/Hosts + Nessus import
+~10 new views for Site/Host management and import UI
+Nessus Import Flow:
+User selects a Site and uploads CSV
+System groups rows by host (DNS name → NetBIOS name → IP fallback)
+Creates new hosts or updates existing (matched by DNS/NetBIOS within the Site)
+Creates vulnerability records per-host from scan data
+Key Files to Modify:
+SystemInfo.cs - Add Sites navigation
+ApplicationDbContext.cs - Add DbSets and configurations
+Program.cs - Register new services
+_Layout.cshtml - Add nav item
+Claude’s Plan
+Site & Host Management with Nessus Import
+Summary
+Add Site and Host management to the POAMs application with the ability to import vulnerability data from Nessus CSV exports. Hierarchy: SystemInfo (ATO Package) -> Site -> Host -> HostVulnerability Key Requirements:
+Hosts identified by DNS Name or NetBIOS Name (not IP - hosts may have multiple IPs/MACs)
+User specifies Site name during Nessus import
+Import updates existing hosts if they exist (match by DNS/NetBIOS within same Site)
+Vulnerabilities stored per-host, separate from STPs
+Phase 1: Domain Models
+New Files to Create
+1. POAMs.Web/Models/Domain/Site.cs
+
+- Id, SystemId (FK), Name, Description, Location
+- POCName, POCEmail, IsActive
+- CreatedDate, ModifiedDate
+- Navigation: System, Hosts collection
+2. POAMs.Web/Models/Domain/Host.cs
+
+- Id, SiteId (FK)
+- DNSName, NetBIOSName (primary identifiers for matching)
+- DisplayName, Description, OperatingSystem
+- LastKnownIPAddress, LastKnownMACAddress (reference only)
+- AssetType, AssetTag, Status (Active/Inactive/Decommissioned)
+- LastScanDate, LastScanVulnCount
+- CreatedDate, ModifiedDate
+- Navigation: Site, Vulnerabilities collection
+3. POAMs.Web/Models/Domain/HostVulnerability.cs
+
+- Id, HostId (FK)
+- PluginId, PluginName, Family, Severity (Critical/High/Medium/Low/Info)
+- IPAddress, Protocol, Port, MACAddress
+- IsExploitable, ExploitFrameworks, ExploitEase
+- CVE, VulnPublicationDate
+- Synopsis, Description, Solution, SeeAlso, PluginText
+- Repository, FirstDiscovered, LastObserved
+- ImportedDate, ImportSource
+- CreatedDate, ModifiedDate
+Files to Modify
+4. POAMs.Web/Models/Domain/SystemInfo.cs
+Add: public ICollection<Site> Sites { get; set; } = new List<Site>();
+5. POAMs.Web/Models/Domain/Enums.cs
+Add: HostStatus enum (Active, Inactive, Decommissioned, Unknown)
+Add: VulnerabilitySeverity enum (Critical, High, Medium, Low, Info)
+Phase 2: Database Layer
+6. POAMs.Web/Data/ApplicationDbContext.cs Add DbSets:
+
+public DbSet<Site> Sites => Set<Site>();
+public DbSet<Host> Hosts => Set<Host>();
+public DbSet<HostVulnerability> HostVulnerabilities => Set<HostVulnerability>();
+Add OnModelCreating configurations:
+Site: Unique index on (SystemId, Name), cascade delete from System
+Host: Indexes on (SiteId, DNSName) and (SiteId, NetBIOSName), cascade delete from Site
+HostVulnerability: Index on (HostId, PluginId), cascade delete from Host
+Add to UpdateTimestamps():
+Handle Site, Host, HostVulnerability entities
+7. Run Migration
+
+dotnet ef migrations add AddSiteHostVulnerability
+dotnet ef database update
+Phase 3: Service Layer
+8. POAMs.Web/Services/ISiteHostService.cs (new)
+
+// Site CRUD
+GetAllSitesAsync(), GetSitesBySystemAsync(int systemId)
+GetSiteByIdAsync(int id), GetSiteWithHostsAsync(int id)
+CreateSiteAsync, UpdateSiteAsync, DeleteSiteAsync
+
+// Host CRUD
+GetHostsBySiteAsync(int siteId), GetHostByIdAsync(int id)
+GetHostWithVulnerabilitiesAsync(int id)
+FindHostAsync(int siteId, string? dnsName, string? netbiosName)
+CreateHostAsync, UpdateHostAsync, DeleteHostAsync
+
+// Vulnerabilities
+GetVulnerabilitiesByHostAsync, AddVulnerabilityAsync
+DeleteVulnerabilityAsync, ClearHostVulnerabilitiesAsync
+
+// Statistics
+GetSiteStatisticsAsync, GetHostStatisticsAsync, GetSystemVulnSummaryAsync
+9. POAMs.Web/Services/SiteHostService.cs (new)
+Implement ISiteHostService
+Host matching: Try DNS name first, then NetBIOS name (case-insensitive)
+10. POAMs.Web/Services/INessusImportService.cs (new)
+
+PreviewCsvAsync(Stream) -> NessusPreviewResult
+ImportFromCsvAsync(Stream, siteId, importSource, clearExisting) -> NessusImportResult
+11. POAMs.Web/Services/NessusImportService.cs (new)
+Parse CSV using CsvHelper library
+Group rows by host (DNS Name > NetBIOS Name > IP as fallback key)
+Find or create hosts, update existing if found
+Create HostVulnerability records for each row
+Parse Nessus date format: "Jan 20, 2016 05:38:52 EST"
+12. POAMs.Web/Program.cs Add service registrations:
+
+builder.Services.AddScoped<ISiteHostService, SiteHostService>();
+builder.Services.AddScoped<INessusImportService, NessusImportService>();
+Phase 4: View Models
+13. POAMs.Web/Models/ViewModels/SiteHostViewModels.cs (new)
+SiteEditViewModel
+HostEditViewModel
+SiteDetailsViewModel (Site + Statistics + Hosts list)
+HostDetailsViewModel (Host + Statistics + Vulnerabilities list)
+NessusImportViewModel (SiteId, SiteName, ClearExisting flag)
+SystemSitesViewModel (System + Sites list + Summary)
+Phase 5: Controller
+14. POAMs.Web/Controllers/SiteController.cs (new) Site Actions:
+Index (list all, filter by system)
+System/{id} (sites for a specific system with vuln summary)
+Details/{id} (site details with hosts)
+Create, Edit, Delete
+Host Actions:
+Host/{id} (host details with vulnerabilities)
+CreateHost/{siteId}, EditHost/{id}, DeleteHost/{id}
+Import Actions:
+Import/{siteId} (GET: form, POST: process CSV)
+Preview (AJAX: preview CSV before import)
+Phase 6: Views
+15. Site Views (POAMs.Web/Views/Site/)
+Index.cshtml - List sites with system filter
+System.cshtml - System overview with sites and vuln summary cards
+Details.cshtml - Site details with hosts table and severity stats
+Create.cshtml - Create site form
+Edit.cshtml - Edit site form
+16. Host Views (POAMs.Web/Views/Site/)
+Host.cshtml - Host details with vulnerabilities table (sortable by severity)
+CreateHost.cshtml - Create host form
+EditHost.cshtml - Edit host form
+Import.cshtml - Nessus CSV upload form with preview
+17. POAMs.Web/Views/Shared/_Layout.cshtml Add navigation item after "Test Plans":
+
+<li class="nav-item">
+    <a class="nav-link" asp-controller="Site" asp-action="Index">
+        <i class="bi bi-geo-alt me-1"></i>Sites & Hosts
+    </a>
+</li>
+Phase 7: Dependencies
+18. Add NuGet Package
+
+dotnet add POAMs.Web package CsvHelper
+Implementation Order
+Add CsvHelper NuGet package
+Create domain models (Site, Host, HostVulnerability) + update Enums
+Update SystemInfo with Sites navigation property
+Update ApplicationDbContext (DbSets, OnModelCreating, UpdateTimestamps)
+Run migration
+Create ISiteHostService interface and SiteHostService implementation
+Create INessusImportService interface and NessusImportService implementation
+Register services in Program.cs
+Create ViewModels
+Create SiteController
+Create all Views
+Update _Layout.cshtml navigation
+Test with sample Nessus CSV
+Test Data Reference
+Sample Nessus CSV location: nessus_examples/nessus_test.csv CSV Columns: Plugin, Plugin Name, Family, Severity, IP Address, Protocol, Port, Exploit?, Repository, MAC Address, DNS Name, NetBIOS Name, Plugin Text, First Discovered, Last Observed, Exploit Frameworks, Synopsis, Description, Solution, See Also, CVE, Vuln Publication Date, Exploit Ease

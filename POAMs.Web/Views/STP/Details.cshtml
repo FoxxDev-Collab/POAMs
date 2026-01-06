@@ -1,0 +1,542 @@
+@model POAMs.Web.Models.Domain.SecurityTestPlan
+@{
+    ViewData["Title"] = $"STP: {Model.STPIdentifier}";
+    var typeClass = Model.Type switch
+    {
+        STPType.STIG => "bg-info",
+        STPType.Nessus => "bg-warning text-dark",
+        STPType.SecurityControl => "bg-success",
+        _ => "bg-secondary"
+    };
+    var statusClass = Model.Status switch
+    {
+        STPStatus.Draft => "bg-secondary",
+        STPStatus.InProgress => "bg-primary",
+        STPStatus.PendingReview => "bg-warning text-dark",
+        STPStatus.Approved => "bg-info",
+        STPStatus.Completed => "bg-success",
+        STPStatus.Archived => "bg-dark",
+        _ => "bg-secondary"
+    };
+}
+
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Test Plans</a></li>
+                <li class="breadcrumb-item active">@Model.STPIdentifier</li>
+            </ol>
+        </nav>
+        <h1 class="h3">
+            <span class="badge @typeClass me-2">@Model.Type</span>
+            @Model.STPIdentifier
+            <span class="badge @statusClass ms-2">@Model.Status</span>
+        </h1>
+        @if (!string.IsNullOrEmpty(Model.STIGName))
+        {
+            <p class="text-muted mb-0">@Model.STIGName @Model.STIGVersion</p>
+        }
+        else if (!string.IsNullOrEmpty(Model.ScanPolicyName))
+        {
+            <p class="text-muted mb-0">@Model.ScanPolicyName</p>
+        }
+    </div>
+    <div class="btn-group">
+        @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+        {
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                <i class="bi bi-pencil me-1"></i>Edit
+            </a>
+        }
+        <a asp-action="Export" asp-route-id="@Model.Id" class="btn btn-outline-success">
+            <i class="bi bi-file-earmark-excel me-1"></i>Export
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Left Column - Test Plan Info -->
+    <div class="col-lg-4">
+        <!-- System & Plan Info -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-info-circle me-2"></i>Test Plan Information
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">System</dt>
+                    <dd class="col-sm-7">@Model.System?.SystemName</dd>
+
+                    <dt class="col-sm-5">Version</dt>
+                    <dd class="col-sm-7">@Model.TestPlanVersion</dd>
+
+                    <dt class="col-sm-5">Date</dt>
+                    <dd class="col-sm-7">@Model.TestPlanDate.ToString("MM/dd/yyyy")</dd>
+
+                    @if (Model.POAMId.HasValue)
+                    {
+                        <dt class="col-sm-5">Linked POAM</dt>
+                        <dd class="col-sm-7">
+                            <a asp-controller="POAM" asp-action="Details" asp-route-id="@Model.POAMId">
+                                @Model.POAM?.ItemIdentifier
+                            </a>
+                        </dd>
+                    }
+
+                    <dt class="col-sm-5">Classification</dt>
+                    <dd class="col-sm-7">@Model.Classification</dd>
+
+                    @if (!string.IsNullOrEmpty(Model.MACCAL))
+                    {
+                        <dt class="col-sm-5">MAC/CAL</dt>
+                        <dd class="col-sm-7">@Model.MACCAL</dd>
+                    }
+                </dl>
+            </div>
+        </div>
+
+        <!-- Host Information -->
+        @if (!string.IsNullOrEmpty(Model.HostName) || !string.IsNullOrEmpty(Model.IPAddress))
+        {
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-pc-display me-2"></i>Host Information
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        @if (!string.IsNullOrEmpty(Model.HostName))
+                        {
+                            <dt class="col-sm-5">Hostname</dt>
+                            <dd class="col-sm-7">@Model.HostName</dd>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.IPAddress))
+                        {
+                            <dt class="col-sm-5">IP Address</dt>
+                            <dd class="col-sm-7">@Model.IPAddress</dd>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.OSPlatform))
+                        {
+                            <dt class="col-sm-5">OS/Platform</dt>
+                            <dd class="col-sm-7">@Model.OSPlatform</dd>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Environment))
+                        {
+                            <dt class="col-sm-5">Environment</dt>
+                            <dd class="col-sm-7">@Model.Environment</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+        }
+
+        <!-- Personnel -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-people me-2"></i>Personnel
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    @if (Model.LeadAssessor != null)
+                    {
+                        <dt class="col-sm-5">Lead Assessor</dt>
+                        <dd class="col-sm-7">@Model.LeadAssessor.DisplayName</dd>
+                    }
+                    @if (Model.ISSM != null)
+                    {
+                        <dt class="col-sm-5">ISSM</dt>
+                        <dd class="col-sm-7">@Model.ISSM.DisplayName</dd>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.SystemOwner))
+                    {
+                        <dt class="col-sm-5">System Owner</dt>
+                        <dd class="col-sm-7">@Model.SystemOwner</dd>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.AuthorizingOfficial))
+                    {
+                        <dt class="col-sm-5">AO</dt>
+                        <dd class="col-sm-7">@Model.AuthorizingOfficial</dd>
+                    }
+                </dl>
+            </div>
+        </div>
+
+        <!-- Testing Dates -->
+        @if (Model.TestStartDate.HasValue || Model.TestEndDate.HasValue)
+        {
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-calendar-event me-2"></i>Testing Schedule
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        @if (Model.TestStartDate.HasValue)
+                        {
+                            <dt class="col-sm-5">Start Date</dt>
+                            <dd class="col-sm-7">@Model.TestStartDate.Value.ToString("MM/dd/yyyy")</dd>
+                        }
+                        @if (Model.TestEndDate.HasValue)
+                        {
+                            <dt class="col-sm-5">End Date</dt>
+                            <dd class="col-sm-7">@Model.TestEndDate.Value.ToString("MM/dd/yyyy")</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Right Column - Test Cases & Summary -->
+    <div class="col-lg-8">
+        @switch (Model.Type)
+        {
+            case STPType.STIG:
+                <!-- STIG Summary -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-shield-check me-2"></i>STIG Compliance Summary</span>
+                        <span class="badge bg-primary fs-6">@Model.ComplianceRate% Compliant</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col">
+                                <div class="display-6 text-success">@Model.PassCount</div>
+                                <small class="text-muted">Pass</small>
+                            </div>
+                            <div class="col">
+                                <div class="display-6 text-danger">@Model.FailCount</div>
+                                <small class="text-muted">Fail</small>
+                            </div>
+                            <div class="col">
+                                <div class="display-6 text-secondary">@Model.NotApplicableCount</div>
+                                <small class="text-muted">N/A</small>
+                            </div>
+                            <div class="col">
+                                <div class="display-6 text-warning">@Model.NotTestedCount</div>
+                                <small class="text-muted">Not Tested</small>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <span class="badge bg-danger fs-6">CAT I</span>
+                                <div>@Model.CatIFail / @Model.CatITotal Failed</div>
+                            </div>
+                            <div class="col-4">
+                                <span class="badge bg-warning text-dark fs-6">CAT II</span>
+                                <div>@Model.CatIIFail / @Model.CatIITotal Failed</div>
+                            </div>
+                            <div class="col-4">
+                                <span class="badge bg-info fs-6">CAT III</span>
+                                <div>@Model.CatIIIFail / @Model.CatIIITotal Failed</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STIG Test Cases -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-list-check me-2"></i>STIG Test Cases (@Model.TotalTestCases)</span>
+                        @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+                        {
+                            <div class="btn-group btn-group-sm">
+                                <a asp-action="AddTestCase" asp-route-stpId="@Model.Id" class="btn btn-outline-primary">
+                                    <i class="bi bi-plus me-1"></i>Add
+                                </a>
+                                <a asp-action="BulkAddTestCases" asp-route-stpId="@Model.Id" class="btn btn-outline-secondary">
+                                    <i class="bi bi-upload me-1"></i>Bulk Import
+                                </a>
+                            </div>
+                        }
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Vuln ID</th>
+                                    <th>Title</th>
+                                    <th>Severity</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (!Model.TestCases.Any())
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-muted">
+                                            No test cases yet.
+                                            @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+                                            {
+                                                <a asp-action="BulkAddTestCases" asp-route-stpId="@Model.Id">Import from STIG Viewer</a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                                @foreach (var tc in Model.TestCases.OrderBy(t => t.SortOrder).ThenBy(t => t.VulnId))
+                                {
+                                    var sevClass = tc.Severity switch
+                                    {
+                                        STIGSeverity.CAT_I => "bg-danger",
+                                        STIGSeverity.CAT_II => "bg-warning text-dark",
+                                        STIGSeverity.CAT_III => "bg-info",
+                                        _ => "bg-secondary"
+                                    };
+                                    var statClass = tc.Status switch
+                                    {
+                                        TestCaseStatus.Pass => "bg-success",
+                                        TestCaseStatus.Fail => "bg-danger",
+                                        TestCaseStatus.NotApplicable => "bg-secondary",
+                                        TestCaseStatus.NotTested => "bg-warning text-dark",
+                                        _ => "bg-secondary"
+                                    };
+                                    <tr>
+                                        <td><code>@tc.VulnId</code></td>
+                                        <td class="text-truncate" style="max-width: 300px;" title="@tc.Title">@tc.Title</td>
+                                        <td><span class="badge @sevClass">@tc.Severity</span></td>
+                                        <td><span class="badge @statClass">@tc.Status</span></td>
+                                        <td class="text-end">
+                                            <div class="btn-group btn-group-sm">
+                                                @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+                                                {
+                                                    <a asp-action="EditTestCase" asp-route-id="@tc.Id" class="btn btn-outline-secondary btn-sm">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                break;
+
+            case STPType.Nessus:
+                <!-- Vulnerability Summary -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="bi bi-bug me-2"></i>Vulnerability Summary
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col">
+                                <div class="display-6 text-danger">@Model.CriticalCount</div>
+                                <small class="text-muted">Critical</small>
+                            </div>
+                            <div class="col">
+                                <div class="display-6 text-warning">@Model.HighCount</div>
+                                <small class="text-muted">High</small>
+                            </div>
+                            <div class="col">
+                                <div class="display-6 text-info">@Model.MediumCount</div>
+                                <small class="text-muted">Medium</small>
+                            </div>
+                            <div class="col">
+                                <div class="display-6 text-secondary">@Model.LowCount</div>
+                                <small class="text-muted">Low</small>
+                            </div>
+                            <div class="col">
+                                <div class="display-6 text-success">@Model.VulnsRemediated</div>
+                                <small class="text-muted">Remediated</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nessus Test Cases -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-list-check me-2"></i>Vulnerability Findings (@Model.TotalVulnerabilities)</span>
+                        @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+                        {
+                            <a asp-action="AddNessusTestCase" asp-route-stpId="@Model.Id" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-plus me-1"></i>Add Finding
+                            </a>
+                        }
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Plugin ID</th>
+                                    <th>Plugin Name</th>
+                                    <th>CVE</th>
+                                    <th>Severity</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (!Model.NessusTestCases.Any())
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4 text-muted">
+                                            No vulnerability findings yet.
+                                        </td>
+                                    </tr>
+                                }
+                                @foreach (var nc in Model.NessusTestCases.OrderBy(n => n.SortOrder).ThenByDescending(n => n.Severity))
+                                {
+                                    var sevClass = nc.Severity switch
+                                    {
+                                        NessusSeverity.Critical => "bg-danger",
+                                        NessusSeverity.High => "bg-warning text-dark",
+                                        NessusSeverity.Medium => "bg-info",
+                                        NessusSeverity.Low => "bg-secondary",
+                                        _ => "bg-light text-dark"
+                                    };
+                                    var statClass = nc.Status switch
+                                    {
+                                        VulnTestStatus.Remediated => "bg-success",
+                                        VulnTestStatus.NotRemediated => "bg-danger",
+                                        VulnTestStatus.PartiallyRemediated => "bg-warning text-dark",
+                                        VulnTestStatus.FalsePositive => "bg-secondary",
+                                        VulnTestStatus.AcceptedRisk => "bg-dark",
+                                        _ => "bg-light text-dark"
+                                    };
+                                    <tr>
+                                        <td><code>@nc.PluginId</code></td>
+                                        <td class="text-truncate" style="max-width: 250px;" title="@nc.PluginName">@nc.PluginName</td>
+                                        <td>@(string.IsNullOrEmpty(nc.CVE) ? "-" : nc.CVE)</td>
+                                        <td><span class="badge @sevClass">@nc.Severity</span></td>
+                                        <td><span class="badge @statClass">@nc.Status</span></td>
+                                        <td class="text-end">
+                                            @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+                                            {
+                                                <a asp-action="EditNessusTestCase" asp-route-id="@nc.Id" class="btn btn-outline-secondary btn-sm">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                break;
+
+            case STPType.SecurityControl:
+                <!-- Security Controls Summary -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-list-check me-2"></i>Security Controls Assessment Summary</span>
+                        <span class="badge bg-primary fs-6">@Model.ControlsCompliantPercent% Compliant</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col">
+                                <div class="display-6">@Model.TotalControls</div>
+                                <small class="text-muted">Total Controls</small>
+                            </div>
+                            <div class="col">
+                                <div class="display-6 text-primary">@Model.ControlsAssessed</div>
+                                <small class="text-muted">Assessed</small>
+                            </div>
+                            <div class="col">
+                                <div class="display-6 text-success">@Model.ControlsPassed</div>
+                                <small class="text-muted">Passed</small>
+                            </div>
+                            <div class="col">
+                                <div class="display-6 text-danger">@Model.ControlsFailed</div>
+                                <small class="text-muted">Failed</small>
+                            </div>
+                        </div>
+                        <div class="progress mt-3" style="height: 20px;">
+                            <div class="progress-bar bg-success" style="width: @Model.ControlsCompliantPercent%">
+                                @Model.ControlsCompliantPercent%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Control Test Cases -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-shield-lock me-2"></i>Control Test Cases (@Model.TotalControls)</span>
+                        @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+                        {
+                            <a asp-action="AddControlTestCase" asp-route-stpId="@Model.Id" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-plus me-1"></i>Add Control
+                            </a>
+                        }
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Control ID</th>
+                                    <th>Family</th>
+                                    <th>Title</th>
+                                    <th>Assessment</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (!Model.ControlTestCases.Any())
+                                {
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4 text-muted">
+                                            No control test cases yet.
+                                        </td>
+                                    </tr>
+                                }
+                                @foreach (var cc in Model.ControlTestCases.OrderBy(c => c.ControlFamily).ThenBy(c => c.ControlId))
+                                {
+                                    var statClass = cc.Status switch
+                                    {
+                                        ControlTestStatus.Passed => "bg-success",
+                                        ControlTestStatus.Failed => "bg-danger",
+                                        ControlTestStatus.NotApplicable => "bg-secondary",
+                                        ControlTestStatus.Deferred => "bg-warning text-dark",
+                                        ControlTestStatus.NotExecuted => "bg-info",
+                                        _ => "bg-light text-dark"
+                                    };
+                                    <tr>
+                                        <td><code>@cc.ControlId</code></td>
+                                        <td><span class="badge bg-light text-dark">@cc.ControlFamily</span></td>
+                                        <td class="text-truncate" style="max-width: 250px;" title="@cc.ControlTitle">@cc.ControlTitle</td>
+                                        <td>
+                                            @if (cc.AssessExamine) { <span class="badge bg-light text-dark me-1">E</span> }
+                                            @if (cc.AssessInterview) { <span class="badge bg-light text-dark me-1">I</span> }
+                                            @if (cc.AssessTest) { <span class="badge bg-light text-dark">T</span> }
+                                        </td>
+                                        <td><span class="badge @statClass">@cc.Status</span></td>
+                                        <td class="text-end">
+                                            @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+                                            {
+                                                <a asp-action="EditControlTestCase" asp-route-id="@cc.Id" class="btn btn-outline-secondary btn-sm">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                break;
+        }
+
+        <!-- Executive Summary -->
+        @if (!string.IsNullOrEmpty(Model.ExecutiveSummary))
+        {
+            <div class="card mt-4">
+                <div class="card-header">
+                    <i class="bi bi-file-text me-2"></i>Executive Summary
+                </div>
+                <div class="card-body">
+                    <p class="mb-0" style="white-space: pre-wrap;">@Model.ExecutiveSummary</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>

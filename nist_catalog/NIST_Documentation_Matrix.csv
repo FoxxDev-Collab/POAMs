@@ -1,0 +1,202 @@
+Family,Control ID,Control Name,Doc Type,Priority,Doc Status,Owner,Target Date,Evidence Location,Review Status,Last Updated,Notes
+AC,AC-1,Policy and Procedures,Policy,High,In Progress,,,,Pending,,"Core policy document, required for all systems"
+AC,AC-1,Policy and Procedures,Procedure,High,Not Started,,,,Pending,,Implements policy requirements
+AC,AC-2,Account Management,Report,High,Not Started,,,,Pending,,"List all accounts, types, and authorization status"
+AC,AC-2,Account Management,Record,High,Not Started,,,,Pending,,Tracks account changes over time
+AC,AC-2,Account Management,Procedure,High,Not Started,,,,Pending,,Standard procedures for account lifecycle
+AC,AC-3,Access Enforcement,Report,High,Not Started,,,,Pending,,Maps users/roles to system resources
+AC,AC-5,Separation of Duties,Template,Medium,Not Started,,,,Pending,,Documents role conflicts and mitigations
+AC,AC-6,Least Privilege,Report,High,Not Started,,,,Pending,,Lists privileged accounts and business need
+AC,AC-17,Remote Access,Procedure,High,Not Started,,,,Pending,,"VPN, telework, remote management rules"
+AC,AC-17,Remote Access,Record,Medium,Not Started,,,,Pending,,Track remote sessions for compliance
+AC,AC-20,External Systems,Template,High,Not Started,,,,Pending,,Standard interconnection agreement
+AC,AC-22,Publicly Accessible Content,Procedure,Low,Not Started,,,,Pending,,Procedures for reviewing public-facing content
+AT,AT-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,Defines training requirements and responsibilities
+AT,AT-2,Literacy Training,Record,High,Not Started,,,,Pending,,Track who completed training and when
+AT,AT-2,Literacy Training,Report,High,Not Started,,,,Pending,,Shows training status across organization
+AT,AT-3,Role-Based Training,Record,High,Not Started,,,,Pending,,"Track specialized training (ISSO, admin, etc.)"
+AT,AT-3,Role-Based Training,Template,Medium,Not Started,,,,Pending,,Maps roles to required training
+AT,AT-4,Training Records,Report,High,Not Started,,,,Pending,,Exportable training transcripts
+AT,AT-4,Training Records,Evidence,High,Not Started,,,,Pending,,Assessment-ready training evidence
+AU,AU-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,Defines audit requirements and retention
+AU,AU-2,Event Logging,Template,High,Not Started,,,,Pending,,Lists events to be logged per system type
+AU,AU-3,Content of Audit Records,Template,Medium,Not Started,,,,Pending,,Defines required fields in audit records
+AU,AU-6,Audit Record Review,Record,High,Not Started,,,,Pending,,Track when audit logs were reviewed
+AU,AU-6,Audit Record Review,Report,Medium,Not Started,,,,Pending,,Automated log analysis summaries
+AU,AU-7,Audit Record Reduction,Procedure,Medium,Not Started,,,,Pending,,Standard formats for log analysis reports
+AU,AU-11,Audit Record Retention,Record,Medium,Not Started,,,,Pending,,"Track retention compliance, alert before deletion"
+CA,CA-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,A&A program policy
+CA,CA-2,Control Assessments,Report,Critical,Not Started,,,,Pending,,Generate SAP from selected controls
+CA,CA-2,Control Assessments,Report,Critical,Not Started,,,,Pending,,Populate SAR from STP results
+CA,CA-2,Control Assessments,Record,High,Not Started,,,,Pending,,Track assessment progress per control
+CA,CA-3,Information Exchange,Template,High,Not Started,,,,Pending,,Standard ISA format
+CA,CA-3,Information Exchange,Report,Medium,Not Started,,,,Pending,,List all system interconnections
+CA,CA-5,Plan of Action and Milestones,Plan,Critical,Not Started,,,,Pending,,Core Bedrock functionality
+CA,CA-5,Plan of Action and Milestones,Plan,Critical,Not Started,,,,Pending,,Track remediation progress
+CA,CA-5,Plan of Action and Milestones,Plan,High,Not Started,,,,Pending,,Executive POA&M status report
+CA,CA-6,Authorization,Report,Critical,Not Started,,,,Pending,,"Compile SSP, SAR, POA&M for ATO"
+CA,CA-6,Authorization,Template,High,Not Started,,,,Pending,,ATO/DATO/IATT letter templates
+CA,CA-7,Continuous Monitoring,Report,High,Not Started,,,,Pending,,Automated ConMon reporting
+CA,CA-7,Continuous Monitoring,Plan,High,Not Started,,,,Pending,,ConMon program documentation
+CA,CA-8,Penetration Testing,Record,Medium,Not Started,,,,Pending,,Track pen test cycles and findings
+CA,CA-9,Internal System Connections,Report,Medium,Not Started,,,,Pending,,List internal system connections
+CM,CM-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,CM program policy
+CM,CM-2,Baseline Configuration,Report,High,Not Started,,,,Pending,,Document approved baselines
+CM,CM-2,Baseline Configuration,Report,High,Not Started,,,,Pending,,Show deviations from approved baseline
+CM,CM-3,Configuration Change Control,Template,High,Not Started,,,,Pending,,Standard CR form
+CM,CM-3,Configuration Change Control,Record,High,Not Started,,,,Pending,,Track all configuration changes
+CM,CM-4,Impact Analyses,Template,High,Not Started,,,,Pending,,SIA form for change evaluation
+CM,CM-6,Configuration Settings,Report,Critical,Not Started,,,,Pending,,Core Bedrock functionality
+CM,CM-6,Configuration Settings,Report,High,Not Started,,,,Pending,,Actionable remediation report
+CM,CM-7,Least Functionality,Template,Medium,Not Started,,,,Pending,,Approved software inventory template
+CM,CM-8,System Component Inventory,Report,High,Not Started,,,,Pending,,Complete system component list
+CM,CM-8,System Component Inventory,Record,Medium,Not Started,,,,Pending,,Track inventory changes
+CM,CM-9,Configuration Management Plan,Plan,High,Not Started,,,,Pending,,CMP document template
+CM,CM-10,Software Usage Restrictions,Procedure,Low,Not Started,,,,Pending,,License compliance procedures
+CM,CM-11,User-Installed Software,Template,Low,Not Started,,,,Pending,,Rules for user-installed software
+CP,CP-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,CP program policy
+CP,CP-2,Contingency Plan,Plan,Critical,Not Started,,,,Pending,,Full ISCP template per NIST 800-34
+CP,CP-2,Contingency Plan,Plan,High,Not Started,,,,Pending,,RTO/RPO-based recovery sequence
+CP,CP-3,Contingency Training,Record,Medium,Not Started,,,,Pending,,Track CP-specific training
+CP,CP-4,Contingency Plan Testing,Plan,High,Not Started,,,,Pending,,Tabletop/functional test plan
+CP,CP-4,Contingency Plan Testing,Record,High,Not Started,,,,Pending,,Track CP test cycles
+CP,CP-4,Contingency Plan Testing,Report,High,Not Started,,,,Pending,,AAR document generation
+CP,CP-6,Alternate Storage Site,Template,Medium,Not Started,,,,Pending,,MOU for alternate storage
+CP,CP-7,Alternate Processing Site,Procedure,Medium,Not Started,,,,Pending,,MOU for alternate processing
+CP,CP-9,System Backup,Record,High,Not Started,,,,Pending,,Track backup compliance
+CP,CP-9,System Backup,Report,High,Not Started,,,,Pending,,Current backup compliance status
+CP,CP-10,System Recovery,Procedure,High,Not Started,,,,Pending,,Step-by-step recovery procedures
+IA,IA-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,I&A program policy
+IA,IA-2,User Identification,Report,High,Not Started,,,,Pending,,Document auth methods per system
+IA,IA-4,Identifier Management,Record,Medium,Not Started,,,,Pending,,Track ID assignment/reuse
+IA,IA-5,Authenticator Management,Template,High,Not Started,,,,Pending,,"Password complexity, MFA requirements"
+IA,IA-5,Authenticator Management,Record,Medium,Not Started,,,,Pending,,"Track password changes, cert renewals"
+IA,IA-8,Non-Organizational Users,Template,Medium,Not Started,,,,Pending,,Agreement for external user access
+IR,IR-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,IR program policy
+IR,IR-2,Incident Response Training,Record,High,Not Started,,,,Pending,,Track IR-specific training
+IR,IR-3,Incident Response Testing,Plan,High,Not Started,,,,Pending,,Tabletop exercise plan
+IR,IR-3,Incident Response Testing,Record,High,Not Started,,,,Pending,,Track IR exercise cycles
+IR,IR-4,Incident Handling,Procedure,Critical,Not Started,,,,Pending,,Step-by-step IR procedures
+IR,IR-4,Incident Handling,Record,High,Not Started,,,,Pending,,Full incident lifecycle tracking
+IR,IR-5,Incident Monitoring,Report,Medium,Not Started,,,,Pending,,Incident statistics and trends
+IR,IR-6,Incident Reporting,Template,High,Not Started,,,,Pending,,Standard incident report form
+IR,IR-6,Incident Reporting,Report,High,Not Started,,,,Pending,,Auto-populate incident reports
+IR,IR-7,Incident Response Assistance,Template,Medium,Not Started,,,,Pending,,POCs for IR assistance
+IR,IR-8,Incident Response Plan,Plan,Critical,Not Started,,,,Pending,,Full IRP document template
+MA,MA-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,Maintenance program policy
+MA,MA-2,Controlled Maintenance,Record,High,Not Started,,,,Pending,,Track all maintenance activities
+MA,MA-2,Controlled Maintenance,Template,Medium,Not Started,,,,Pending,,Standard maintenance log form
+MA,MA-3,Maintenance Tools,Report,Medium,Not Started,,,,Pending,,List approved maintenance tools
+MA,MA-4,Nonlocal Maintenance,Record,High,Not Started,,,,Pending,,Track remote maintenance sessions
+MA,MA-5,Maintenance Personnel,Report,High,Not Started,,,,Pending,,List authorized maintainers
+MA,MA-6,Timely Maintenance,Record,Medium,Not Started,,,,Pending,,Track maintenance response times
+MP,MP-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,Media handling policy
+MP,MP-2,Media Access,Procedure,Medium,Not Started,,,,Pending,,Who can access what media types
+MP,MP-3,Media Marking,Template,Medium,Not Started,,,,Pending,,Classification marking requirements
+MP,MP-4,Media Storage,Procedure,Medium,Not Started,,,,Pending,,Secure storage requirements
+MP,MP-5,Media Transport,Procedure,Medium,Not Started,,,,Pending,,Secure transport procedures
+MP,MP-6,Media Sanitization,Procedure,High,Not Started,,,,Pending,,Sanitization methods per media type
+MP,MP-6,Media Sanitization,Record,High,Not Started,,,,Pending,,Track all media sanitization
+MP,MP-7,Media Use,Template,Medium,Not Started,,,,Pending,,Rules for removable media
+PE,PE-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,Physical security policy
+PE,PE-2,Physical Access Authorizations,Report,High,Not Started,,,,Pending,,Who has physical access to what
+PE,PE-2,Physical Access Authorizations,Record,High,Not Started,,,,Pending,,Track access changes
+PE,PE-3,Physical Access Control,Procedure,High,Not Started,,,,Pending,,Entry control procedures
+PE,PE-6,Monitoring Physical Access,Record,Medium,Not Started,,,,Pending,,Track when logs were reviewed
+PE,PE-8,Visitor Access Records,Template,Medium,Not Started,,,,Pending,,Standard visitor log form
+PE,PE-8,Visitor Access Records,Record,Medium,Not Started,,,,Pending,,Track visitor access history
+PE,PE-13,Fire Protection,Record,Medium,Not Started,,,,Pending,,Track fire system inspections
+PE,PE-14,Environmental Controls,Record,Medium,Not Started,,,,Pending,,Track environmental compliance
+PE,PE-15,Water Damage Protection,Record,Low,Not Started,,,,Pending,,Track water detection tests
+PE,PE-16,Delivery and Removal,Procedure,Medium,Not Started,,,,Pending,,Property control procedures
+PE,PE-17,Alternate Work Site,Template,Medium,Not Started,,,,Pending,,Telework security requirements
+PL,PL-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,Planning program policy
+PL,PL-2,System Security Plan,Plan,Critical,Not Started,,,,Pending,,Core deliverable - generate SSP
+PL,PL-2,System Security Plan,Plan,Critical,Not Started,,,,Pending,,Full SSP template
+PL,PL-4,Rules of Behavior,Template,High,Not Started,,,,Pending,,User acknowledgment document
+PL,PL-4,Rules of Behavior,Record,High,Not Started,,,,Pending,,Track who signed RoB
+PL,PL-7,Concept of Operations,Template,Medium,Not Started,,,,Pending,,System CONOPS template
+PL,PL-8,Security Architecture,Template,High,Not Started,,,,Pending,,Document security architecture
+PL,PL-10,Baseline Selection,Report,Critical,Not Started,,,,Pending,,Core Bedrock functionality
+PL,PL-11,Baseline Tailoring,Report,High,Not Started,,,,Pending,,Document tailoring rationale
+PM,PM-1,Information Security Program Plan,Policy,High,Not Started,,,,Pending,,Enterprise security program plan
+PM,PM-2,Information Security Program Leadership,Template,High,Not Started,,,,Pending,,Document security roles
+PM,PM-3,Information Security Resources,Template,Medium,Not Started,,,,Pending,,Security resource planning
+PM,PM-4,POA&M Process,Report,High,Not Started,,,,Pending,,Aggregate POA&M across systems
+PM,PM-5,System Inventory,Report,High,Not Started,,,,Pending,,List all organizational systems
+PM,PM-6,Measures of Performance,Report,High,Not Started,,,,Pending,,Key security performance indicators
+PM,PM-9,Risk Management Strategy,Plan,High,Not Started,,,,Pending,,Enterprise risk management approach
+PM,PM-10,Authorization Process,Procedure,High,Not Started,,,,Pending,,A&A workflow documentation
+PM,PM-11,Mission/Business Process Definition,Procedure,Medium,Not Started,,,,Pending,,Document critical processes
+PM,PM-14,"Testing, Training, and Monitoring",Report,Medium,Not Started,,,,Pending,,Aggregate TTM compliance
+PS,PS-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,Personnel security policy
+PS,PS-2,Position Risk Designation,Template,High,Not Started,,,,Pending,,Categorize position risk levels
+PS,PS-2,Position Risk Designation,Report,High,Not Started,,,,Pending,,List positions and risk levels
+PS,PS-3,Personnel Screening,Record,High,Not Started,,,,Pending,,Track BI status and renewals
+PS,PS-4,Personnel Termination,Template,High,Not Started,,,,Pending,,Access removal checklist
+PS,PS-4,Personnel Termination,Record,High,Not Started,,,,Pending,,Track termination actions
+PS,PS-5,Personnel Transfer,Template,Medium,Not Started,,,,Pending,,Access adjustment checklist
+PS,PS-6,Access Agreements,Template,High,Not Started,,,,Pending,,Standard access agreements
+PS,PS-6,Access Agreements,Record,High,Not Started,,,,Pending,,Track agreement signatures
+PS,PS-7,External Personnel Security,Template,High,Not Started,,,,Pending,,Contractor security agreement
+PS,PS-8,Personnel Sanctions,Procedure,Medium,Not Started,,,,Pending,,Sanctions process documentation
+PT,PT-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,Privacy program policy
+PT,PT-2,Authority to Process PII,Procedure,High,Not Started,,,,Pending,,Legal basis for PII processing
+PT,PT-3,PII Processing Purposes,Procedure,High,Not Started,,,,Pending,,Document why PII is processed
+PT,PT-5,Privacy Notice,Template,High,Not Started,,,,Pending,,Standard privacy notice
+RA,RA-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,RA program policy
+RA,RA-2,Security Categorization,Report,Critical,Not Started,,,,Pending,,FIPS 199 categorization worksheet
+RA,RA-3,Risk Assessment,Report,Critical,Not Started,,,,Pending,,Comprehensive risk assessment
+RA,RA-3,Risk Assessment,Template,Critical,Not Started,,,,Pending,,RA document structure
+RA,RA-5,Vulnerability Scanning,Report,Critical,Not Started,,,,Pending,,Core Bedrock functionality
+RA,RA-5,Vulnerability Scanning,Record,Critical,Not Started,,,,Pending,,Track when scans occurred
+RA,RA-5,Vulnerability Scanning,Report,High,Not Started,,,,Pending,,Show vuln trends
+RA,RA-5,Vulnerability Scanning,Report,High,Not Started,,,,Pending,,List open vulns by severity
+RA,RA-7,Risk Response,Report,High,Not Started,,,,Pending,,Track risk decisions
+RA,RA-9,Criticality Analysis,Template,Medium,Not Started,,,,Pending,,BIA-style criticality analysis
+SA,SA-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,Acquisition security policy
+SA,SA-2,Allocation of Resources,Template,Medium,Not Started,,,,Pending,,Budget for security resources
+SA,SA-3,System Development Life Cycle,Procedure,High,Not Started,,,,Pending,,Security in SDLC documentation
+SA,SA-4,Acquisition Process,Template,High,Not Started,,,,Pending,,Security in contracts/RFPs
+SA,SA-4,Acquisition Process,Template,High,Not Started,,,,Pending,,Checklist for secure acquisition
+SA,SA-5,System Documentation,Template,Medium,Not Started,,,,Pending,,Required system docs checklist
+SA,SA-8,Security Engineering Principles,Template,Medium,Not Started,,,,Pending,,Document applied security principles
+SA,SA-9,External System Services,Template,High,Not Started,,,,Pending,,Cloud/external service security
+SA,SA-9,External System Services,Report,High,Not Started,,,,Pending,,List all external providers
+SA,SA-10,Developer Configuration Management,Template,Medium,Not Started,,,,Pending,,Dev CM requirements for vendors
+SA,SA-11,Developer Testing,Template,Medium,Not Started,,,,Pending,,Security testing requirements
+SA,SA-22,Unsupported System Components,Report,High,Not Started,,,,Pending,,Flag end-of-life components
+SC,SC-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,SC program policy
+SC,SC-2,Separation of System and User Functionality,Template,Medium,Not Started,,,,Pending,,Document separation architecture
+SC,SC-5,Denial-of-Service Protection,Procedure,Medium,Not Started,,,,Pending,,DoS mitigation documentation
+SC,SC-7,Boundary Protection,Report,High,Not Started,,,,Pending,,Auto-generate boundary diagrams
+SC,SC-7,Boundary Protection,Template,High,Not Started,,,,Pending,,"Firewall rules, DMZ documentation"
+SC,SC-8,Transmission Confidentiality,Template,High,Not Started,,,,Pending,,Transmission encryption requirements
+SC,SC-12,Cryptographic Key Management,Procedure,High,Not Started,,,,Pending,,Crypto key lifecycle procedures
+SC,SC-13,Cryptographic Protection,Report,High,Not Started,,,,Pending,,List crypto modules and validation
+SC,SC-17,PKI Certificates,Record,High,Not Started,,,,Pending,,"Track cert expirations, alert before"
+SC,SC-18,Mobile Code,Template,Medium,Not Started,,,,Pending,,"ActiveX, JavaScript policy"
+SC,SC-23,Session Authenticity,Template,Medium,Not Started,,,,Pending,,Session security documentation
+SC,SC-28,Protection of Information at Rest,Template,High,Not Started,,,,Pending,,Encryption requirements
+SI,SI-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,SI program policy
+SI,SI-2,Flaw Remediation,Report,Critical,Not Started,,,,Pending,,Core functionality - track patches
+SI,SI-2,Flaw Remediation,Record,Critical,Not Started,,,,Pending,,Track patch deployment status
+SI,SI-2,Flaw Remediation,Report,High,Not Started,,,,Pending,,Missing patches report
+SI,SI-3,Malicious Code Protection,Record,High,Not Started,,,,Pending,,Track AV signature updates
+SI,SI-3,Malicious Code Protection,Report,High,Not Started,,,,Pending,,AV coverage and status
+SI,SI-4,System Monitoring,Procedure,High,Not Started,,,,Pending,,Monitoring requirements and procedures
+SI,SI-4,System Monitoring,Record,High,Not Started,,,,Pending,,Track monitoring activities
+SI,SI-5,Security Alerts,Record,High,Not Started,,,,Pending,,Track advisory receipt and response
+SI,SI-7,Software and Information Integrity,Procedure,Medium,Not Started,,,,Pending,,File integrity monitoring procedures
+SI,SI-10,Information Input Validation,Template,Medium,Not Started,,,,Pending,,Application input validation docs
+SI,SI-12,Information Management and Retention,Template,Medium,Not Started,,,,Pending,,Data retention requirements
+SR,SR-1,Policy and Procedures,Policy,High,Not Started,,,,Pending,,SCRM program policy
+SR,SR-2,Supply Chain Risk Management Plan,Plan,High,Not Started,,,,Pending,,Full SCRM plan
+SR,SR-3,Supply Chain Controls,Template,High,Not Started,,,,Pending,,Security requirements for suppliers
+SR,SR-5,Acquisition Strategies,Plan,Medium,Not Started,,,,Pending,,SCRM in acquisition
+SR,SR-6,Supplier Assessments,Template,High,Not Started,,,,Pending,,Vendor security questionnaire
+SR,SR-6,Supplier Assessments,Record,High,Not Started,,,,Pending,,Track vendor assessments
+SR,SR-8,Notification Agreements,Template,Medium,Not Started,,,,Pending,,Breach notification requirements
+SR,SR-10,Inspection of Systems,Procedure,Medium,Not Started,,,,Pending,,Hardware/software inspection
+SR,SR-11,Component Authenticity,Record,Medium,Not Started,,,,Pending,,Track authenticity checks
+SR,SR-12,Component Disposal,Procedure,Medium,Not Started,,,,Pending,,Secure disposal requirements

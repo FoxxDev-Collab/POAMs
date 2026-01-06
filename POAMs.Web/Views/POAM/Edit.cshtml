@@ -1,0 +1,159 @@
+@model POAMs.Web.Models.ViewModels.POAMEditViewModel
+@{
+    ViewData["Title"] = $"Edit POAM {Model.ItemIdentifier}";
+}
+
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item"><a asp-action="Index">POAMs</a></li>
+            <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.Id">@Model.ItemIdentifier</a></li>
+            <li class="breadcrumb-item active">Edit</li>
+        </ol>
+    </nav>
+    <h1 class="h3"><i class="bi bi-pencil me-2"></i>Edit POAM</h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-info-circle me-2"></i>Basic Information
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="SystemId" class="form-label"></label>
+                            <select asp-for="SystemId" class="form-select" asp-items="@ViewBag.Systems">
+                                <option value="">-- Select System --</option>
+                            </select>
+                            <span asp-validation-for="SystemId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ItemIdentifier" class="form-label"></label>
+                            <input asp-for="ItemIdentifier" class="form-control" />
+                            <span asp-validation-for="ItemIdentifier" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="WeaknessOrDeficiency" class="form-label"></label>
+                        <textarea asp-for="WeaknessOrDeficiency" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="WeaknessOrDeficiency" class="text-danger"></span>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label asp-for="SecurityControl" class="form-label"></label>
+                            <input asp-for="SecurityControl" class="form-control" />
+                            <span asp-validation-for="SecurityControl" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="RiskLevel" class="form-label"></label>
+                            <select asp-for="RiskLevel" class="form-select" asp-items="Html.GetEnumSelectList<POAMs.Web.Models.Domain.RiskLevel>()"></select>
+                            <span asp-validation-for="RiskLevel" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Status" class="form-label"></label>
+                            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<POAMs.Web.Models.Domain.POAMStatus>()"></select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-calendar me-2"></i>Dates & Assignment
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label asp-for="OriginalPOAMDate" class="form-label"></label>
+                            <input asp-for="OriginalPOAMDate" type="date" class="form-control" />
+                            <span asp-validation-for="OriginalPOAMDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="ScheduledCompletionDate" class="form-label"></label>
+                            <input asp-for="ScheduledCompletionDate" type="date" class="form-control" />
+                            <span asp-validation-for="ScheduledCompletionDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="POCId" class="form-label"></label>
+                            <select asp-for="POCId" class="form-select" asp-items="@ViewBag.Users">
+                                <option value="">-- Select POC --</option>
+                            </select>
+                            <span asp-validation-for="POCId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="IdentifiedBy" class="form-label"></label>
+                        <input asp-for="IdentifiedBy" class="form-control" />
+                        <span asp-validation-for="IdentifiedBy" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-currency-dollar me-2"></i>Resources
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label asp-for="ResourcesRequired" class="form-label"></label>
+                            <input asp-for="ResourcesRequired" class="form-control" />
+                            <span asp-validation-for="ResourcesRequired" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="EstimatedCost" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input asp-for="EstimatedCost" type="number" step="0.01" class="form-control" />
+                            </div>
+                            <span asp-validation-for="EstimatedCost" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Comments" class="form-label"></label>
+                        <textarea asp-for="Comments" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Comments" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-2"></i>Save Changes
+                </button>
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-lightning me-2"></i>Quick Actions
+            </div>
+            <div class="card-body d-grid gap-2">
+                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                    <i class="bi bi-eye me-2"></i>View Details
+                </a>
+                <a asp-controller="Milestone" asp-action="Create" asp-route-poamId="@Model.Id" class="btn btn-outline-secondary">
+                    <i class="bi bi-flag me-2"></i>Add Milestone
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

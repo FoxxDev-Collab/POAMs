@@ -1,0 +1,147 @@
+@model POAMs.Web.Models.ViewModels.NISTCatalogIndexViewModel
+@{
+    ViewData["Title"] = "NIST 800-53 Control Catalog";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3"><i class="bi bi-book me-2"></i>NIST 800-53 Control Catalog</h1>
+        <p class="text-muted mb-0">Security and Privacy Controls for Information Systems</p>
+    </div>
+</div>
+
+<!-- System Selector & Stats -->
+<div class="row mb-4">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body">
+                <form method="get" class="mb-0">
+                    <label class="form-label fw-bold">Select System (ATO Package)</label>
+                    <select name="systemId" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- View Catalog Only --</option>
+                        @foreach (var system in ViewBag.Systems as List<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>)
+                        {
+                            <option value="@system.Value" selected="@system.Selected">@system.Text</option>
+                        }
+                    </select>
+                </form>
+                @if (Model.SelectedSystemId.HasValue)
+                {
+                    <p class="text-muted mt-2 mb-0 small">
+                        <i class="bi bi-info-circle me-1"></i>Viewing compliance status for <strong>@Model.SelectedSystemName</strong>
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="row g-3">
+            <div class="col-sm-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-center py-3">
+                        <div class="h2 mb-0">@Model.TotalControls</div>
+                        <small>Total Controls</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body text-center py-3">
+                        <div class="h2 mb-0">@Model.TotalCCIs</div>
+                        <small>Total CCIs</small>
+                    </div>
+                </div>
+            </div>
+            @if (Model.SelectedSystemId.HasValue)
+            {
+                <div class="col-sm-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center py-3">
+                            <div class="h2 mb-0">@Model.OverallComplianceRate%</div>
+                            <small>Compliance Rate</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="card bg-secondary text-white">
+                        <div class="card-body text-center py-3">
+                            <div class="h2 mb-0">@Model.OverallProgressRate%</div>
+                            <small>Assessed</small>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-sm-6">
+                    <div class="card bg-light">
+                        <div class="card-body text-center py-3">
+                            <p class="mb-0 text-muted">
+                                <i class="bi bi-arrow-left me-1"></i>Select a system to view compliance status
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Control Families Grid -->
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    @foreach (var family in Model.Families)
+    {
+        <div class="col">
+            <a asp-action="Family" asp-route-id="@family.Family" asp-route-systemId="@Model.SelectedSystemId"
+               class="card h-100 text-decoration-none family-card">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">@family.Family</span>
+                    <span class="badge bg-light text-dark">@family.TotalControls controls</span>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-title text-dark">@family.FamilyName</h6>
+                    <p class="card-text small text-muted">@family.TotalCCIs CCIs</p>
+
+                    @if (Model.SelectedSystemId.HasValue)
+                    {
+                        <div class="progress mb-2" style="height: 8px;">
+                            @{
+                                var compliantPct = family.TotalControls > 0 ? (double)family.Compliant / family.TotalControls * 100 : 0;
+                                var nonCompliantPct = family.TotalControls > 0 ? (double)family.NonCompliant / family.TotalControls * 100 : 0;
+                                var naPct = family.TotalControls > 0 ? (double)(family.NotApplicable + family.Inherited) / family.TotalControls * 100 : 0;
+                            }
+                            <div class="progress-bar bg-success" style="width: @compliantPct%"></div>
+                            <div class="progress-bar bg-danger" style="width: @nonCompliantPct%"></div>
+                            <div class="progress-bar bg-secondary" style="width: @naPct%"></div>
+                        </div>
+                        <div class="d-flex justify-content-between small">
+                            <span class="text-success">@family.Compliant <i class="bi bi-check-circle"></i></span>
+                            <span class="text-danger">@family.NonCompliant <i class="bi bi-x-circle"></i></span>
+                            <span class="text-muted">@family.NotAssessed <i class="bi bi-question-circle"></i></span>
+                        </div>
+                    }
+                </div>
+                @if (Model.SelectedSystemId.HasValue && family.AssessedCount > 0)
+                {
+                    <div class="card-footer bg-transparent">
+                        <small class="text-muted">
+                            @family.ComplianceRate% compliant &bull; @family.ProgressRate% assessed
+                        </small>
+                    </div>
+                }
+            </a>
+        </div>
+    }
+</div>
+
+@section Styles {
+<style>
+    .family-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .family-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+</style>
+}

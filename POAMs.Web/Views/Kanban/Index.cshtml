@@ -1,0 +1,221 @@
+@using POAMs.Web.Models.Domain
+@model Dictionary<POAMStatus, List<POAM>>
+@{
+    ViewData["Title"] = "Kanban Board";
+    var systems = ViewBag.Systems as List<SystemInfo>;
+    var selectedSystemId = ViewBag.SelectedSystemId as int?;
+}
+
+<div class="mb-4 d-flex justify-content-between align-items-start">
+    <div>
+        <h1 class="h3"><i class="bi bi-kanban me-2"></i>Kanban Board</h1>
+        <p class="text-muted mb-0">Drag and drop POAMs to update status</p>
+    </div>
+    <form method="get" class="d-flex gap-2">
+        <select name="systemId" class="form-select form-select-sm" style="width: 200px;" onchange="this.form.submit()">
+            <option value="">All Systems</option>
+            @foreach (var system in systems ?? new List<SystemInfo>())
+            {
+                <option value="@system.Id" selected="@(selectedSystemId == system.Id)">@system.SystemName</option>
+            }
+        </select>
+    </form>
+</div>
+
+<div class="kanban-board">
+    <div class="row g-3">
+        @foreach (var column in Model)
+        {
+            var columnClass = column.Key switch
+            {
+                POAMStatus.Draft => "bg-warning bg-opacity-10 border-warning",
+                POAMStatus.Open => "bg-primary bg-opacity-10 border-primary",
+                POAMStatus.Ongoing => "bg-info bg-opacity-10 border-info",
+                POAMStatus.Completed => "bg-success bg-opacity-10 border-success",
+                POAMStatus.Closed => "bg-secondary bg-opacity-10 border-secondary",
+                _ => ""
+            };
+            var headerClass = column.Key switch
+            {
+                POAMStatus.Draft => "text-warning",
+                POAMStatus.Open => "text-primary",
+                POAMStatus.Ongoing => "text-info",
+                POAMStatus.Completed => "text-success",
+                POAMStatus.Closed => "text-secondary",
+                _ => ""
+            };
+            <div class="col">
+                <div class="card @columnClass border-top-0 border-end-0 border-bottom-0 border-3">
+                    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                        <span class="fw-bold @headerClass">@column.Key</span>
+                        <span class="badge bg-secondary">@column.Value.Count</span>
+                    </div>
+                    <div class="card-body kanban-column p-2" data-status="@((int)column.Key)">
+                        @foreach (var poam in column.Value)
+                        {
+                            var riskClass = poam.RiskLevel switch
+                            {
+                                RiskLevel.High => "border-danger",
+                                RiskLevel.Moderate => "border-warning",
+                                _ => "border-secondary"
+                            };
+                            var riskBadge = poam.RiskLevel switch
+                            {
+                                RiskLevel.High => "bg-danger",
+                                RiskLevel.Moderate => "bg-warning text-dark",
+                                _ => "bg-secondary"
+                            };
+                            <div class="card kanban-card mb-2 border-start-0 border-end-0 border-bottom-0 border-3 @riskClass"
+                                 data-id="@poam.Id" draggable="true">
+                                <div class="card-body p-2">
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                        <a href="@Url.Action("Details", "POAM", new { id = poam.Id })" class="fw-bold text-decoration-none small">
+                                            @poam.ItemIdentifier
+                                        </a>
+                                        <span class="badge @riskBadge" style="font-size: 0.65em;">@poam.RiskLevel</span>
+                                    </div>
+                                    <p class="card-text small text-muted mb-1" style="font-size: 0.75em;">
+                                        @(poam.WeaknessOrDeficiency?.Length > 60 ? poam.WeaknessOrDeficiency.Substring(0, 60) + "..." : poam.WeaknessOrDeficiency)
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center" style="font-size: 0.7em;">
+                                        <span class="text-muted">
+                                            <i class="bi bi-calendar me-1"></i>@poam.ScheduledCompletionDate.ToString("MM/dd/yy")
+                                        </span>
+                                        @if (poam.Milestones?.Any() == true)
+                                        {
+                                            var completed = poam.Milestones.Count(m => m.Status == MilestoneStatus.Completed);
+                                            var total = poam.Milestones.Count;
+                                            <span class="text-muted">
+                                                <i class="bi bi-flag me-1"></i>@completed/@total
+                                            </span>
+                                        }
+                                    </div>
+                                    @if (poam.POC != null)
+                                    {
+                                        <div class="mt-1" style="font-size: 0.7em;">
+                                            <i class="bi bi-person text-muted me-1"></i>
+                                            <span class="text-muted">@poam.POC.DisplayName</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .kanban-board {
+            overflow-x: auto;
+        }
+        .kanban-board .row {
+            display: flex;
+            flex-wrap: nowrap;
+        }
+        .kanban-board .col {
+            flex: 1 1 0;
+            min-width: 200px;
+        }
+        .kanban-column {
+            min-height: calc(100vh - 250px);
+        }
+        .kanban-card {
+            cursor: grab;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .kanban-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .kanban-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        .kanban-column.drag-over {
+            background-color: rgba(13, 110, 253, 0.1) !important;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.kanban-card');
+            const columns = document.querySelectorAll('.kanban-column');
+
+            cards.forEach(card => {
+                card.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', card.dataset.id);
+                    card.classList.add('dragging');
+                });
+
+                card.addEventListener('dragend', function() {
+                    card.classList.remove('dragging');
+                    columns.forEach(col => col.classList.remove('drag-over'));
+                });
+            });
+
+            columns.forEach(column => {
+                column.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    column.classList.add('drag-over');
+                });
+
+                column.addEventListener('dragleave', function() {
+                    column.classList.remove('drag-over');
+                });
+
+                column.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    column.classList.remove('drag-over');
+
+                    const poamId = e.dataTransfer.getData('text/plain');
+                    const newStatus = column.dataset.status;
+                    const card = document.querySelector(`.kanban-card[data-id="${poamId}"]`);
+
+                    if (card && card.parentElement !== column) {
+                        // Move card to new column
+                        column.appendChild(card);
+
+                        // Update on server
+                        fetch('@Url.Action("UpdateStatus", "Kanban")', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                            },
+                            body: `id=${poamId}&status=${newStatus}`
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.success) {
+                                alert('Failed to update status');
+                                location.reload();
+                            } else {
+                                // Update column counts
+                                updateColumnCounts();
+                            }
+                        })
+                        .catch(() => {
+                            alert('Error updating status');
+                            location.reload();
+                        });
+                    }
+                });
+            });
+
+            function updateColumnCounts() {
+                columns.forEach(column => {
+                    const count = column.querySelectorAll('.kanban-card').length;
+                    const badge = column.parentElement.querySelector('.badge');
+                    if (badge) badge.textContent = count;
+                });
+            }
+        });
+    </script>
+    @Html.AntiForgeryToken()
+}

@@ -1,0 +1,53 @@
+@model POAMs.Web.Models.Domain.Milestone
+@{
+    ViewData["Title"] = "Delete Milestone";
+}
+
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb mb-1">
+            <li class="breadcrumb-item"><a asp-controller="POAM" asp-action="Index">POAMs</a></li>
+            <li class="breadcrumb-item"><a asp-controller="POAM" asp-action="Details" asp-route-id="@Model.POAMId">@Model.POAM.ItemIdentifier</a></li>
+            <li class="breadcrumb-item active">Delete Milestone</li>
+        </ol>
+    </nav>
+    <h1 class="h3 text-danger"><i class="bi bi-trash me-2"></i>Delete Milestone</h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-5">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-exclamation-triangle me-2"></i>Confirm Deletion
+            </div>
+            <div class="card-body">
+                <p class="lead">Are you sure you want to delete this milestone?</p>
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Milestone #</dt>
+                    <dd class="col-sm-8">@Model.MilestoneNumber</dd>
+
+                    <dt class="col-sm-4">Title</dt>
+                    <dd class="col-sm-8">@Model.Title</dd>
+
+                    <dt class="col-sm-4">Status</dt>
+                    <dd class="col-sm-8">@Model.Status</dd>
+
+                    <dt class="col-sm-4">Due Date</dt>
+                    <dd class="col-sm-8">@Model.DueDate.ToString("MM/dd/yyyy")</dd>
+                </dl>
+            </div>
+            <div class="card-footer">
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash me-2"></i>Yes, Delete
+                        </button>
+                        <a asp-controller="POAM" asp-action="Details" asp-route-id="@Model.POAMId" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

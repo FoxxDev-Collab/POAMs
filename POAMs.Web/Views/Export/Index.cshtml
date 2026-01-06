@@ -1,0 +1,137 @@
+@{
+    ViewData["Title"] = "Import / Export";
+}
+
+<div class="mb-4">
+    <h1 class="h3"><i class="bi bi-arrow-left-right me-2"></i>Import / Export</h1>
+    <p class="text-muted">Import POAMs from Excel or export to XACTA format</p>
+</div>
+
+<div class="row">
+    <!-- Import Section -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success bg-opacity-10">
+                <i class="bi bi-upload me-2"></i>Import POAMs from Excel
+            </div>
+            <div class="card-body">
+                <p>Import POAMs from an Excel spreadsheet. The importer will try to match columns automatically.</p>
+
+                <form asp-action="Import" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Select System</label>
+                        <select name="systemId" class="form-select" asp-items="@ViewBag.Systems" required>
+                            <option value="">-- Select Target System --</option>
+                        </select>
+                        <div class="form-text">POAMs will be imported into this system.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Excel File (.xlsx)</label>
+                        <input type="file" name="file" class="form-control" accept=".xlsx,.xls" required />
+                        <div class="form-text">
+                            <strong>Excel files only</strong> (.xlsx or .xls). CSV is not supported.
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="updateExisting" value="true" class="form-check-input" id="updateExisting" />
+                            <label class="form-check-label" for="updateExisting">
+                                Update existing POAMs (match by Item Identifier)
+                            </label>
+                        </div>
+                        <div class="form-text">If unchecked, POAMs with matching Item Identifiers will be skipped.</div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-upload me-2"></i>Import POAMs
+                        </button>
+                        <a asp-action="DownloadTemplate" class="btn btn-outline-secondary">
+                            <i class="bi bi-file-earmark-arrow-down me-2"></i>Template
+                        </a>
+                        <a asp-action="DownloadTestData" class="btn btn-outline-info">
+                            <i class="bi bi-file-earmark-spreadsheet me-2"></i>Test Data (15 POAMs)
+                        </a>
+                    </div>
+                </form>
+
+                <hr />
+
+                <h6>Supported Column Headers</h6>
+                <p class="small text-muted mb-2">The importer recognizes these column names (case-insensitive):</p>
+                <div class="row small">
+                    <div class="col-6">
+                        <ul class="mb-0">
+                            <li>Item Identifier / Item ID</li>
+                            <li>Weakness or Deficiency</li>
+                            <li>Security Control</li>
+                            <li>POC / Point of Contact</li>
+                            <li>Resources Required</li>
+                            <li>Scheduled Completion Date</li>
+                        </ul>
+                    </div>
+                    <div class="col-6">
+                        <ul class="mb-0">
+                            <li>Milestones</li>
+                            <li>Identified By / Source</li>
+                            <li>Risk Level</li>
+                            <li>Estimated Cost</li>
+                            <li>Status</li>
+                            <li>Comments / Notes</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Section -->
+    <div class="col-lg-6 mb-4">
+        <div class="card mb-4">
+            <div class="card-header bg-primary bg-opacity-10">
+                <i class="bi bi-download me-2"></i>Export POAMs to Excel
+            </div>
+            <div class="card-body">
+                <p>Export POAMs to XACTA-formatted Excel spreadsheets.</p>
+
+                <form asp-action="ExportSystem" method="post" class="mb-3">
+                    <div class="mb-3">
+                        <label class="form-label">Export by System</label>
+                        <select name="systemId" class="form-select" asp-items="@ViewBag.Systems" required>
+                            <option value="">-- Select System --</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-download me-2"></i>Export System POAMs
+                    </button>
+                </form>
+
+                <hr />
+
+                <form asp-action="ExportAll" method="post">
+                    <p class="mb-2">Or export all POAMs from all systems:</p>
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-download me-2"></i>Export All POAMs
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-info-circle me-2"></i>Export Format
+            </div>
+            <div class="card-body">
+                <p class="small">The exported Excel file follows the XACTA POA&M format:</p>
+                <ul class="small mb-0">
+                    <li>System and Organization header</li>
+                    <li>ISSM contact details</li>
+                    <li>All POAM fields with milestones</li>
+                    <li>Formatted dates and currency</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

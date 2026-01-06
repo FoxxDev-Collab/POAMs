@@ -1,0 +1,199 @@
+@model POAMs.Web.Models.ViewModels.NISTAssessmentEditViewModel
+@using POAMs.Web.Models.Domain
+@{
+    ViewData["Title"] = $"Assess {Model.ControlId}";
+    var isEdit = Model.Id.HasValue;
+}
+
+<!-- Breadcrumb -->
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index" asp-route-systemId="@Model.SystemId">NIST Catalog</a></li>
+        <li class="breadcrumb-item"><a asp-action="Details" asp-route-id="@Model.ControlId" asp-route-systemId="@Model.SystemId">@Model.ControlId</a></li>
+        <li class="breadcrumb-item active">@(isEdit ? "Edit" : "Create") Assessment</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-clipboard-check me-2"></i>
+                @(isEdit ? "Edit" : "Create") Assessment for <strong>@Model.ControlId</strong>
+            </div>
+            <div class="card-body">
+                <form asp-action="@(isEdit ? "EditAssessment" : "Assess")" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="ControlId" />
+                    <input type="hidden" asp-for="SystemId" />
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <!-- Control & System Info -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">Control</label>
+                            <div class="form-control-plaintext">
+                                <strong>@Model.ControlId</strong> - @Model.ControlName
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted">System (ATO Package)</label>
+                            <div class="form-control-plaintext">
+                                <strong>@Model.SystemName</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <!-- Assessment Status -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Status" class="form-label">Assessment Status <span class="text-danger">*</span></label>
+                            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<ControlAssessmentStatus>()" id="statusSelect">
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6" id="riskLevelGroup">
+                            <label asp-for="RiskLevel" class="form-label">Risk Level</label>
+                            <select asp-for="RiskLevel" class="form-select">
+                                <option value="">-- Select Risk Level --</option>
+                                @foreach (var risk in Enum.GetValues<RiskLevel>())
+                                {
+                                    <option value="@risk" selected="@(Model.RiskLevel == risk)">@risk</option>
+                                }
+                            </select>
+                            <span asp-validation-for="RiskLevel" class="text-danger"></span>
+                            <small class="text-muted">Required for Non-Compliant status</small>
+                        </div>
+                    </div>
+
+                    <!-- Implementation -->
+                    <div class="mb-3">
+                        <label asp-for="Implementation" class="form-label">Implementation Description</label>
+                        <textarea asp-for="Implementation" class="form-control" rows="4" placeholder="Describe how this control is implemented in your system..."></textarea>
+                        <span asp-validation-for="Implementation" class="text-danger"></span>
+                        <small class="text-muted">Explain how your organization satisfies this control requirement.</small>
+                    </div>
+
+                    <!-- Evidence -->
+                    <div class="mb-3">
+                        <label asp-for="Evidence" class="form-label">Evidence / Artifacts</label>
+                        <textarea asp-for="Evidence" class="form-control" rows="3" placeholder="List supporting evidence, artifact locations, or references..."></textarea>
+                        <span asp-validation-for="Evidence" class="text-danger"></span>
+                        <small class="text-muted">Reference documents, screenshots, configurations, or other evidence supporting compliance.</small>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mb-3">
+                        <label asp-for="Notes" class="form-label">Additional Notes</label>
+                        <textarea asp-for="Notes" class="form-control" rows="2" placeholder="Any additional notes about this assessment..."></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <!-- POAM Linking -->
+                    <div class="mb-4" id="poamLinkGroup">
+                        <label asp-for="POAMId" class="form-label">Link to Existing POAM</label>
+                        <select asp-for="POAMId" class="form-select" asp-items="@(ViewBag.POAMs as IEnumerable<SelectListItem>)">
+                        </select>
+                        <span asp-validation-for="POAMId" class="text-danger"></span>
+                        <small class="text-muted">Optionally link this non-compliant finding to an existing POAM.</small>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle me-1"></i>Save Assessment
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.ControlId" asp-route-systemId="@Model.SystemId" class="btn btn-outline-secondary">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Create POAM Option (for Non-Compliant) -->
+        @if (Model.Status == ControlAssessmentStatus.NonCompliant && !Model.POAMId.HasValue && Model.Id.HasValue)
+        {
+            <div class="card mt-4 border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Non-Compliant Control
+                </div>
+                <div class="card-body">
+                    <p>This control is marked as Non-Compliant. You can create a POAM to track remediation.</p>
+                    <form asp-action="CreatePOAM" method="post">
+                        <input type="hidden" name="controlId" value="@Model.ControlId" />
+                        <input type="hidden" name="systemId" value="@Model.SystemId" />
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-plus-circle me-1"></i>Create POAM from Control
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Tips Sidebar -->
+    <div class="col-lg-4">
+        <div class="card bg-light">
+            <div class="card-header">
+                <i class="bi bi-lightbulb me-2"></i>Assessment Tips
+            </div>
+            <div class="card-body">
+                <h6>Status Definitions</h6>
+                <dl class="small">
+                    <dt class="text-success">Compliant</dt>
+                    <dd>Control is fully implemented and operating as intended.</dd>
+
+                    <dt class="text-danger">Non-Compliant</dt>
+                    <dd>Control is not implemented or has significant gaps. Requires POAM.</dd>
+
+                    <dt class="text-secondary">Not Applicable</dt>
+                    <dd>Control does not apply to this system (document rationale).</dd>
+
+                    <dt class="text-info">Inherited</dt>
+                    <dd>Control responsibility is inherited from another system or provider.</dd>
+
+                    <dt class="text-warning">Not Assessed</dt>
+                    <dd>Control has not yet been evaluated.</dd>
+                </dl>
+
+                <hr />
+
+                <h6>Best Practices</h6>
+                <ul class="small mb-0">
+                    <li>Be specific in implementation descriptions</li>
+                    <li>Reference actual evidence locations</li>
+                    <li>Document any compensating controls</li>
+                    <li>Note any deviations or tailoring</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusSelect = document.getElementById('statusSelect');
+            const riskLevelGroup = document.getElementById('riskLevelGroup');
+            const poamLinkGroup = document.getElementById('poamLinkGroup');
+
+            function updateVisibility() {
+                const status = statusSelect.value;
+                // Show risk level only for NonCompliant (value = 2)
+                riskLevelGroup.style.display = status === '2' ? 'block' : 'none';
+                // Show POAM link only for NonCompliant
+                poamLinkGroup.style.display = status === '2' ? 'block' : 'none';
+            }
+
+            statusSelect.addEventListener('change', updateVisibility);
+            updateVisibility();
+        });
+    </script>
+}

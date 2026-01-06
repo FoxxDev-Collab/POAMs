@@ -1,0 +1,246 @@
+@model IEnumerable<POAMs.Web.Models.Domain.SecurityTestPlan>
+@{
+    ViewData["Title"] = "Security Test Plans";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3"><i class="bi bi-clipboard-check me-2"></i>Security Test Plans</h1>
+        <p class="text-muted mb-0">Manage STIG, Nessus, and Security Control assessments</p>
+    </div>
+    @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+    {
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="newSTPDropdown" data-bs-toggle="dropdown">
+                <i class="bi bi-plus-circle me-2"></i>New Test Plan
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="newSTPDropdown">
+                <li>
+                    <a class="dropdown-item" asp-action="Create" asp-route-type="STIG">
+                        <i class="bi bi-shield-check me-2"></i>STIG Assessment
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Create" asp-route-type="Nessus">
+                        <i class="bi bi-bug me-2"></i>Vulnerability Assessment
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-action="Create" asp-route-type="SecurityControl">
+                        <i class="bi bi-list-check me-2"></i>Security Controls Assessment
+                    </a>
+                </li>
+            </ul>
+        </div>
+    }
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">System</label>
+                <select name="systemId" class="form-select" asp-items="@ViewBag.Systems">
+                    <option value="">All Systems</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="Draft" selected="@(ViewBag.SelectedStatus?.ToString() == "Draft")">Draft</option>
+                    <option value="InProgress" selected="@(ViewBag.SelectedStatus?.ToString() == "InProgress")">In Progress</option>
+                    <option value="PendingReview" selected="@(ViewBag.SelectedStatus?.ToString() == "PendingReview")">Pending Review</option>
+                    <option value="Approved" selected="@(ViewBag.SelectedStatus?.ToString() == "Approved")">Approved</option>
+                    <option value="Completed" selected="@(ViewBag.SelectedStatus?.ToString() == "Completed")">Completed</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="bi bi-search me-1"></i>Filter
+                </button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Type Filters -->
+<div class="mb-3">
+    <div class="btn-group" role="group">
+        <a asp-action="Index" class="btn btn-sm @(ViewBag.CurrentType == null ? "btn-primary" : "btn-outline-primary")">All Types</a>
+        <a asp-action="Index" asp-route-type="STIG" class="btn btn-sm @(ViewBag.CurrentType?.ToString() == "STIG" ? "btn-info" : "btn-outline-info")">
+            <i class="bi bi-shield-check me-1"></i>STIG
+        </a>
+        <a asp-action="Index" asp-route-type="Nessus" class="btn btn-sm @(ViewBag.CurrentType?.ToString() == "Nessus" ? "btn-warning" : "btn-outline-warning")">
+            <i class="bi bi-bug me-1"></i>Vulnerability
+        </a>
+        <a asp-action="Index" asp-route-type="SecurityControl" class="btn btn-sm @(ViewBag.CurrentType?.ToString() == "SecurityControl" ? "btn-success" : "btn-outline-success")">
+            <i class="bi bi-list-check me-1"></i>Security Controls
+        </a>
+    </div>
+    <span class="ms-3 text-muted">@Model.Count() test plans found</span>
+</div>
+
+<!-- STPs Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>STP ID</th>
+                    <th>Type</th>
+                    <th>System</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Test Cases</th>
+                    <th>Progress</th>
+                    <th>Date</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="9" class="text-center py-5 text-muted">
+                            <i class="bi bi-clipboard-x" style="font-size: 3rem;"></i>
+                            <p class="mt-3">No test plans found matching your criteria.</p>
+                            @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+                            {
+                                <p>
+                                    <a asp-action="Create" asp-route-type="STIG" class="btn btn-outline-primary">Create STIG Assessment</a>
+                                </p>
+                            }
+                        </td>
+                    </tr>
+                }
+                @foreach (var stp in Model)
+                {
+                    var typeClass = stp.Type switch
+                    {
+                        STPType.STIG => "bg-info",
+                        STPType.Nessus => "bg-warning text-dark",
+                        STPType.SecurityControl => "bg-success",
+                        _ => "bg-secondary"
+                    };
+                    var typeIcon = stp.Type switch
+                    {
+                        STPType.STIG => "bi-shield-check",
+                        STPType.Nessus => "bi-bug",
+                        STPType.SecurityControl => "bi-list-check",
+                        _ => "bi-clipboard"
+                    };
+                    var statusClass = stp.Status switch
+                    {
+                        STPStatus.Draft => "bg-secondary",
+                        STPStatus.InProgress => "bg-primary",
+                        STPStatus.PendingReview => "bg-warning text-dark",
+                        STPStatus.Approved => "bg-info",
+                        STPStatus.Completed => "bg-success",
+                        STPStatus.Archived => "bg-dark",
+                        _ => "bg-secondary"
+                    };
+
+                    // Get test case counts and progress based on type
+                    int totalCases = 0;
+                    int completedCases = 0;
+                    string description = "";
+
+                    switch (stp.Type)
+                    {
+                        case STPType.STIG:
+                            totalCases = stp.TotalTestCases;
+                            completedCases = stp.PassCount + stp.NotApplicableCount + stp.FailCount;
+                            description = stp.STIGName;
+                            break;
+                        case STPType.Nessus:
+                            totalCases = stp.TotalVulnerabilities;
+                            completedCases = stp.VulnsRemediated;
+                            description = stp.ScanPolicyName;
+                            break;
+                        case STPType.SecurityControl:
+                            totalCases = stp.TotalControls;
+                            completedCases = stp.ControlsAssessed;
+                            description = "NIST 800-53 Controls";
+                            break;
+                    }
+
+                    var progressPercent = totalCases > 0 ? (int)((decimal)completedCases / totalCases * 100) : 0;
+
+                    <tr>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@stp.Id" class="fw-bold text-decoration-none">
+                                @stp.STPIdentifier
+                            </a>
+                        </td>
+                        <td>
+                            <span class="badge @typeClass">
+                                <i class="bi @typeIcon me-1"></i>@stp.Type
+                            </span>
+                        </td>
+                        <td>@stp.System?.SystemName</td>
+                        <td class="text-truncate" style="max-width: 200px;" title="@description">
+                            @(string.IsNullOrEmpty(description) ? "-" : description)
+                        </td>
+                        <td>
+                            <span class="badge @statusClass">@stp.Status</span>
+                        </td>
+                        <td>
+                            @if (totalCases > 0)
+                            {
+                                <span>@completedCases / @totalCases</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td style="min-width: 100px;">
+                            @if (totalCases > 0)
+                            {
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar @(progressPercent == 100 ? "bg-success" : "bg-primary")"
+                                         style="width: @progressPercent%"></div>
+                                </div>
+                                <small class="text-muted">@progressPercent%</small>
+                            }
+                            else
+                            {
+                                <span class="text-muted">-</span>
+                            }
+                        </td>
+                        <td>@stp.TestPlanDate.ToString("MM/dd/yyyy")</td>
+                        <td class="text-end">
+                            <div class="btn-group btn-group-sm">
+                                <a asp-action="Details" asp-route-id="@stp.Id" class="btn btn-outline-primary" title="View Details">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                @if (User.IsInRole("Admin") || User.IsInRole("ISSM") || User.IsInRole("ISSO") || User.IsInRole("SysAdmin"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@stp.Id" class="btn btn-outline-secondary" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                }
+                                <a asp-action="Export" asp-route-id="@stp.Id" class="btn btn-outline-success" title="Export to Excel">
+                                    <i class="bi bi-file-earmark-excel"></i>
+                                </a>
+                                @if (User.IsInRole("Admin") || User.IsInRole("ISSM"))
+                                {
+                                    <form asp-action="Delete" asp-route-id="@stp.Id" method="post" class="d-inline"
+                                          onsubmit="return confirm('Are you sure you want to delete this test plan?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-outline-danger" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
