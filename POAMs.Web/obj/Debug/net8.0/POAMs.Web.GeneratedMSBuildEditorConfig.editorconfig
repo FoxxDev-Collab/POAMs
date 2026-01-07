@@ -224,6 +224,34 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU1RQXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/VulnImport/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVnVsbkltcG9ydFxEYXNoYm9hcmQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/VulnImport/Import.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVnVsbkltcG9ydFxJbXBvcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/VulnImport/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVnVsbkltcG9ydFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/VulnImport/_NessusTab.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVnVsbkltcG9ydFxfTmVzc3VzVGFiLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/VulnImport/_NISTComplianceTab.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVnVsbkltcG9ydFxfTklTVENvbXBsaWFuY2VUYWIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/VulnImport/_OverviewTab.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVnVsbkltcG9ydFxfT3ZlcnZpZXdUYWIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/VulnImport/_StigTab.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVnVsbkltcG9ydFxfU3RpZ1RhYi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/jeremiah.price/Documents/3. Local-Dev/Compliance_Tools/POAMs/POAMs.Web/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 

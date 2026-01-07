@@ -1,0 +1,197 @@
+@model POAMs.Web.Models.ViewModels.NessusMetricsViewModel
+
+<!-- Severity Cards -->
+<div class="row mb-4">
+    <div class="col">
+        <div class="card stat-card bg-gradient-danger text-white h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.Critical</div>
+                <div class="stat-label">Critical</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card stat-card bg-gradient-warning text-dark h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.High</div>
+                <div class="stat-label">High</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card stat-card bg-gradient-info text-white h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.Medium</div>
+                <div class="stat-label">Medium</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card stat-card bg-gradient-primary text-white h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.Low</div>
+                <div class="stat-label">Low</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card stat-card bg-gradient-secondary text-white h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.Info</div>
+                <div class="stat-label">Info</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <!-- Plugin Family Distribution -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="bi bi-folder me-2"></i>Vulnerabilities by Plugin Family
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Family</th>
+                                <th class="text-center">Count</th>
+                                <th class="text-center severity-cell">Critical</th>
+                                <th class="text-center severity-cell">High</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var family in Model.ByFamily)
+                            {
+                                <tr>
+                                    <td>@family.Family</td>
+                                    <td class="text-center">@family.Count</td>
+                                    <td class="text-center severity-cell">
+                                        @if (family.CriticalCount > 0)
+                                        {
+                                            <span class="badge bg-danger">@family.CriticalCount</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">0</span>
+                                        }
+                                    </td>
+                                    <td class="text-center severity-cell">
+                                        @if (family.HighCount > 0)
+                                        {
+                                            <span class="badge bg-warning text-dark">@family.HighCount</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">0</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                            @if (!Model.ByFamily.Any())
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">No vulnerabilities found</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Vulnerabilities -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="bi bi-exclamation-triangle me-2"></i>Top Vulnerabilities by Affected Hosts
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover top-vulns-table mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Vulnerability</th>
+                                <th class="text-center">Severity</th>
+                                <th class="text-center">Hosts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var vuln in Model.TopVulnerabilities)
+                            {
+                                var sevClass = vuln.Severity?.ToLower() switch
+                                {
+                                    "critical" => "bg-danger",
+                                    "high" => "bg-warning text-dark",
+                                    "medium" => "bg-info",
+                                    "low" => "bg-primary",
+                                    _ => "bg-secondary"
+                                };
+                                <tr>
+                                    <td class="vuln-name" title="@vuln.PluginName">
+                                        @vuln.PluginName
+                                        @if (vuln.IsExploitable)
+                                        {
+                                            <span class="badge bg-danger ms-1" title="Exploitable">!</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(vuln.CVE))
+                                        {
+                                            <br /><small class="text-muted">@vuln.CVE</small>
+                                        }
+                                    </td>
+                                    <td class="text-center"><span class="badge @sevClass">@vuln.Severity</span></td>
+                                    <td class="text-center">@vuln.AffectedHostCount</td>
+                                </tr>
+                            }
+                            @if (!Model.TopVulnerabilities.Any())
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">No open vulnerabilities found</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Stats -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-danger mb-0">@Model.Total</h4>
+                <small class="text-muted">Total Vulnerabilities</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-primary mb-0">@Model.UniquePluginCount</h4>
+                <small class="text-muted">Unique Plugins</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-warning mb-0">@Model.UniqueCveCount</h4>
+                <small class="text-muted">Unique CVEs</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-danger mb-0">@Model.ExploitableCount</h4>
+                <small class="text-muted">Exploitable</small>
+            </div>
+        </div>
+    </div>
+</div>

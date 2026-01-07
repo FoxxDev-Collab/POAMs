@@ -1,0 +1,268 @@
+@model POAMs.Web.Models.ViewModels.VulnDashboardViewModel
+
+<!-- Vulnerability and STIG Overview Row -->
+<div class="row mb-4">
+    <!-- Vulnerability Section -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-danger text-white">
+                <i class="bi bi-shield-exclamation me-2"></i>Vulnerability Overview
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-muted mb-3">By Severity</h6>
+                        <div class="chart-container chart-container-sm">
+                            <canvas id="vulnSeverityChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted mb-3">By Status</h6>
+                        <div class="chart-container chart-container-sm">
+                            <canvas id="vulnStatusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="h4 mb-0 text-danger">@Model.NessusMetrics.UniquePluginCount</div>
+                        <small class="text-muted">Unique Plugins</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="h4 mb-0 text-warning">@Model.NessusMetrics.UniqueCveCount</div>
+                        <small class="text-muted">Unique CVEs</small>
+                    </div>
+                    <div class="col-4">
+                        <div class="h4 mb-0 text-info">@Model.NessusMetrics.ExploitableCount</div>
+                        <small class="text-muted">Exploitable</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STIG Compliance Section -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <i class="bi bi-clipboard2-check me-2"></i>STIG Compliance Overview
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-5 text-center">
+                        <h6 class="text-muted mb-3">Compliance Rate</h6>
+                        <div class="compliance-gauge">
+                            <svg viewBox="0 0 160 160" class="compliance-gauge-circle">
+                                <circle cx="80" cy="80" r="70" class="compliance-gauge-background"></circle>
+                                <circle cx="80" cy="80" r="70" class="compliance-gauge-progress"></circle>
+                            </svg>
+                            <div class="compliance-gauge-text">
+                                <div class="compliance-gauge-percentage">@Model.StigMetrics.CompliancePercentage.ToString("F1")%</div>
+                                <div class="compliance-gauge-label">Compliant</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <h6 class="text-muted mb-3">Finding Status</h6>
+                        <div class="chart-container chart-container-sm">
+                            <canvas id="stigStatusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="row text-center">
+                    <div class="col-3">
+                        <div class="h5 mb-0"><span class="badge cat-badge cat-i">@Model.StigMetrics.CatIOpen</span></div>
+                        <small class="text-muted">CAT I Open</small>
+                    </div>
+                    <div class="col-3">
+                        <div class="h5 mb-0"><span class="badge cat-badge cat-ii">@Model.StigMetrics.CatIIOpen</span></div>
+                        <small class="text-muted">CAT II Open</small>
+                    </div>
+                    <div class="col-3">
+                        <div class="h5 mb-0"><span class="badge cat-badge cat-iii">@Model.StigMetrics.CatIIIOpen</span></div>
+                        <small class="text-muted">CAT III Open</small>
+                    </div>
+                    <div class="col-3">
+                        <div class="h5 mb-0 text-secondary">@Model.StigMetrics.NotReviewed</div>
+                        <small class="text-muted">Not Reviewed</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CAT Distribution and Top Vulnerabilities Row -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="bi bi-bar-chart me-2"></i>STIG CAT Distribution
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="stigCatChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="bi bi-exclamation-triangle me-2"></i>Top 10 Vulnerabilities
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover top-vulns-table mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Vulnerability</th>
+                                <th class="text-center">Severity</th>
+                                <th class="text-center">Hosts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var vuln in Model.NessusMetrics.TopVulnerabilities)
+                            {
+                                var sevClass = vuln.Severity?.ToLower() switch
+                                {
+                                    "critical" => "bg-danger",
+                                    "high" => "bg-warning text-dark",
+                                    "medium" => "bg-info",
+                                    "low" => "bg-primary",
+                                    _ => "bg-secondary"
+                                };
+                                <tr>
+                                    <td class="vuln-name" title="@vuln.PluginName">
+                                        @vuln.PluginName
+                                        @if (vuln.IsExploitable)
+                                        {
+                                            <span class="badge bg-danger ms-1" title="Exploitable">!</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(vuln.CVE))
+                                        {
+                                            <br /><small class="text-muted">@vuln.CVE</small>
+                                        }
+                                    </td>
+                                    <td class="text-center"><span class="badge @sevClass">@vuln.Severity</span></td>
+                                    <td class="text-center">@vuln.AffectedHostCount</td>
+                                </tr>
+                            }
+                            @if (!Model.NessusMetrics.TopVulnerabilities.Any())
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">No open vulnerabilities found</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Site Breakdown Section -->
+@if (Model.SiteBreakdown.Any())
+{
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-building me-2"></i>Site-by-Site Breakdown</span>
+            <small class="text-muted">@Model.SiteBreakdown.Count sites</small>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover site-breakdown-table mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Site</th>
+                            <th class="text-center">Hosts</th>
+                            <th class="text-center severity-cell">Critical</th>
+                            <th class="text-center severity-cell">High</th>
+                            <th class="text-center severity-cell">Medium</th>
+                            <th class="text-center">Open Vulns</th>
+                            <th class="text-center" style="min-width: 150px;">STIG Compliance</th>
+                            <th class="text-center">Risk Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var site in Model.SiteBreakdown)
+                        {
+                            var riskClass = site.RiskLevel switch
+                            {
+                                "Critical" => "risk-critical",
+                                "High" => "risk-high",
+                                "Medium" => "risk-medium",
+                                "Low" => "risk-low",
+                                _ => "risk-minimal"
+                            };
+                            var complianceClass = site.StigCompliancePercentage >= 90 ? "bg-success" :
+                                                 site.StigCompliancePercentage >= 70 ? "bg-primary" :
+                                                 site.StigCompliancePercentage >= 50 ? "bg-warning" : "bg-danger";
+                            <tr>
+                                <td>
+                                    <strong>@site.SiteName</strong>
+                                    @if (!string.IsNullOrEmpty(site.Location))
+                                    {
+                                        <br /><small class="text-muted">@site.Location</small>
+                                    }
+                                </td>
+                                <td class="text-center">@site.TotalHosts</td>
+                                <td class="text-center severity-cell">
+                                    @if (site.CriticalCount > 0)
+                                    {
+                                        <span class="badge bg-danger">@site.CriticalCount</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">0</span>
+                                    }
+                                </td>
+                                <td class="text-center severity-cell">
+                                    @if (site.HighCount > 0)
+                                    {
+                                        <span class="badge bg-warning text-dark">@site.HighCount</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">0</span>
+                                    }
+                                </td>
+                                <td class="text-center severity-cell">
+                                    @if (site.MediumCount > 0)
+                                    {
+                                        <span class="badge bg-info">@site.MediumCount</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">0</span>
+                                    }
+                                </td>
+                                <td class="text-center">@site.OpenVulnerabilities</td>
+                                <td class="text-center">
+                                    @if (site.StigTotalFindings > 0)
+                                    {
+                                        <div class="benchmark-bar">
+                                            <div class="benchmark-bar-fill @complianceClass" style="width: @site.StigCompliancePercentage%">
+                                                @site.StigCompliancePercentage.ToString("F1")%
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">N/A</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge risk-badge @riskClass">@site.RiskLevel</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}

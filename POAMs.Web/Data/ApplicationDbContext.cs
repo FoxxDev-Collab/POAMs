@@ -27,6 +27,12 @@ public class ApplicationDbContext : DbContext
     public DbSet<ControlDocumentationInstance> ControlDocumentationInstances => Set<ControlDocumentationInstance>();
     public DbSet<ADConfiguration> ADConfigurations => Set<ADConfiguration>();
 
+    // Vulnerability Management Import
+    public DbSet<VulnImportSession> VulnImportSessions => Set<VulnImportSession>();
+    public DbSet<VulnImportHost> VulnImportHosts => Set<VulnImportHost>();
+    public DbSet<VulnImportStigResult> VulnImportStigResults => Set<VulnImportStigResult>();
+    public DbSet<VulnImportNessusVuln> VulnImportNessusVulns => Set<VulnImportNessusVuln>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -285,6 +291,47 @@ public class ApplicationDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(a => a.ModifiedById)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // VulnImportSession configuration
+        modelBuilder.Entity<VulnImportSession>(entity =>
+        {
+            entity.HasIndex(e => e.ImportDate);
+        });
+
+        // VulnImportHost configuration
+        modelBuilder.Entity<VulnImportHost>(entity =>
+        {
+            entity.HasIndex(e => e.VulnImportSessionId);
+
+            entity.HasOne(h => h.Session)
+                .WithMany(s => s.Hosts)
+                .HasForeignKey(h => h.VulnImportSessionId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // VulnImportStigResult configuration
+        modelBuilder.Entity<VulnImportStigResult>(entity =>
+        {
+            entity.HasIndex(e => e.VulnImportHostId);
+            entity.HasIndex(e => e.Status);
+
+            entity.HasOne(r => r.Host)
+                .WithMany(h => h.StigResults)
+                .HasForeignKey(r => r.VulnImportHostId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // VulnImportNessusVuln configuration
+        modelBuilder.Entity<VulnImportNessusVuln>(entity =>
+        {
+            entity.HasIndex(e => e.VulnImportHostId);
+            entity.HasIndex(e => e.Severity);
+
+            entity.HasOne(v => v.Host)
+                .WithMany(h => h.NessusVulns)
+                .HasForeignKey(v => v.VulnImportHostId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 

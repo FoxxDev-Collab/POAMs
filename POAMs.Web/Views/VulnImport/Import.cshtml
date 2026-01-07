@@ -1,0 +1,87 @@
+@model POAMs.Web.Models.ViewModels.VulnImportUploadViewModel
+@{
+    ViewData["Title"] = "Import Vulnerability Data";
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Vulnerability Import</a></li>
+        <li class="breadcrumb-item active">Import</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-cloud-upload me-2"></i>Import Vulnerability Management Export
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Supported Format:</strong> JSON export from the Vulnerability Management application.
+                    <br />
+                    <small>This import will create metrics dashboards for Nessus vulnerabilities and STIG findings, and enable NIST control compliance analysis through CCI mapping.</small>
+                </div>
+
+                <form asp-action="Import" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <div class="mb-4">
+                        <label asp-for="File" class="form-label">JSON Export File <span class="text-danger">*</span></label>
+                        <input asp-for="File" type="file" class="form-control form-control-lg" accept=".json" required />
+                        <span asp-validation-for="File" class="text-danger"></span>
+                        <div class="form-text">Select the JSON file exported from Vulnerability Management.</div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary" id="importBtn">
+                            <i class="bi bi-cloud-upload me-1"></i>Import
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <i class="bi bi-question-circle me-2"></i>What Gets Imported?
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="bi bi-shield-exclamation text-danger me-2"></i>Nessus Vulnerabilities</h6>
+                        <ul class="small text-muted">
+                            <li>Vulnerability counts by severity</li>
+                            <li>Plugin family distribution</li>
+                            <li>CVE tracking</li>
+                            <li>Exploitability indicators</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="bi bi-clipboard2-check text-success me-2"></i>STIG Findings</h6>
+                        <ul class="small text-muted">
+                            <li>Compliance status by benchmark</li>
+                            <li>CAT I/II/III distribution</li>
+                            <li>CCI-to-NIST control mapping</li>
+                            <li>Assessment creation support</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            var btn = document.getElementById('importBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Importing...';
+        });
+    </script>
+}

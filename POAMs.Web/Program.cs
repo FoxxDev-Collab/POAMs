@@ -81,6 +81,8 @@ try
     builder.Services.AddScoped<INISTCatalogService, NISTCatalogService>();
     builder.Services.AddScoped<IDocumentationService, DocumentationService>();
     builder.Services.AddScoped<IDataImportService, DataImportService>();
+    builder.Services.AddScoped<IVulnImportService, VulnImportService>();
+    builder.Services.AddScoped<ICCIMappingService, CCIMappingService>();
 
     builder.Services.AddControllersWithViews(options =>
         {

@@ -1,0 +1,302 @@
+@model List<POAMs.Web.Models.ViewModels.NISTFamilyComplianceViewModel>
+@{
+    var sessionId = ViewBag.SessionId as int? ?? 0;
+    var availableSystems = ViewBag.AvailableSystems as List<POAMs.Web.Models.Domain.SystemInfo> ?? new List<POAMs.Web.Models.Domain.SystemInfo>();
+}
+
+<div class="alert alert-info mb-4">
+    <i class="bi bi-info-circle me-2"></i>
+    <strong>NIST Control Mapping:</strong> This analysis maps STIG CCIs to NIST 800-53 controls.
+    Controls with open STIG findings can be marked as Non-Compliant assessments.
+</div>
+
+<!-- System Selector and Bulk Actions -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row align-items-end">
+            <div class="col-md-6">
+                <label class="form-label">Target System for Assessments</label>
+                <select id="targetSystemId" class="form-select">
+                    <option value="">-- Select a System --</option>
+                    @foreach (var system in availableSystems)
+                    {
+                        <option value="@system.Id">@system.SystemName</option>
+                    }
+                </select>
+                <div class="form-text">Select a system to create NIST control assessments for.</div>
+            </div>
+            <div class="col-md-6 text-end">
+                <button type="button" class="btn btn-primary" id="createAllBtn" disabled onclick="createAllAssessments()">
+                    <i class="bi bi-plus-circle me-1"></i>Create All Assessments
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Stats -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-primary mb-0">@Model.Count</h4>
+                <small class="text-muted">Control Families</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-info mb-0">@Model.Sum(f => f.TotalControls)</h4>
+                <small class="text-muted">Total Controls</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-warning mb-0">@Model.Sum(f => f.ControlsWithFindings)</h4>
+                <small class="text-muted">Controls with Findings</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h4 class="text-danger mb-0">@Model.Sum(f => f.OpenFindings)</h4>
+                <small class="text-muted">Open Findings</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Control Family Accordion -->
+<div class="accordion" id="nistFamilyAccordion">
+    @foreach (var family in Model)
+    {
+        var headerId = $"heading{family.Family}";
+        var collapseId = $"collapse{family.Family}";
+        var hasFindings = family.ControlsWithFindings > 0;
+        var headerClass = hasFindings ? "text-danger" : "text-success";
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="@headerId">
+                <button class="accordion-button @(hasFindings ? "" : "collapsed")" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#@collapseId">
+                    <div class="d-flex justify-content-between align-items-center w-100 me-3">
+                        <div>
+                            <strong class="@headerClass">@family.Family</strong>
+                            <span class="ms-2">@family.FamilyName</span>
+                        </div>
+                        <div>
+                            @if (family.ControlsWithFindings > 0)
+                            {
+                                <span class="badge bg-danger me-2">@family.ControlsWithFindings with findings</span>
+                            }
+                            <span class="badge bg-secondary">@family.TotalControls controls</span>
+                        </div>
+                    </div>
+                </button>
+            </h2>
+            <div id="@collapseId" class="accordion-collapse collapse @(hasFindings ? "show" : "")"
+                 data-bs-parent="#nistFamilyAccordion">
+                <div class="accordion-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Control ID</th>
+                                    <th>Control Name</th>
+                                    <th class="text-center">CCIs</th>
+                                    <th class="text-center">Open Findings</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var control in family.Controls)
+                                {
+                                    var rowClass = control.OpenFindingCount > 0 ? "table-danger" : "";
+                                    <tr class="@rowClass">
+                                        <td>
+                                            <strong>@control.ControlId</strong>
+                                        </td>
+                                        <td class="text-truncate" style="max-width: 300px;" title="@control.ControlName">
+                                            @control.ControlName
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-secondary">@control.CCIs.Count</span>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (control.OpenFindingCount > 0)
+                                            {
+                                                <span class="badge bg-danger">@control.OpenFindingCount</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-success">0</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            @if (control.HasExistingAssessment)
+                                            {
+                                                <span class="badge bg-info">Assessed</span>
+                                            }
+                                            else if (control.OpenFindingCount > 0)
+                                            {
+                                                <span class="badge bg-warning text-dark">Needs Assessment</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            @if (control.HasExistingAssessment)
+                                            {
+                                                <a asp-controller="NISTCatalog" asp-action="Assessment"
+                                                   asp-route-id="@control.ExistingAssessmentId"
+                                                   class="btn btn-sm btn-outline-info" title="View Assessment">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                            }
+                                            else if (control.OpenFindingCount > 0)
+                                            {
+                                                <button type="button" class="btn btn-sm btn-outline-primary create-assessment-btn"
+                                                        data-control-id="@control.NISTControlId"
+                                                        data-control-name="@control.ControlId"
+                                                        title="Create Assessment">
+                                                    <i class="bi bi-plus-circle"></i>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-journal-x text-muted" style="font-size: 4rem;"></i>
+            <h4 class="mt-3">No CCI Mappings Found</h4>
+            <p class="text-muted">
+                No CCIs from the STIG findings could be mapped to NIST controls.
+                <br />
+                Ensure the NIST catalog has been imported with CCI data.
+            </p>
+        </div>
+    </div>
+}
+
+<script>
+    var sessionId = @sessionId;
+
+    document.getElementById('targetSystemId').addEventListener('change', function() {
+        var btn = document.getElementById('createAllBtn');
+        btn.disabled = !this.value;
+    });
+
+    document.querySelectorAll('.create-assessment-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var systemId = document.getElementById('targetSystemId').value;
+            if (!systemId) {
+                alert('Please select a target system first.');
+                return;
+            }
+
+            var controlId = this.dataset.controlId;
+            var controlName = this.dataset.controlName;
+
+            if (confirm('Create assessment for ' + controlName + '?')) {
+                createAssessment(controlId, systemId, this);
+            }
+        });
+    });
+
+    function createAssessment(controlId, systemId, btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+        fetch('@Url.Action("CreateAssessment", "VulnImport")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: 'sessionId=' + sessionId + '&nistControlId=' + controlId + '&systemId=' + systemId
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                btn.innerHTML = '<i class="bi bi-check-circle"></i>';
+                btn.classList.remove('btn-outline-primary');
+                btn.classList.add('btn-success');
+                btn.closest('tr').querySelector('td:nth-child(5)').innerHTML = '<span class="badge bg-info">Assessed</span>';
+            } else {
+                alert('Error: ' + data.error);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-plus-circle"></i>';
+            }
+        })
+        .catch(error => {
+            alert('Error creating assessment');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-plus-circle"></i>';
+        });
+    }
+
+    function createAllAssessments() {
+        var systemId = document.getElementById('targetSystemId').value;
+        if (!systemId) {
+            alert('Please select a target system first.');
+            return;
+        }
+
+        if (!confirm('Create assessments for all controls with open findings?')) {
+            return;
+        }
+
+        var btn = document.getElementById('createAllBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Creating...';
+
+        fetch('@Url.Action("CreateAllAssessments", "VulnImport")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            },
+            body: 'sessionId=' + sessionId + '&systemId=' + systemId
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Created ' + data.count + ' assessments.');
+                location.reload();
+            } else {
+                alert('Error: ' + data.error);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-plus-circle me-1"></i>Create All Assessments';
+            }
+        })
+        .catch(error => {
+            alert('Error creating assessments');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-plus-circle me-1"></i>Create All Assessments';
+        });
+    }
+</script>
+
+@Html.AntiForgeryToken()

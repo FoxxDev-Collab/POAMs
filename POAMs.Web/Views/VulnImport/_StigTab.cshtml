@@ -1,0 +1,237 @@
+@model POAMs.Web.Models.ViewModels.StigMetricsViewModel
+
+<!-- Status Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card stat-card bg-gradient-danger text-white h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.Open</div>
+                <div class="stat-label">Open</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card bg-gradient-success text-white h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.NotAFinding</div>
+                <div class="stat-label">Not a Finding</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card bg-gradient-secondary text-white h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.NotApplicable</div>
+                <div class="stat-label">Not Applicable</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card stat-card" style="background: linear-gradient(135deg, #adb5bd 0%, #868e96 100%); color: white;">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.NotReviewed</div>
+                <div class="stat-label">Not Reviewed</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CAT Breakdown -->
+<div class="row mb-4">
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="bi bi-bar-chart me-2"></i>CAT Level Distribution
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th class="text-center">Open</th>
+                            <th class="text-center">Total</th>
+                            <th class="text-center" style="width: 200px;">Compliance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="badge cat-badge cat-i">CAT I</span> High</td>
+                            <td class="text-center">
+                                @if (Model.CatIOpen > 0)
+                                {
+                                    <span class="badge bg-danger">@Model.CatIOpen</span>
+                                }
+                                else
+                                {
+                                    <span class="text-success">0</span>
+                                }
+                            </td>
+                            <td class="text-center">@Model.CatITotal</td>
+                            <td class="text-center">
+                                @if (Model.CatITotal > 0)
+                                {
+                                    var catICompliance = Math.Round(100m - ((decimal)Model.CatIOpen / Model.CatITotal * 100), 1);
+                                    var catIClass = catICompliance >= 90 ? "bg-success" : catICompliance >= 70 ? "bg-primary" : catICompliance >= 50 ? "bg-warning" : "bg-danger";
+                                    <div class="benchmark-bar">
+                                        <div class="benchmark-bar-fill @catIClass" style="width: @catICompliance%">
+                                            @catICompliance%
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">N/A</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge cat-badge cat-ii">CAT II</span> Medium</td>
+                            <td class="text-center">
+                                @if (Model.CatIIOpen > 0)
+                                {
+                                    <span class="badge bg-warning text-dark">@Model.CatIIOpen</span>
+                                }
+                                else
+                                {
+                                    <span class="text-success">0</span>
+                                }
+                            </td>
+                            <td class="text-center">@Model.CatIITotal</td>
+                            <td class="text-center">
+                                @if (Model.CatIITotal > 0)
+                                {
+                                    var catIICompliance = Math.Round(100m - ((decimal)Model.CatIIOpen / Model.CatIITotal * 100), 1);
+                                    var catIIClass = catIICompliance >= 90 ? "bg-success" : catIICompliance >= 70 ? "bg-primary" : catIICompliance >= 50 ? "bg-warning" : "bg-danger";
+                                    <div class="benchmark-bar">
+                                        <div class="benchmark-bar-fill @catIIClass" style="width: @catIICompliance%">
+                                            @catIICompliance%
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">N/A</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="badge cat-badge cat-iii">CAT III</span> Low</td>
+                            <td class="text-center">
+                                @if (Model.CatIIIOpen > 0)
+                                {
+                                    <span class="badge bg-info">@Model.CatIIIOpen</span>
+                                }
+                                else
+                                {
+                                    <span class="text-success">0</span>
+                                }
+                            </td>
+                            <td class="text-center">@Model.CatIIITotal</td>
+                            <td class="text-center">
+                                @if (Model.CatIIITotal > 0)
+                                {
+                                    var catIIICompliance = Math.Round(100m - ((decimal)Model.CatIIIOpen / Model.CatIIITotal * 100), 1);
+                                    var catIIIClass = catIIICompliance >= 90 ? "bg-success" : catIIICompliance >= 70 ? "bg-primary" : catIIICompliance >= 50 ? "bg-warning" : "bg-danger";
+                                    <div class="benchmark-bar">
+                                        <div class="benchmark-bar-fill @catIIIClass" style="width: @catIIICompliance%">
+                                            @catIIICompliance%
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">N/A</span>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compliance Gauge -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <i class="bi bi-speedometer2 me-2"></i>Overall Compliance
+            </div>
+            <div class="card-body text-center">
+                <div class="compliance-gauge">
+                    <svg viewBox="0 0 160 160" class="compliance-gauge-circle">
+                        <circle cx="80" cy="80" r="70" class="compliance-gauge-background"></circle>
+                        <circle cx="80" cy="80" r="70" class="compliance-gauge-progress" id="stigComplianceGauge"></circle>
+                    </svg>
+                    <div class="compliance-gauge-text">
+                        <div class="compliance-gauge-percentage" id="stigComplianceText">@Model.CompliancePercentage.ToString("F1")%</div>
+                        <div class="compliance-gauge-label">Compliant</div>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <small class="text-muted">
+                        @Model.NotAFinding of @(Model.Open + Model.NotAFinding) evaluated findings are compliant
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Benchmark Compliance -->
+@if (Model.BenchmarkCompliance.Any())
+{
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="bi bi-journal-bookmark me-2"></i>Compliance by STIG Benchmark
+        </div>
+        <div class="card-body">
+            <div class="row">
+                @foreach (var benchmark in Model.BenchmarkCompliance)
+                {
+                    var complianceClass = benchmark.CompliancePercentage >= 90 ? "bg-success" :
+                                         benchmark.CompliancePercentage >= 70 ? "bg-primary" :
+                                         benchmark.CompliancePercentage >= 50 ? "bg-warning" : "bg-danger";
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title text-truncate" title="@benchmark.BenchmarkName">@benchmark.BenchmarkName</h6>
+                                <small class="text-muted">@benchmark.TotalRules rules</small>
+                                <div class="benchmark-bar mt-2">
+                                    <div class="benchmark-bar-fill @complianceClass" style="width: @benchmark.CompliancePercentage%">
+                                        @benchmark.CompliancePercentage.ToString("F1")%
+                                    </div>
+                                </div>
+                                <div class="mt-2 small">
+                                    <span class="text-danger">@benchmark.OpenCount Open</span> |
+                                    <span class="text-success">@benchmark.NotAFindingCount NaF</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update compliance gauge
+        var gauge = document.getElementById('stigComplianceGauge');
+        var text = document.getElementById('stigComplianceText');
+        var percentage = @Model.CompliancePercentage.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        var circumference = 2 * Math.PI * 70;
+        var offset = circumference - (percentage / 100) * circumference;
+
+        gauge.style.strokeDasharray = circumference;
+        gauge.style.strokeDashoffset = offset;
+
+        var color = '#dc3545';
+        if (percentage >= 90) color = '#198754';
+        else if (percentage >= 70) color = '#0d6efd';
+        else if (percentage >= 50) color = '#ffc107';
+
+        gauge.style.stroke = color;
+        text.style.color = color;
+    });
+</script>

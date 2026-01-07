@@ -1,0 +1,186 @@
+@model POAMs.Web.Models.ViewModels.VulnDashboardViewModel
+@{
+    ViewData["Title"] = "Vulnerability Metrics Dashboard";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/metrics.css" asp-append-version="true" />
+}
+
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Vulnerability Import</a></li>
+        <li class="breadcrumb-item active">Dashboard</li>
+    </ol>
+</nav>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1"><i class="bi bi-graph-up-arrow me-2"></i>Vulnerability Metrics</h1>
+        <p class="text-muted mb-0">
+            Imported: @Model.Session.ImportDate.ToString("f") |
+            Source: @Model.Session.SourceApplication |
+            File: @Model.Session.FileName
+        </p>
+    </div>
+    <div class="no-print">
+        <button type="button" class="btn btn-outline-secondary" onclick="window.print()">
+            <i class="bi bi-printer me-1"></i>Print
+        </button>
+        <a asp-action="Index" class="btn btn-outline-secondary ms-2">
+            <i class="bi bi-arrow-left me-1"></i>Back
+        </a>
+    </div>
+</div>
+
+<!-- Executive Summary Row -->
+<div class="row mb-4">
+    <div class="col-md-2">
+        <div class="card stat-card bg-gradient-primary text-white h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.Session.TotalSites</div>
+                <div class="stat-label">Sites</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card bg-gradient-info text-white h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.Session.TotalHosts</div>
+                <div class="stat-label">Hosts</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card bg-gradient-warning text-dark h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.PackageOverview.OpenVulnerabilities</div>
+                <div class="stat-label">Open Vulns</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card bg-gradient-danger text-white h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.PackageOverview.CriticalVulnerabilities</div>
+                <div class="stat-label">Critical</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card bg-gradient-danger text-white h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.Session.StigOpen</div>
+                <div class="stat-label">STIG Open</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card stat-card bg-gradient-success text-white h-100">
+            <div class="card-body text-center">
+                <div class="stat-value">@Model.PackageOverview.OverallCompliancePercentage.ToString("F1")%</div>
+                <div class="stat-label">STIG Compliance</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Risk Score Banner -->
+@{
+    var riskAlertClass = Model.PackageOverview.RiskLevel switch
+    {
+        "Critical" => "alert-danger",
+        "High" => "alert-warning",
+        "Medium" => "alert-info",
+        _ => "alert-success"
+    };
+}
+<div class="alert @riskAlertClass d-flex align-items-center mb-4">
+    <i class="bi bi-shield-exclamation me-3" style="font-size: 2rem;"></i>
+    <div>
+        <strong>Overall Risk Level: @Model.PackageOverview.RiskLevel</strong>
+        <div class="small">
+            Risk Score: @Model.PackageOverview.VulnerabilityRiskScore.ToString("F1") / 100
+            @if (Model.PackageOverview.CriticalVulnerabilities > 0 || Model.PackageOverview.HighVulnerabilities > 0)
+            {
+                <span class="ms-3">|</span>
+                <span class="ms-3">@Model.PackageOverview.CriticalVulnerabilities Critical + @Model.PackageOverview.HighVulnerabilities High vulnerabilities require immediate attention</span>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Tabbed Content -->
+<ul class="nav nav-tabs mb-4" id="metricsTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+            <i class="bi bi-house me-1"></i>Overview
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="nessus-tab" data-bs-toggle="tab" data-bs-target="#nessus" type="button" role="tab">
+            <i class="bi bi-shield-exclamation me-1"></i>Nessus Metrics
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="stig-tab" data-bs-toggle="tab" data-bs-target="#stig" type="button" role="tab">
+            <i class="bi bi-clipboard2-check me-1"></i>STIG Results
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="nist-tab" data-bs-toggle="tab" data-bs-target="#nist" type="button" role="tab">
+            <i class="bi bi-journal-bookmark me-1"></i>NIST Compliance
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="metricsTabContent">
+    <!-- Overview Tab -->
+    <div class="tab-pane fade show active" id="overview" role="tabpanel">
+        @await Html.PartialAsync("_OverviewTab", Model)
+    </div>
+
+    <!-- Nessus Tab -->
+    <div class="tab-pane fade" id="nessus" role="tabpanel">
+        @await Html.PartialAsync("_NessusTab", Model.NessusMetrics)
+    </div>
+
+    <!-- STIG Tab -->
+    <div class="tab-pane fade" id="stig" role="tabpanel">
+        @await Html.PartialAsync("_StigTab", Model.StigMetrics)
+    </div>
+
+    <!-- NIST Compliance Tab -->
+    <div class="tab-pane fade" id="nist" role="tabpanel">
+        @{
+            ViewBag.SessionId = Model.Session.Id;
+            ViewBag.AvailableSystems = Model.AvailableSystems;
+        }
+        @await Html.PartialAsync("_NISTComplianceTab", Model.NISTCompliance)
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/chartjs/dist/chart.umd.js"></script>
+    <script src="~/js/metrics.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize charts with server-rendered data
+            if (typeof MetricsDashboard !== 'undefined') {
+                MetricsDashboard.initializeCharts({
+                    vulnerabilityMetrics: {
+                        severityData: [@string.Join(",", Model.NessusMetrics.SeverityData)],
+                        statusData: [@string.Join(",", Model.NessusMetrics.StatusData)],
+                        exploitableCount: @Model.NessusMetrics.ExploitableCount
+                    },
+                    stigMetrics: {
+                        statusData: [@string.Join(",", Model.StigMetrics.StatusData)],
+                        compliancePercentage: @Model.StigMetrics.CompliancePercentage.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                        catOpenData: [@string.Join(",", Model.StigMetrics.CatOpenData)],
+                        catTotalData: [@string.Join(",", Model.StigMetrics.CatTotalData)]
+                    }
+                });
+            }
+        });
+    </script>
+}

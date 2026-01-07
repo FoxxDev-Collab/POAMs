@@ -198,3 +198,101 @@ dotnet run
 - ClosedXML (0.102.*)
 - Serilog.AspNetCore (8.*)
 
+---
+
+## Phase 7: Vulnerability Management Import [PENDING]
+
+### Overview
+Import JSON exports from the Vulnerability Management application to:
+1. **Nessus Vulnerabilities**: Display metrics dashboard (read-only, no tracking)
+2. **STIG Results**: Map CCIs to NIST Controls for compliance analysis
+
+### JSON Structure (from Vulnerability Management export)
+```
+exportMetadata: { exportDate, exportedBy, applicationName, exportType }
+summary: { totalSites, totalHosts, stigChecklists, nessusVulnerabilities, cciCoverage }
+sites[]: {
+  siteSummary: { stigChecklists, nessusVulnerabilities }
+  hosts[]: {
+    id, dnsName, ipAddress, operatingSystem, assetType, status
+    stigChecklists[]: {
+      benchmarkInfo: { stigId, title, version, release }
+      statistics: { totalRules, open, notAFinding, notApplicable, notReviewed }
+      results[]: { vulnId, ruleId, severity, status, ccis[], discussion, checkContent, fixText }
+    }
+    nessusVulnerabilities[]: {
+      pluginId, pluginName, family, severity, ipAddress, cve, synopsis, description, solution
+    }
+  }
+}
+```
+
+### New Domain Models (`Models/Domain/VulnImport.cs`)
+
+| Model | Purpose |
+|-------|---------|
+| VulnImportSession | Tracks each import with denormalized summary stats |
+| VulnImportHost | Each scanned host with site info |
+| VulnImportStigResult | STIG findings with CCIs (JSON string) |
+| VulnImportNessusVuln | Nessus findings (metrics only) |
+
+### New Services
+
+| Service | Purpose |
+|---------|---------|
+| IVulnImportService / VulnImportService | Parse JSON, create session/host/finding records |
+| ICCIMappingService / CCIMappingService | Map CCIs to NIST Controls, analyze compliance, create assessments |
+
+### Controller Actions (`Controllers/VulnImportController.cs`)
+
+| Action | Purpose |
+|--------|---------|
+| GET Index | List all import sessions |
+| GET/POST Import | Upload JSON file |
+| GET Dashboard/{id} | Tabbed metrics dashboard |
+| POST CreateAssessment | Create NISTControlAssessment from findings |
+| POST CreateAllAssessments | Bulk create assessments |
+| POST Delete/{id} | Delete import session |
+
+### Views (Tabbed Dashboard)
+
+| View | Purpose |
+|------|---------|
+| Index.cshtml | Session list with summary stats |
+| Import.cshtml | File upload form |
+| Dashboard.cshtml | Main tabbed container |
+| _OverviewTab.cshtml | High-level summary |
+| _NessusTab.cshtml | Nessus severity metrics, vulnerability list |
+| _StigTab.cshtml | STIG status distribution, findings by severity |
+| _NISTComplianceTab.cshtml | CCI-to-NIST mapping, assessment creation |
+
+### Implementation Steps
+
+1. [ ] Create domain models (`Models/Domain/VulnImport.cs`)
+2. [ ] Update `ApplicationDbContext.cs` with DbSets
+3. [ ] Create and run EF migration (`dotnet ef migrations add AddVulnImport`)
+4. [ ] Create view models (`Models/ViewModels/VulnImportViewModels.cs`)
+5. [ ] Create IVulnImportService and VulnImportService
+6. [ ] Create ICCIMappingService and CCIMappingService
+7. [ ] Register services in `Program.cs`
+8. [ ] Create VulnImportController
+9. [ ] Create views (Index, Import, Dashboard, tab partials)
+10. [ ] Add navigation link to `_Layout.cshtml`
+11. [ ] Test with JSON export file
+
+### Design Decisions
+
+- **Session-Based**: Each import creates new session (keeps history for comparison)
+- **Denormalized Stats**: Summary counts stored in VulnImportSession for fast dashboard
+- **CCIs as JSON**: Store CCIs array as JSON string (simpler, read-only data)
+- **User-Controlled Assessments**: Show analysis first, user decides when to create NISTControlAssessments
+- **Tabbed Dashboard**: Overview | Nessus | STIG | NIST Compliance
+
+### Modified Files
+
+| File | Changes |
+|------|---------|
+| Data/ApplicationDbContext.cs | Add DbSets for VulnImport entities |
+| Views/Shared/_Layout.cshtml | Add "Vuln Import" nav link |
+| Program.cs | Register VulnImportService, CCIMappingService |
+
