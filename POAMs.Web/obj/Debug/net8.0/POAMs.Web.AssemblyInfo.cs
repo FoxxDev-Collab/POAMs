@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("POAMs.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1efb8aebe2d4dc16fa39858b09bfe285116586d2")]
 [assembly: System.Reflection.AssemblyProductAttribute("POAMs.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("POAMs.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -25,6 +25,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<NISTControlAssessment> NISTControlAssessments => Set<NISTControlAssessment>();
     public DbSet<ControlDocumentationRequirement> ControlDocumentationRequirements => Set<ControlDocumentationRequirement>();
     public DbSet<ControlDocumentationInstance> ControlDocumentationInstances => Set<ControlDocumentationInstance>();
+    public DbSet<ADConfiguration> ADConfigurations => Set<ADConfiguration>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -276,6 +277,15 @@ public class ApplicationDbContext : DbContext
                 .HasForeignKey(d => d.ReviewedById)
                 .OnDelete(DeleteBehavior.SetNull);
         });
+
+        // ADConfiguration (singleton-like settings)
+        modelBuilder.Entity<ADConfiguration>(entity =>
+        {
+            entity.HasOne(a => a.ModifiedBy)
+                .WithMany()
+                .HasForeignKey(a => a.ModifiedById)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
     }
 
     public override int SaveChanges()
@@ -375,6 +385,12 @@ public class ApplicationDbContext : DbContext
                 docInst.ModifiedDate = DateTime.UtcNow;
                 if (entry.State == EntityState.Added)
                     docInst.CreatedDate = DateTime.UtcNow;
+            }
+            else if (entry.Entity is ADConfiguration adConfig)
+            {
+                adConfig.ModifiedDate = DateTime.UtcNow;
+                if (entry.State == EntityState.Added)
+                    adConfig.CreatedDate = DateTime.UtcNow;
             }
         }
     }

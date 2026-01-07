@@ -15,12 +15,18 @@ public class AdminController : Controller
     private readonly ApplicationDbContext _context;
     private readonly IUserService _userService;
     private readonly IAuditService _auditService;
+    private readonly IActiveDirectoryService _adService;
 
-    public AdminController(ApplicationDbContext context, IUserService userService, IAuditService auditService)
+    public AdminController(
+        ApplicationDbContext context,
+        IUserService userService,
+        IAuditService auditService,
+        IActiveDirectoryService adService)
     {
         _context = context;
         _userService = userService;
         _auditService = auditService;
+        _adService = adService;
     }
 
     // User Management
@@ -325,6 +331,139 @@ public class AdminController : Controller
         ViewBag.EntityType = entityType;
 
         return View(logs);
+    }
+
+    // AD Configuration (Admin only)
+    [Authorize(Policy = "AdminOnly")]
+    public async Task<IActionResult> ADConfiguration()
+    {
+        var config = await _context.ADConfigurations.FirstOrDefaultAsync();
+        var viewModel = config != null
+            ? new ADConfigurationViewModel
+            {
+                Id = config.Id,
+                LdapServer = config.LdapServer,
+                LdapPort = config.LdapPort,
+                UseSsl = config.UseSsl,
+                Domain = config.Domain,
+                BaseDN = config.BaseDN,
+                ServiceAccountUsername = config.ServiceAccountUsername,
+                IsEnabled = config.IsEnabled,
+                AutoCreateUsers = config.AutoCreateUsers,
+                DefaultNewUserRole = config.DefaultNewUserRole,
+                LastConnectionTest = config.LastConnectionTest,
+                LastConnectionSuccess = config.LastConnectionSuccess,
+                LastConnectionError = config.LastConnectionError,
+                HasPassword = !string.IsNullOrEmpty(config.ServiceAccountPasswordEncrypted)
+            }
+            : new ADConfigurationViewModel();
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Policy = "AdminOnly")]
+    public async Task<IActionResult> ADConfiguration(ADConfigurationViewModel model)
+    {
+        // Password is only required for new config
+        var existingConfig = await _context.ADConfigurations.FirstOrDefaultAsync();
+        if (existingConfig == null && string.IsNullOrEmpty(model.ServiceAccountPassword))
+        {
+            ModelState.AddModelError("ServiceAccountPassword", "Password is required for initial configuration.");
+        }
+
+        if (!ModelState.IsValid)
+            return View(model);
+
+        if (existingConfig == null)
+        {
+            existingConfig = new ADConfiguration();
+            _context.ADConfigurations.Add(existingConfig);
+        }
+
+        var oldValues = existingConfig.Id > 0 ? new
+        {
+            existingConfig.LdapServer,
+            existingConfig.LdapPort,
+            existingConfig.UseSsl,
+            existingConfig.Domain,
+            existingConfig.BaseDN,
+            existingConfig.ServiceAccountUsername,
+            existingConfig.IsEnabled,
+            existingConfig.AutoCreateUsers,
+            existingConfig.DefaultNewUserRole
+        } : null;
+
+        existingConfig.LdapServer = model.LdapServer;
+        existingConfig.LdapPort = model.LdapPort;
+        existingConfig.UseSsl = model.UseSsl;
+        existingConfig.Domain = model.Domain;
+        existingConfig.BaseDN = model.BaseDN;
+        existingConfig.ServiceAccountUsername = model.ServiceAccountUsername;
+        existingConfig.IsEnabled = model.IsEnabled;
+        existingConfig.AutoCreateUsers = model.AutoCreateUsers;
+        existingConfig.DefaultNewUserRole = model.DefaultNewUserRole;
+
+        // Only update password if provided
+        if (!string.IsNullOrEmpty(model.ServiceAccountPassword))
+        {
+            existingConfig.ServiceAccountPasswordEncrypted = _adService.EncryptPassword(model.ServiceAccountPassword);
+        }
+
+        var currentUser = await GetCurrentUserAsync();
+        existingConfig.ModifiedById = currentUser?.Id;
+
+        await _context.SaveChangesAsync();
+
+        await _auditService.LogAsync(currentUser?.Id, oldValues == null ? "Create" : "Update", "ADConfiguration", existingConfig.Id, oldValues, model, GetIpAddress());
+
+        TempData["Success"] = "AD configuration saved successfully.";
+        return RedirectToAction(nameof(ADConfiguration));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Policy = "AdminOnly")]
+    public async Task<IActionResult> TestADConnection()
+    {
+        var result = await _adService.TestConnectionAsync();
+
+        // Update last test info in config
+        var config = await _context.ADConfigurations.FirstOrDefaultAsync();
+        if (config != null)
+        {
+            config.LastConnectionTest = DateTime.UtcNow;
+            config.LastConnectionSuccess = result.Success;
+            config.LastConnectionError = result.ErrorMessage;
+            await _context.SaveChangesAsync();
+        }
+
+        return Json(new
+        {
+            success = result.Success,
+            message = result.Success
+                ? $"Connected successfully in {result.ResponseTime.TotalMilliseconds:F0}ms"
+                : result.ErrorMessage,
+            serverInfo = result.ServerInfo
+        });
+    }
+
+    [HttpGet]
+    [Authorize(Policy = "AdminOnly")]
+    public async Task<IActionResult> SearchADUsers(string term)
+    {
+        if (string.IsNullOrWhiteSpace(term) || term.Length < 2)
+            return Json(new List<object>());
+
+        var results = await _adService.SearchUsersAsync(term);
+        return Json(results.Select(u => new
+        {
+            u.SamAccountName,
+            u.DisplayName,
+            u.Email,
+            u.Department
+        }));
     }
 
     private async Task PopulateUsersDropdownAsync(int? selectedId = null)

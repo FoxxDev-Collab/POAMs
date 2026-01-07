@@ -1,3 +1,4 @@
+using POAMs.Web.Models.ActiveDirectory;
 using POAMs.Web.Models.Domain;
 
 namespace POAMs.Web.Services;
@@ -6,7 +7,8 @@ public interface IUserService
 {
     Task<User?> GetByUsernameAsync(string username);
     Task<User?> GetByIdAsync(int id);
-    Task<User?> GetOrCreateWindowsUserAsync(string windowsUsername, string? email = null);
+    Task<User?> GetByADGuidAsync(string objectGuid);
+    Task<User?> GetOrCreateWindowsUserAsync(string windowsUsername, ADUserInfo? adInfo = null);
     Task<User> CreateLocalUserAsync(string username, string email, string password, string displayName, UserRole role);
     Task<bool> ValidatePasswordAsync(User user, string password);
     Task UpdatePasswordAsync(User user, string newPassword);

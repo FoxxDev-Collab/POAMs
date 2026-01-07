@@ -31,6 +31,18 @@ public class User
 
     public bool IsActive { get; set; } = true;
 
+    // AD tracking fields
+    [MaxLength(256)]
+    public string? ADObjectGuid { get; set; }
+
+    public DateTime? LastADSync { get; set; }
+
+    [MaxLength(256)]
+    public string? ADDisplayName { get; set; }
+
+    [MaxLength(256)]
+    public string? ADEmail { get; set; }
+
     public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
     public DateTime ModifiedDate { get; set; } = DateTime.UtcNow;

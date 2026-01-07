@@ -1,7 +1,10 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using POAMs.Web.Data;
+using POAMs.Web.Middleware;
 using POAMs.Web.Services;
 using Serilog;
 
@@ -18,13 +21,29 @@ try
 
     builder.Host.UseSerilog();
 
-    // Add DbContext with SQLite
+    // Add Data Protection for encrypting AD service account password
+    builder.Services.AddDataProtection()
+        .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "keys")))
+        .SetApplicationName("POAMs.Web");
+
+    // Add DbContext with SQL Server
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+    // Check if Windows auth is enabled
+    var useWindowsAuth = builder.Configuration.GetValue<bool>("Authentication:UseWindowsAuth");
+
+    // Configure authentication schemes
+    var authBuilder = builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = useWindowsAuth
+            ? NegotiateDefaults.AuthenticationScheme
+            : CookieAuthenticationDefaults.AuthenticationScheme;
+    });
 
     // Add cookie authentication
-    builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-        .AddCookie(options =>
+    authBuilder.AddCookie(options =>
         {
             options.LoginPath = "/Account/Login";
             options.LogoutPath = "/Account/Logout";
@@ -35,6 +54,12 @@ try
             options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             options.Cookie.SameSite = SameSiteMode.Lax;
         });
+
+    // Add Negotiate (Windows) authentication if enabled
+    if (useWindowsAuth)
+    {
+        authBuilder.AddNegotiate();
+    }
 
     // Add authorization policies
     builder.Services.AddAuthorization(options =>
@@ -48,6 +73,7 @@ try
 
     // Add services
     builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<IActiveDirectoryService, ActiveDirectoryService>();
     builder.Services.AddScoped<IAuditService, AuditService>();
     builder.Services.AddScoped<IExportService, XactaExportService>();
     builder.Services.AddScoped<IImportService, ExcelImportService>();
@@ -106,6 +132,13 @@ try
     app.UseRouting();
 
     app.UseAuthentication();
+
+    // Add Windows auth handler after authentication but before authorization
+    if (useWindowsAuth)
+    {
+        app.UseWindowsAuthenticationHandler();
+    }
+
     app.UseAuthorization();
 
     app.MapControllerRoute(

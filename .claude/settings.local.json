@@ -11,7 +11,9 @@
       "Bash(dir:*)",
       "Bash(dotnet ef database update:*)",
       "Bash(dotnet run)",
-      "Bash(dotnet clean:*)"
+      "Bash(dotnet clean:*)",
+      "Bash(cd:*)",
+      "Bash(cat:*)"
     ]
   }
 }

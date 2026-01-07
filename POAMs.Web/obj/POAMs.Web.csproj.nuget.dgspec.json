@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\jeremiah.price\\Documents\\3. Local-Dev\\Compliance_Tools\\POAMs\\POAMS.Web\\POAMs.Web.csproj": {}
+    "C:\\Users\\jeremiah.price\\Documents\\3. Local-Dev\\Compliance_Tools\\POAMs\\POAMs.Web\\POAMs.Web.csproj": {}
   },
   "projects": {
-    "C:\\Users\\jeremiah.price\\Documents\\3. Local-Dev\\Compliance_Tools\\POAMs\\POAMS.Web\\POAMs.Web.csproj": {
+    "C:\\Users\\jeremiah.price\\Documents\\3. Local-Dev\\Compliance_Tools\\POAMs\\POAMs.Web\\POAMs.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jeremiah.price\\Documents\\3. Local-Dev\\Compliance_Tools\\POAMs\\POAMS.Web\\POAMs.Web.csproj",
+        "projectUniqueName": "C:\\Users\\jeremiah.price\\Documents\\3. Local-Dev\\Compliance_Tools\\POAMs\\POAMs.Web\\POAMs.Web.csproj",
         "projectName": "POAMs.Web",
-        "projectPath": "C:\\Users\\jeremiah.price\\Documents\\3. Local-Dev\\Compliance_Tools\\POAMs\\POAMS.Web\\POAMs.Web.csproj",
+        "projectPath": "C:\\Users\\jeremiah.price\\Documents\\3. Local-Dev\\Compliance_Tools\\POAMs\\POAMs.Web\\POAMs.Web.csproj",
         "packagesPath": "C:\\Users\\jeremiah.price\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jeremiah.price\\Documents\\3. Local-Dev\\Compliance_Tools\\POAMs\\POAMS.Web\\obj\\",
+        "outputPath": "C:\\Users\\jeremiah.price\\Documents\\3. Local-Dev\\Compliance_Tools\\POAMs\\POAMs.Web\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -63,6 +63,10 @@
               "target": "Package",
               "version": "[8.0.*, )"
             },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.*, )"
+            },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
               "version": "[8.0.*, )"
@@ -76,6 +80,10 @@
             "Serilog.AspNetCore": {
               "target": "Package",
               "version": "[8.*, )"
+            },
+            "System.DirectoryServices.Protocols": {
+              "target": "Package",
+              "version": "[10.0.1, )"
             }
           },
           "imports": [

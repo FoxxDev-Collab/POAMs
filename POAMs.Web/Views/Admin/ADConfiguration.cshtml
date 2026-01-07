@@ -1,0 +1,213 @@
+@model POAMs.Web.Models.ViewModels.ADConfigurationViewModel
+@using POAMs.Web.Models.Domain
+@{
+    ViewData["Title"] = "Active Directory Configuration";
+}
+
+<div class="mb-4">
+    <h1 class="h3"><i class="bi bi-diagram-3 me-2"></i>Active Directory Configuration</h1>
+    <p class="text-muted mb-0">Configure LDAP connection for Windows Authentication</p>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i>@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>@TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-gear me-2"></i>LDAP Settings
+            </div>
+            <div class="card-body">
+                <form asp-action="ADConfiguration" method="post">
+                    <input type="hidden" asp-for="Id" />
+
+                    <h6 class="text-muted mb-3">Connection Settings</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <label asp-for="LdapServer" class="form-label"></label>
+                            <input asp-for="LdapServer" class="form-control" placeholder="ldap.domain.local or 192.168.1.10" />
+                            <span asp-validation-for="LdapServer" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="LdapPort" class="form-label"></label>
+                            <input asp-for="LdapPort" type="number" class="form-control" />
+                            <span asp-validation-for="LdapPort" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input asp-for="UseSsl" class="form-check-input" />
+                            <label asp-for="UseSsl" class="form-check-label"></label>
+                            <small class="text-muted d-block">Use port 636 for LDAPS</small>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Domain" class="form-label"></label>
+                            <input asp-for="Domain" class="form-control" placeholder="DOMAIN or domain.local" />
+                            <span asp-validation-for="Domain" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="BaseDN" class="form-label"></label>
+                            <input asp-for="BaseDN" class="form-control" placeholder="DC=domain,DC=local" />
+                            <span asp-validation-for="BaseDN" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <h6 class="text-muted mb-3">Service Account</h6>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="ServiceAccountUsername" class="form-label"></label>
+                            <input asp-for="ServiceAccountUsername" class="form-control" placeholder="svc_poams@domain.local" />
+                            <span asp-validation-for="ServiceAccountUsername" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ServiceAccountPassword" class="form-label"></label>
+                            <input asp-for="ServiceAccountPassword" class="form-control" placeholder="@(Model.HasPassword ? "Leave blank to keep existing" : "Enter password")" />
+                            @if (Model.HasPassword)
+                            {
+                                <small class="text-muted">Leave blank to keep existing password</small>
+                            }
+                            <span asp-validation-for="ServiceAccountPassword" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <h6 class="text-muted mb-3">Feature Settings</h6>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input asp-for="IsEnabled" class="form-check-input" />
+                            <label asp-for="IsEnabled" class="form-check-label"></label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input asp-for="AutoCreateUsers" class="form-check-input" />
+                            <label asp-for="AutoCreateUsers" class="form-check-label"></label>
+                            <small class="text-muted d-block">When enabled, new Windows users are created in the database on first login</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="DefaultNewUserRole" class="form-label"></label>
+                        <select asp-for="DefaultNewUserRole" asp-items="Html.GetEnumSelectList<UserRole>()" class="form-select"></select>
+                        <small class="text-muted">Role assigned to new users (admin can change later)</small>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-2"></i>Save Configuration
+                        </button>
+                        <button type="button" id="testConnection" class="btn btn-outline-secondary">
+                            <i class="bi bi-plug me-2"></i>Test Connection
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-3">
+            <div class="card-header">
+                <i class="bi bi-activity me-2"></i>Connection Status
+            </div>
+            <div class="card-body">
+                @if (Model.LastConnectionTest.HasValue)
+                {
+                    <p class="mb-2">
+                        <strong>Last Test:</strong> @Model.LastConnectionTest.Value.ToString("g")
+                    </p>
+                    <p class="mb-0">
+                        <strong>Status:</strong>
+                        @if (Model.LastConnectionSuccess == true)
+                        {
+                            <span class="badge bg-success">Connected</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Failed</span>
+                            @if (!string.IsNullOrEmpty(Model.LastConnectionError))
+                            {
+                                <br /><small class="text-danger">@Model.LastConnectionError</small>
+                            }
+                        }
+                    </p>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No connection test performed yet</p>
+                }
+
+                <div id="testResult" class="mt-3" style="display:none;"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-question-circle me-2"></i>Configuration Help
+            </div>
+            <div class="card-body small">
+                <p><strong>LDAP Server:</strong> The hostname or IP of your domain controller.</p>
+                <p><strong>Base DN:</strong> The root of your AD tree, e.g., DC=company,DC=com</p>
+                <p><strong>Service Account:</strong> An AD account with read access to query users.</p>
+                <p class="mb-0"><strong>Note:</strong> Roles are NOT synced from AD. Admins assign roles manually after user creation.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+$(function() {
+    $('#testConnection').click(function() {
+        var btn = $(this);
+        var result = $('#testResult');
+
+        btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2"></span>Testing...');
+        result.hide();
+
+        $.ajax({
+            url: '@Url.Action("TestADConnection")',
+            type: 'POST',
+            headers: {
+                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function(data) {
+                var alertClass = data.success ? 'alert-success' : 'alert-danger';
+                var icon = data.success ? 'check-circle' : 'exclamation-triangle';
+                result.html('<div class="alert ' + alertClass + ' mb-0"><i class="bi bi-' + icon + ' me-2"></i>' + data.message + '</div>');
+                result.show();
+            },
+            error: function() {
+                result.html('<div class="alert alert-danger mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Request failed</div>');
+                result.show();
+            },
+            complete: function() {
+                btn.prop('disabled', false).html('<i class="bi bi-plug me-2"></i>Test Connection');
+            }
+        });
+    });
+});
+</script>
+}

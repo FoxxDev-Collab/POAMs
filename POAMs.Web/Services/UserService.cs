@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
 using POAMs.Web.Data;
+using POAMs.Web.Models.ActiveDirectory;
 using POAMs.Web.Models.Domain;
 using System.Security.Cryptography;
 
@@ -28,28 +29,78 @@ public class UserService : IUserService
         return await _context.Users.FindAsync(id);
     }
 
-    public async Task<User?> GetOrCreateWindowsUserAsync(string windowsUsername, string? email = null)
+    public async Task<User?> GetByADGuidAsync(string objectGuid)
     {
+        if (string.IsNullOrEmpty(objectGuid))
+            return null;
+        return await _context.Users
+            .FirstOrDefaultAsync(u => u.ADObjectGuid == objectGuid && u.IsActive);
+    }
+
+    public async Task<User?> GetOrCreateWindowsUserAsync(string windowsUsername, ADUserInfo? adInfo = null)
+    {
+        // First try to find by username
         var user = await GetByUsernameAsync(windowsUsername);
         if (user != null)
+        {
+            // Update AD sync info if we have it
+            if (adInfo != null)
+            {
+                user.LastADSync = DateTime.UtcNow;
+                user.ADDisplayName = adInfo.DisplayName;
+                user.ADEmail = adInfo.Email;
+                if (string.IsNullOrEmpty(user.ADObjectGuid))
+                    user.ADObjectGuid = adInfo.ObjectGuid;
+                await _context.SaveChangesAsync();
+            }
             return user;
+        }
+
+        // If AD info provided, also try to find by ObjectGuid (in case username changed)
+        if (adInfo != null && !string.IsNullOrEmpty(adInfo.ObjectGuid))
+        {
+            user = await GetByADGuidAsync(adInfo.ObjectGuid);
+            if (user != null)
+            {
+                // Update username if it changed in AD
+                user.Username = windowsUsername;
+                user.LastADSync = DateTime.UtcNow;
+                user.ADDisplayName = adInfo.DisplayName;
+                user.ADEmail = adInfo.Email;
+                await _context.SaveChangesAsync();
+                return user;
+            }
+        }
+
+        // Get default role from AD config
+        var adConfig = await _context.ADConfigurations.FirstOrDefaultAsync();
+        var defaultRole = adConfig?.DefaultNewUserRole ?? UserRole.ISSO;
 
         // Create new user from Windows auth
         user = new User
         {
             Username = windowsUsername,
-            Email = email ?? $"{windowsUsername.Replace("\\", ".")}@domain.local",
-            DisplayName = windowsUsername.Contains('\\')
-                ? windowsUsername.Split('\\').Last()
-                : windowsUsername,
-            Role = UserRole.ISSO, // Default role for new Windows users
+            Email = adInfo?.Email ?? $"{windowsUsername.Replace("\\", ".")}@domain.local",
+            DisplayName = adInfo?.DisplayName ?? ExtractDisplayName(windowsUsername),
+            Phone = adInfo?.Phone,
+            Role = defaultRole,
             IsWindowsAuth = true,
-            IsActive = true
+            IsActive = true,
+            ADObjectGuid = adInfo?.ObjectGuid,
+            ADDisplayName = adInfo?.DisplayName,
+            ADEmail = adInfo?.Email,
+            LastADSync = DateTime.UtcNow
         };
 
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
         return user;
+    }
+
+    private static string ExtractDisplayName(string windowsUsername)
+    {
+        var parts = windowsUsername.Split('\\');
+        return parts.Length > 1 ? parts[1] : parts[0];
     }
 
     public async Task<User> CreateLocalUserAsync(string username, string email, string password, string displayName, UserRole role)

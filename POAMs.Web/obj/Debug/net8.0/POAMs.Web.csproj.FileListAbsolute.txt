@@ -170,3 +170,4 @@ C:\Users\jeremiah.price\Documents\3. Local-Dev\Compliance_Tools\POAMs\POAMS.Web\
 C:\Users\jeremiah.price\Documents\3. Local-Dev\Compliance_Tools\POAMs\POAMS.Web\bin\Debug\net8.0\publish\POAMs.Web.deps.json
 C:\Users\jeremiah.price\Documents\3. Local-Dev\Compliance_Tools\POAMs\POAMS.Web\bin\Debug\net8.0\publish\POAMs.Web.runtimeconfig.json
 C:\Users\jeremiah.price\Documents\3. Local-Dev\Compliance_Tools\POAMs\POAMS.Web\bin\Debug\net8.0\publish\POAMs.Web.staticwebassets.endpoints.json
+C:\Users\jeremiah.price\Documents\3. Local-Dev\Compliance_Tools\POAMs\POAMs.Web\obj\Debug\net8.0\POAMs.Web.sourcelink.json

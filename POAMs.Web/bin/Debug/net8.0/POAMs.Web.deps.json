@@ -13,7 +13,8 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.22",
           "Microsoft.EntityFrameworkCore.Sqlite": "8.0.22",
           "Microsoft.EntityFrameworkCore.Tools": "8.0.22",
-          "Serilog.AspNetCore": "8.0.3"
+          "Serilog.AspNetCore": "8.0.3",
+          "System.DirectoryServices.Protocols": "10.0.1"
         },
         "runtime": {
           "POAMs.Web.dll": {}
@@ -83,7 +84,7 @@
         "dependencies": {
           "Microsoft.AspNetCore.Connections.Abstractions": "8.0.22",
           "Microsoft.Extensions.Caching.Memory": "8.0.1",
-          "System.DirectoryServices.Protocols": "8.0.2"
+          "System.DirectoryServices.Protocols": "10.0.1"
         },
         "runtime": {
           "lib/net8.0/Microsoft.AspNetCore.Authentication.Negotiate.dll": {
@@ -1109,31 +1110,31 @@
           "System.Runtime": "4.3.1"
         }
       },
-      "System.DirectoryServices.Protocols/8.0.2": {
+      "System.DirectoryServices.Protocols/10.0.1": {
         "runtime": {
           "lib/net8.0/System.DirectoryServices.Protocols.dll": {
-            "assemblyVersion": "8.0.0.2",
-            "fileVersion": "8.0.1725.26602"
+            "assemblyVersion": "10.0.0.1",
+            "fileVersion": "10.0.125.57005"
           }
         },
         "runtimeTargets": {
           "runtimes/linux/lib/net8.0/System.DirectoryServices.Protocols.dll": {
             "rid": "linux",
             "assetType": "runtime",
-            "assemblyVersion": "8.0.0.2",
-            "fileVersion": "8.0.1725.26602"
+            "assemblyVersion": "10.0.0.1",
+            "fileVersion": "10.0.125.57005"
           },
           "runtimes/osx/lib/net8.0/System.DirectoryServices.Protocols.dll": {
             "rid": "osx",
             "assetType": "runtime",
-            "assemblyVersion": "8.0.0.2",
-            "fileVersion": "8.0.1725.26602"
+            "assemblyVersion": "10.0.0.1",
+            "fileVersion": "10.0.125.57005"
           },
           "runtimes/win/lib/net8.0/System.DirectoryServices.Protocols.dll": {
             "rid": "win",
             "assetType": "runtime",
-            "assemblyVersion": "8.0.0.2",
-            "fileVersion": "8.0.1725.26602"
+            "assemblyVersion": "10.0.0.1",
+            "fileVersion": "10.0.125.57005"
           }
         }
       },
@@ -2324,12 +2325,12 @@
       "path": "system.diagnostics.tracing/4.3.0",
       "hashPath": "system.diagnostics.tracing.4.3.0.nupkg.sha512"
     },
-    "System.DirectoryServices.Protocols/8.0.2": {
+    "System.DirectoryServices.Protocols/10.0.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-7pSU+qkmdkwbikAvn4kpvClfyffaR7dYJw7ucBtO5d6m/7wgKZIULOZAGFLMIMOFFmg7xC67TYKptHxcbqQm+Q==",
-      "path": "system.directoryservices.protocols/8.0.2",
-      "hashPath": "system.directoryservices.protocols.8.0.2.nupkg.sha512"
+      "sha512": "sha512-vpvT1HfkqYKAiY8QRtgSmzkRd+I4EKCA/AuNG7+FJ/BWF2N55M6WYFnIdaeQr19YtH/CI7tl3UuNR2mT4nUA+w==",
+      "path": "system.directoryservices.protocols/10.0.1",
+      "hashPath": "system.directoryservices.protocols.10.0.1.nupkg.sha512"
     },
     "System.Globalization/4.3.0": {
       "type": "package",

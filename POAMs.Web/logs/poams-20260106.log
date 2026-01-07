@@ -29538,3 +29538,288 @@ ORDER BY "u"."DisplayName"
 2026-01-06 15:47:16.975 -07:00 [INF] Executed action POAMs.Web.Controllers.AdminController.Users (POAMs.Web) in 7.4739ms
 2026-01-06 15:47:16.976 -07:00 [INF] Executed endpoint 'POAMs.Web.Controllers.AdminController.Users (POAMs.Web)'
 2026-01-06 15:47:16.977 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/Admin/Users - 200 null text/html; charset=utf-8 14.4164ms
+2026-01-06 16:14:03.905 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/Admin/Users - null null
+2026-01-06 16:14:03.908 -07:00 [INF] Executing endpoint 'POAMs.Web.Controllers.AdminController.Users (POAMs.Web)'
+2026-01-06 16:14:03.909 -07:00 [INF] Route matched with {action = "Users", controller = "Admin"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Users() on controller POAMs.Web.Controllers.AdminController (POAMs.Web).
+2026-01-06 16:14:03.916 -07:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."Id", "u"."CreatedDate", "u"."DisplayName", "u"."Email", "u"."IsActive", "u"."IsWindowsAuth", "u"."ModifiedDate", "u"."PasswordHash", "u"."Phone", "u"."Role", "u"."Username"
+FROM "Users" AS "u"
+ORDER BY "u"."DisplayName"
+2026-01-06 16:14:03.920 -07:00 [INF] Executing ViewResult, running view Users.
+2026-01-06 16:14:03.922 -07:00 [INF] Executed ViewResult - view Users executed in 3.649ms.
+2026-01-06 16:14:03.923 -07:00 [INF] Executed action POAMs.Web.Controllers.AdminController.Users (POAMs.Web) in 12.59ms
+2026-01-06 16:14:03.924 -07:00 [INF] Executed endpoint 'POAMs.Web.Controllers.AdminController.Users (POAMs.Web)'
+2026-01-06 16:14:03.925 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/Admin/Users - 200 null text/html; charset=utf-8 20.54ms
+2026-01-06 16:14:03.934 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/lib/bootstrap/dist/css/bootstrap.min.css - null null
+2026-01-06 16:14:03.935 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/css/site.css?v=pAGv4ietcJNk_EwsQZ5BN9-K4MuNYS2a9wl4Jw-q9D0 - null null
+2026-01-06 16:14:03.936 -07:00 [INF] The file /lib/bootstrap/dist/css/bootstrap.min.css was not modified
+2026-01-06 16:14:03.937 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/POAMs.Web.styles.css?v=xuFlKI2XPoEOGHKEh2MrWbkPvb7kIVoUToiV5vA_Hns - null null
+2026-01-06 16:14:03.938 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/lib/jquery/dist/jquery.min.js - null null
+2026-01-06 16:14:03.938 -07:00 [INF] The file /css/site.css was not modified
+2026-01-06 16:14:03.938 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/lib/bootstrap/dist/js/bootstrap.bundle.min.js - null null
+2026-01-06 16:14:03.939 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/js/site.js?v=hRQyftXiu1lLX2P9Ly9xa4gHJgLeR1uGN5qegUobtGo - null null
+2026-01-06 16:14:03.939 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/lib/bootstrap/dist/css/bootstrap.min.css - 304 null text/css 5.6022ms
+2026-01-06 16:14:03.942 -07:00 [INF] The file /POAMs.Web.styles.css was not modified
+2026-01-06 16:14:03.943 -07:00 [INF] The file /lib/jquery/dist/jquery.min.js was not modified
+2026-01-06 16:14:03.944 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/css/site.css?v=pAGv4ietcJNk_EwsQZ5BN9-K4MuNYS2a9wl4Jw-q9D0 - 304 null text/css 8.5906ms
+2026-01-06 16:14:03.945 -07:00 [INF] The file /lib/bootstrap/dist/js/bootstrap.bundle.min.js was not modified
+2026-01-06 16:14:03.947 -07:00 [INF] The file /js/site.js was not modified
+2026-01-06 16:14:03.952 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/POAMs.Web.styles.css?v=xuFlKI2XPoEOGHKEh2MrWbkPvb7kIVoUToiV5vA_Hns - 304 null text/css 14.9367ms
+2026-01-06 16:14:03.953 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/lib/jquery/dist/jquery.min.js - 304 null text/javascript 14.7698ms
+2026-01-06 16:14:03.955 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/lib/bootstrap/dist/js/bootstrap.bundle.min.js - 304 null text/javascript 17.7506ms
+2026-01-06 16:14:03.956 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/js/site.js?v=hRQyftXiu1lLX2P9Ly9xa4gHJgLeR1uGN5qegUobtGo - 304 null text/javascript 16.973ms
+2026-01-06 16:14:04.004 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/favicon.ico - null null
+2026-01-06 16:14:04.007 -07:00 [INF] The file /favicon.ico was not modified
+2026-01-06 16:14:04.008 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/favicon.ico - 304 null image/x-icon 3.239ms
+2026-01-06 16:14:06.660 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/Account/Logout - null null
+2026-01-06 16:14:06.662 -07:00 [INF] Executing endpoint 'POAMs.Web.Controllers.AccountController.Logout (POAMs.Web)'
+2026-01-06 16:14:06.663 -07:00 [INF] Route matched with {action = "Logout", controller = "Account"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Logout() on controller POAMs.Web.Controllers.AccountController (POAMs.Web).
+2026-01-06 16:14:06.668 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[@p0='?' (Size = 6), @p1='?' (DbType = Int32), @p2='?' (Size = 4), @p3='?' (Size = 3), @p4='?', @p5='?', @p6='?' (DbType = DateTime), @p7='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "AuditLogs" ("Action", "EntityId", "EntityType", "IpAddress", "NewValues", "OldValues", "Timestamp", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7)
+RETURNING "Id";
+2026-01-06 16:14:06.679 -07:00 [INF] AuthenticationScheme: Cookies signed out.
+2026-01-06 16:14:06.680 -07:00 [INF] Executing RedirectResult, redirecting to /Account/Login.
+2026-01-06 16:14:06.681 -07:00 [INF] Executed action POAMs.Web.Controllers.AccountController.Logout (POAMs.Web) in 16.0364ms
+2026-01-06 16:14:06.682 -07:00 [INF] Executed endpoint 'POAMs.Web.Controllers.AccountController.Logout (POAMs.Web)'
+2026-01-06 16:14:06.683 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/Account/Logout - 302 0 null 23.2581ms
+2026-01-06 16:14:06.686 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/Account/Login - null null
+2026-01-06 16:14:06.689 -07:00 [INF] Executing endpoint 'POAMs.Web.Controllers.AccountController.Login (POAMs.Web)'
+2026-01-06 16:14:06.690 -07:00 [INF] Route matched with {action = "Login", controller = "Account"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Login(System.String) on controller POAMs.Web.Controllers.AccountController (POAMs.Web).
+2026-01-06 16:14:06.693 -07:00 [INF] Executing ViewResult, running view Login.
+2026-01-06 16:14:06.695 -07:00 [INF] Executed ViewResult - view Login executed in 2.6246ms.
+2026-01-06 16:14:06.696 -07:00 [INF] Executed action POAMs.Web.Controllers.AccountController.Login (POAMs.Web) in 4.3838ms
+2026-01-06 16:14:06.697 -07:00 [INF] Executed endpoint 'POAMs.Web.Controllers.AccountController.Login (POAMs.Web)'
+2026-01-06 16:14:06.698 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/Account/Login - 200 null text/html; charset=utf-8 11.5614ms
+2026-01-06 16:17:03.715 -07:00 [INF] Application is shutting down...
+2026-01-06 16:23:50.458 -07:00 [INF] Starting POAMs web application
+2026-01-06 16:23:50.682 -07:00 [FTL] Application terminated unexpectedly
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.WebApplicationBuilder.Build()
+   at Program.<Main>$(String[] args) in C:\Users\jeremiah.price\Documents\3. Local-Dev\Compliance_Tools\POAMs\POAMs.Web\Program.cs:line 76
+2026-01-06 16:35:13.290 -07:00 [INF] Starting POAMs web application
+2026-01-06 16:35:14.257 -07:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2026-01-06 16:35:14.268 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*) FROM "sqlite_master" WHERE "name" = '__EFMigrationsHistory' AND "type" = 'table';
+2026-01-06 16:35:14.280 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2026-01-06 16:35:14.317 -07:00 [INF] Applying migration '20260106232351_AddADConfiguration'.
+2026-01-06 16:35:14.373 -07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "Users" ADD "ADDisplayName" TEXT NULL;
+2026-01-06 16:35:14.375 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "Users" ADD "ADEmail" TEXT NULL;
+2026-01-06 16:35:14.378 -07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "Users" ADD "ADObjectGuid" TEXT NULL;
+2026-01-06 16:35:14.380 -07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "Users" ADD "LastADSync" TEXT NULL;
+2026-01-06 16:35:14.382 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "ADConfigurations" (
+    "Id" INTEGER NOT NULL CONSTRAINT "PK_ADConfigurations" PRIMARY KEY AUTOINCREMENT,
+    "LdapServer" TEXT NOT NULL,
+    "LdapPort" INTEGER NOT NULL,
+    "UseSsl" INTEGER NOT NULL,
+    "Domain" TEXT NOT NULL,
+    "BaseDN" TEXT NOT NULL,
+    "ServiceAccountUsername" TEXT NOT NULL,
+    "ServiceAccountPasswordEncrypted" TEXT NOT NULL,
+    "IsEnabled" INTEGER NOT NULL,
+    "AutoCreateUsers" INTEGER NOT NULL,
+    "DefaultNewUserRole" INTEGER NOT NULL,
+    "LastConnectionTest" TEXT NULL,
+    "LastConnectionSuccess" INTEGER NULL,
+    "LastConnectionError" TEXT NULL,
+    "CreatedDate" TEXT NOT NULL,
+    "ModifiedDate" TEXT NOT NULL,
+    "ModifiedById" INTEGER NULL,
+    CONSTRAINT "FK_ADConfigurations_Users_ModifiedById" FOREIGN KEY ("ModifiedById") REFERENCES "Users" ("Id") ON DELETE SET NULL
+);
+2026-01-06 16:35:14.384 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_ADConfigurations_ModifiedById" ON "ADConfigurations" ("ModifiedById");
+2026-01-06 16:35:14.385 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20260106232351_AddADConfiguration', '8.0.22');
+2026-01-06 16:35:14.529 -07:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1
+    FROM "NISTControls" AS "n")
+2026-01-06 16:35:14.537 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1
+    FROM "ControlDocumentationRequirements" AS "c")
+2026-01-06 16:35:14.541 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT EXISTS (
+    SELECT 1
+    FROM "Users" AS "u")
+2026-01-06 16:35:14.636 -07:00 [INF] Creating key {f73be1ca-4945-429b-9465-6700157e5f42} with creation date 2026-01-06 23:35:14Z, activation date 2026-01-06 23:35:14Z, and expiration date 2026-04-06 23:35:14Z.
+2026-01-06 16:35:14.646 -07:00 [WRN] No XML encryptor configured. Key {f73be1ca-4945-429b-9465-6700157e5f42} may be persisted to storage in unencrypted form.
+2026-01-06 16:35:14.652 -07:00 [INF] Writing data to file 'C:\Users\jeremiah.price\Documents\3. Local-Dev\Compliance_Tools\POAMs\POAMS.Web\keys\key-f73be1ca-4945-429b-9465-6700157e5f42.xml'.
+2026-01-06 16:35:14.689 -07:00 [INF] Now listening on: http://localhost:5230
+2026-01-06 16:35:14.691 -07:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-06 16:35:14.692 -07:00 [INF] Hosting environment: Development
+2026-01-06 16:35:14.693 -07:00 [INF] Content root path: C:\Users\jeremiah.price\Documents\3. Local-Dev\Compliance_Tools\POAMs\POAMS.Web
+2026-01-06 16:35:17.728 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/ - null null
+2026-01-06 16:35:17.735 -07:00 [WRN] Failed to determine the https port for redirect.
+2026-01-06 16:35:17.786 -07:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-01-06 16:35:17.788 -07:00 [INF] AuthenticationScheme: Negotiate was challenged.
+2026-01-06 16:35:17.796 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/ - 401 0 null 69.0224ms
+2026-01-06 16:35:23.466 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/Account/Login - null null
+2026-01-06 16:35:23.474 -07:00 [INF] Executing endpoint 'POAMs.Web.Controllers.AccountController.Login (POAMs.Web)'
+2026-01-06 16:35:23.488 -07:00 [INF] Route matched with {action = "Login", controller = "Account"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Login(System.String) on controller POAMs.Web.Controllers.AccountController (POAMs.Web).
+2026-01-06 16:35:23.501 -07:00 [INF] Executing ViewResult, running view Login.
+2026-01-06 16:35:23.557 -07:00 [INF] Executed ViewResult - view Login executed in 54.8295ms.
+2026-01-06 16:35:23.560 -07:00 [INF] Executed action POAMs.Web.Controllers.AccountController.Login (POAMs.Web) in 69.5365ms
+2026-01-06 16:35:23.562 -07:00 [INF] Executed endpoint 'POAMs.Web.Controllers.AccountController.Login (POAMs.Web)'
+2026-01-06 16:35:23.565 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/Account/Login - 200 null text/html; charset=utf-8 99.1458ms
+2026-01-06 16:35:23.575 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/lib/jquery-validation/dist/jquery.validate.min.js - null null
+2026-01-06 16:35:23.575 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js - null null
+2026-01-06 16:35:23.582 -07:00 [INF] The file /lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js was not modified
+2026-01-06 16:35:23.582 -07:00 [INF] The file /lib/jquery-validation/dist/jquery.validate.min.js was not modified
+2026-01-06 16:35:23.583 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js - 304 null text/javascript 8.4718ms
+2026-01-06 16:35:23.584 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/lib/jquery-validation/dist/jquery.validate.min.js - 304 null text/javascript 9.242ms
+2026-01-06 16:35:30.833 -07:00 [INF] Request starting HTTP/1.1 POST http://localhost:5230/Account/Login - application/x-www-form-urlencoded 262
+2026-01-06 16:35:30.841 -07:00 [INF] Executing endpoint 'POAMs.Web.Controllers.AccountController.Login (POAMs.Web)'
+2026-01-06 16:35:30.852 -07:00 [INF] Route matched with {action = "Login", controller = "Account"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(POAMs.Web.Models.ViewModels.LoginViewModel, System.String) on controller POAMs.Web.Controllers.AccountController (POAMs.Web).
+2026-01-06 16:35:30.969 -07:00 [INF] Executed DbCommand (2ms) [Parameters=[@__ToLower_0='?' (Size = 14)], CommandType='"Text"', CommandTimeout='30']
+SELECT "u"."Id", "u"."ADDisplayName", "u"."ADEmail", "u"."ADObjectGuid", "u"."CreatedDate", "u"."DisplayName", "u"."Email", "u"."IsActive", "u"."IsWindowsAuth", "u"."LastADSync", "u"."ModifiedDate", "u"."PasswordHash", "u"."Phone", "u"."Role", "u"."Username"
+FROM "Users" AS "u"
+WHERE lower("u"."Username") = @__ToLower_0 AND "u"."IsActive"
+LIMIT 1
+2026-01-06 16:35:31.051 -07:00 [INF] AuthenticationScheme: Cookies signed in.
+2026-01-06 16:35:31.163 -07:00 [INF] Executed DbCommand (1ms) [Parameters=[@p0='?' (Size = 5), @p1='?' (DbType = Int32), @p2='?' (Size = 4), @p3='?' (Size = 3), @p4='?', @p5='?', @p6='?' (DbType = DateTime), @p7='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "AuditLogs" ("Action", "EntityId", "EntityType", "IpAddress", "NewValues", "OldValues", "Timestamp", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7)
+RETURNING "Id";
+2026-01-06 16:35:31.192 -07:00 [INF] Executing RedirectResult, redirecting to /.
+2026-01-06 16:35:31.193 -07:00 [INF] Executed action POAMs.Web.Controllers.AccountController.Login (POAMs.Web) in 339.3212ms
+2026-01-06 16:35:31.194 -07:00 [INF] Executed endpoint 'POAMs.Web.Controllers.AccountController.Login (POAMs.Web)'
+2026-01-06 16:35:31.198 -07:00 [INF] Request finished HTTP/1.1 POST http://localhost:5230/Account/Login - 302 0 null 364.3247ms
+2026-01-06 16:35:31.202 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/ - null null
+2026-01-06 16:35:31.206 -07:00 [INF] Executing endpoint 'POAMs.Web.Controllers.HomeController.Index (POAMs.Web)'
+2026-01-06 16:35:31.209 -07:00 [INF] Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller POAMs.Web.Controllers.HomeController (POAMs.Web).
+2026-01-06 16:35:31.265 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "POAMs" AS "p"
+2026-01-06 16:35:31.282 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "POAMs" AS "p"
+WHERE "p"."Status" IN (1, 2)
+2026-01-06 16:35:31.287 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[@__now_0='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "POAMs" AS "p"
+WHERE "p"."ScheduledCompletionDate" < @__now_0 AND "p"."Status" <> 3 AND "p"."Status" <> 4
+2026-01-06 16:35:31.291 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[@__now_0='?' (DbType = DateTime), @__thirtyDaysFromNow_1='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "POAMs" AS "p"
+WHERE "p"."ScheduledCompletionDate" >= @__now_0 AND "p"."ScheduledCompletionDate" <= @__thirtyDaysFromNow_1 AND "p"."Status" <> 3 AND "p"."Status" <> 4
+2026-01-06 16:35:31.294 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "POAMs" AS "p"
+WHERE "p"."RiskLevel" = 2 AND "p"."Status" <> 3 AND "p"."Status" <> 4
+2026-01-06 16:35:31.335 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT "t"."Id", "t"."Comments", "t"."CreatedDate", "t"."EstimatedCost", "t"."IdentifiedBy", "t"."ItemIdentifier", "t"."LastUpdateDate", "t"."ModifiedDate", "t"."OriginalPOAMDate", "t"."POCId", "t"."ResourcesRequired", "t"."RiskLevel", "t"."ScheduledCompletionDate", "t"."SecurityControl", "t"."Status", "t"."SystemId", "t"."WeaknessOrDeficiency", "s"."Id", "s"."CreatedDate", "s"."ISSMId", "s"."ISType", "s"."ModifiedDate", "s"."OrganizationName", "s"."SystemName", "s"."UID", "u"."Id", "u"."ADDisplayName", "u"."ADEmail", "u"."ADObjectGuid", "u"."CreatedDate", "u"."DisplayName", "u"."Email", "u"."IsActive", "u"."IsWindowsAuth", "u"."LastADSync", "u"."ModifiedDate", "u"."PasswordHash", "u"."Phone", "u"."Role", "u"."Username"
+FROM (
+    SELECT "p"."Id", "p"."Comments", "p"."CreatedDate", "p"."EstimatedCost", "p"."IdentifiedBy", "p"."ItemIdentifier", "p"."LastUpdateDate", "p"."ModifiedDate", "p"."OriginalPOAMDate", "p"."POCId", "p"."ResourcesRequired", "p"."RiskLevel", "p"."ScheduledCompletionDate", "p"."SecurityControl", "p"."Status", "p"."SystemId", "p"."WeaknessOrDeficiency"
+    FROM "POAMs" AS "p"
+    ORDER BY "p"."ModifiedDate" DESC
+    LIMIT @__p_0
+) AS "t"
+INNER JOIN "Systems" AS "s" ON "t"."SystemId" = "s"."Id"
+LEFT JOIN "Users" AS "u" ON "t"."POCId" = "u"."Id"
+ORDER BY "t"."ModifiedDate" DESC
+2026-01-06 16:35:31.390 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[@__now_0='?' (DbType = DateTime), @__thirtyDaysFromNow_1='?' (DbType = DateTime), @__p_2='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT "t"."Id", "t"."AssignedToId", "t"."Changes", "t"."CompletedDate", "t"."CreatedDate", "t"."DueDate", "t"."MilestoneNumber", "t"."ModifiedDate", "t"."POAMId", "t"."Status", "t"."Title", "p"."Id", "p"."Comments", "p"."CreatedDate", "p"."EstimatedCost", "p"."IdentifiedBy", "p"."ItemIdentifier", "p"."LastUpdateDate", "p"."ModifiedDate", "p"."OriginalPOAMDate", "p"."POCId", "p"."ResourcesRequired", "p"."RiskLevel", "p"."ScheduledCompletionDate", "p"."SecurityControl", "p"."Status", "p"."SystemId", "p"."WeaknessOrDeficiency"
+FROM (
+    SELECT "m"."Id", "m"."AssignedToId", "m"."Changes", "m"."CompletedDate", "m"."CreatedDate", "m"."DueDate", "m"."MilestoneNumber", "m"."ModifiedDate", "m"."POAMId", "m"."Status", "m"."Title"
+    FROM "Milestones" AS "m"
+    WHERE "m"."DueDate" >= @__now_0 AND "m"."DueDate" <= @__thirtyDaysFromNow_1 AND "m"."Status" <> 2
+    ORDER BY "m"."DueDate"
+    LIMIT @__p_2
+) AS "t"
+INNER JOIN "POAMs" AS "p" ON "t"."POAMId" = "p"."Id"
+ORDER BY "t"."DueDate"
+2026-01-06 16:35:31.429 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."Status", COUNT(*)
+FROM "POAMs" AS "p"
+GROUP BY "p"."Status"
+2026-01-06 16:35:31.437 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "p"."RiskLevel", COUNT(*)
+FROM "POAMs" AS "p"
+WHERE "p"."Status" NOT IN (3, 4)
+GROUP BY "p"."RiskLevel"
+2026-01-06 16:35:31.441 -07:00 [INF] Executing ViewResult, running view Index.
+2026-01-06 16:35:31.481 -07:00 [INF] Executed ViewResult - view Index executed in 40.5651ms.
+2026-01-06 16:35:31.482 -07:00 [INF] Executed action POAMs.Web.Controllers.HomeController.Index (POAMs.Web) in 271.6591ms
+2026-01-06 16:35:31.483 -07:00 [INF] Executed endpoint 'POAMs.Web.Controllers.HomeController.Index (POAMs.Web)'
+2026-01-06 16:35:31.485 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/ - 200 null text/html; charset=utf-8 282.7466ms
+2026-01-06 16:35:31.509 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/POAMs.Web.styles.css?v=xuFlKI2XPoEOGHKEh2MrWbkPvb7kIVoUToiV5vA_Hns - null null
+2026-01-06 16:35:31.512 -07:00 [INF] The file /POAMs.Web.styles.css was not modified
+2026-01-06 16:35:31.513 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/POAMs.Web.styles.css?v=xuFlKI2XPoEOGHKEh2MrWbkPvb7kIVoUToiV5vA_Hns - 304 null text/css 4.4544ms
+2026-01-06 16:35:34.316 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/NISTCatalog - null null
+2026-01-06 16:35:34.320 -07:00 [INF] Executing endpoint 'POAMs.Web.Controllers.NISTCatalogController.Index (POAMs.Web)'
+2026-01-06 16:35:34.324 -07:00 [INF] Route matched with {action = "Index", controller = "NISTCatalog"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index(System.Nullable`1[System.Int32]) on controller POAMs.Web.Controllers.NISTCatalogController (POAMs.Web).
+2026-01-06 16:35:34.341 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "n"."Family", COUNT(*) AS "TotalControls", COALESCE(SUM((
+    SELECT COUNT(*)
+    FROM "CCIs" AS "c"
+    WHERE "n"."Id" = "c"."NISTControlId")), 0) AS "TotalCCIs"
+FROM "NISTControls" AS "n"
+GROUP BY "n"."Family"
+2026-01-06 16:35:34.347 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "NISTControls" AS "n"
+2026-01-06 16:35:34.351 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COUNT(*)
+FROM "CCIs" AS "c"
+2026-01-06 16:35:34.357 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT CAST("s"."Id" AS TEXT) AS "Value", "s"."SystemName" AS "Text", 0 AS "Selected"
+FROM "Systems" AS "s"
+ORDER BY "s"."SystemName"
+2026-01-06 16:35:34.375 -07:00 [INF] Executing ViewResult, running view Index.
+2026-01-06 16:35:34.385 -07:00 [INF] Executed ViewResult - view Index executed in 10.7731ms.
+2026-01-06 16:35:34.386 -07:00 [INF] Executed action POAMs.Web.Controllers.NISTCatalogController.Index (POAMs.Web) in 60.3048ms
+2026-01-06 16:35:34.388 -07:00 [INF] Executed endpoint 'POAMs.Web.Controllers.NISTCatalogController.Index (POAMs.Web)'
+2026-01-06 16:35:34.389 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/NISTCatalog - 200 null text/html; charset=utf-8 73.1874ms
+2026-01-06 16:35:36.795 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/STP - null null
+2026-01-06 16:35:36.798 -07:00 [INF] Executing endpoint 'POAMs.Web.Controllers.STPController.Index (POAMs.Web)'
+2026-01-06 16:35:36.804 -07:00 [INF] Route matched with {action = "Index", controller = "STP"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index(System.Nullable`1[System.Int32], System.Nullable`1[POAMs.Web.Models.Domain.STPStatus], System.Nullable`1[POAMs.Web.Models.Domain.STPType]) on controller POAMs.Web.Controllers.STPController (POAMs.Web).
+2026-01-06 16:35:36.848 -07:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-01-06 16:35:36.861 -07:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."Id", "s"."AssessmentTeam", "s"."Assessor2Name", "s"."Assessor2Position", "s"."AuthorizedUser", "s"."AuthorizingOfficial", "s"."Classification", "s"."CreatedById", "s"."CreatedDate", "s"."Environment", "s"."ExecutiveSummary", "s"."HostName", "s"."IPAddress", "s"."ISSMId", "s"."LeadAssessorId", "s"."MACCAL", "s"."ModifiedDate", "s"."OSPlatform", "s"."POAMId", "s"."PrivilegedUser", "s"."STIGName", "s"."STIGReleaseDate", "s"."STIGVersion", "s"."STPIdentifier", "s"."ScanDate", "s"."ScanPolicyName", "s"."ScannerVersion", "s"."Status", "s"."SystemId", "s"."SystemOwner", "s"."TestEndDate", "s"."TestPlanDate", "s"."TestPlanVersion", "s"."TestStartDate", "s"."Type", "s0"."Id", "s0"."CreatedDate", "s0"."ISSMId", "s0"."ISType", "s0"."ModifiedDate", "s0"."OrganizationName", "s0"."SystemName", "s0"."UID", "p"."Id", "p"."Comments", "p"."CreatedDate", "p"."EstimatedCost", "p"."IdentifiedBy", "p"."ItemIdentifier", "p"."LastUpdateDate", "p"."ModifiedDate", "p"."OriginalPOAMDate", "p"."POCId", "p"."ResourcesRequired", "p"."RiskLevel", "p"."ScheduledCompletionDate", "p"."SecurityControl", "p"."Status", "p"."SystemId", "p"."WeaknessOrDeficiency", "u"."Id", "u"."ADDisplayName", "u"."ADEmail", "u"."ADObjectGuid", "u"."CreatedDate", "u"."DisplayName", "u"."Email", "u"."IsActive", "u"."IsWindowsAuth", "u"."LastADSync", "u"."ModifiedDate", "u"."PasswordHash", "u"."Phone", "u"."Role", "u"."Username", "s1"."Id", "s1"."ActualResult", "s1"."CheckContent", "s1"."Comments", "s1"."CreatedDate", "s1"."Evidence", "s1"."ExpectedResult", "s1"."FixText", "s1"."ModifiedDate", "s1"."RetestRequired", "s1"."RuleId", "s1"."RuleVersion", "s1"."SecurityTestPlanId", "s1"."Severity", "s1"."SortOrder", "s1"."Status", "s1"."TestDate", "s1"."TesterId", "s1"."Title", "s1"."VulnId", "s2"."Id", "s2"."AssessExamine", "s2"."AssessInterview", "s2"."AssessTest", "s2"."AssessmentObjective", "s2"."AssessmentObjectiveItems", "s2"."Comments", "s2"."ControlEnhancement", "s2"."ControlFamily", "s2"."ControlId", "s2"."ControlTitle", "s2"."CreatedDate", "s2"."Inheritance", "s2"."InheritedFrom", "s2"."ModifiedDate", "s2"."MonitoringType", "s2"."OverallResult", "s2"."RelatedSTIGIds", "s2"."ReviewDate", "s2"."ReviewerName", "s2"."SecurityTestPlanId", "s2"."SortOrder", "s2"."Status", "s2"."TestSteps", "n"."Id", "n"."ActualResult", "n"."AffectedHosts", "n"."AffectedPorts", "n"."CVE", "n"."CVSSScore", "n"."CVSSVector", "n"."CreatedDate", "n"."Description", "n"."Evidence", "n"."ExpectedResult", "n"."ModifiedDate", "n"."OriginalScanDate", "n"."PluginFamily", "n"."PluginId", "n"."PluginName", "n"."PluginOutput", "n"."RemediationSteps", "n"."RescanDate", "n"."RescanRequired", "n"."RescanResults", "n"."SecurityTestPlanId", "n"."Severity", "n"."Solution", "n"."SortOrder", "n"."Status", "n"."Synopsis", "n"."TestDate", "n"."TesterId"
+FROM "SecurityTestPlans" AS "s"
+INNER JOIN "Systems" AS "s0" ON "s"."SystemId" = "s0"."Id"
+LEFT JOIN "POAMs" AS "p" ON "s"."POAMId" = "p"."Id"
+LEFT JOIN "Users" AS "u" ON "s"."LeadAssessorId" = "u"."Id"
+LEFT JOIN "STPTestCases" AS "s1" ON "s"."Id" = "s1"."SecurityTestPlanId"
+LEFT JOIN "SecurityControlTestCases" AS "s2" ON "s"."Id" = "s2"."SecurityTestPlanId"
+LEFT JOIN "NessusTestCases" AS "n" ON "s"."Id" = "n"."SecurityTestPlanId"
+ORDER BY "s"."CreatedDate" DESC, "s"."Id", "s0"."Id", "p"."Id", "u"."Id", "s1"."Id", "s2"."Id"
+2026-01-06 16:35:36.969 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."Id", "s"."CreatedDate", "s"."ISSMId", "s"."ISType", "s"."ModifiedDate", "s"."OrganizationName", "s"."SystemName", "s"."UID"
+FROM "Systems" AS "s"
+ORDER BY "s"."SystemName"
+2026-01-06 16:35:36.979 -07:00 [INF] Executing ViewResult, running view Index.
+2026-01-06 16:35:37.027 -07:00 [INF] Executed ViewResult - view Index executed in 48.1343ms.
+2026-01-06 16:35:37.029 -07:00 [INF] Executed action POAMs.Web.Controllers.STPController.Index (POAMs.Web) in 223.1995ms
+2026-01-06 16:35:37.030 -07:00 [INF] Executed endpoint 'POAMs.Web.Controllers.STPController.Index (POAMs.Web)'
+2026-01-06 16:35:37.031 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/STP - 200 null text/html; charset=utf-8 236.184ms
+2026-01-06 16:35:37.971 -07:00 [INF] Request starting HTTP/1.1 GET http://localhost:5230/Export - null null
+2026-01-06 16:35:37.974 -07:00 [INF] Executing endpoint 'POAMs.Web.Controllers.ExportController.Index (POAMs.Web)'
+2026-01-06 16:35:37.978 -07:00 [INF] Route matched with {action = "Index", controller = "Export"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller POAMs.Web.Controllers.ExportController (POAMs.Web).
+2026-01-06 16:35:37.983 -07:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "s"."Id", "s"."CreatedDate", "s"."ISSMId", "s"."ISType", "s"."ModifiedDate", "s"."OrganizationName", "s"."SystemName", "s"."UID"
+FROM "Systems" AS "s"
+ORDER BY "s"."SystemName"
+2026-01-06 16:35:37.986 -07:00 [INF] Executing ViewResult, running view Index.
+2026-01-06 16:35:38.000 -07:00 [INF] Executed ViewResult - view Index executed in 14.0648ms.
+2026-01-06 16:35:38.001 -07:00 [INF] Executed action POAMs.Web.Controllers.ExportController.Index (POAMs.Web) in 21.7815ms
+2026-01-06 16:35:38.003 -07:00 [INF] Executed endpoint 'POAMs.Web.Controllers.ExportController.Index (POAMs.Web)'
+2026-01-06 16:35:38.004 -07:00 [INF] Request finished HTTP/1.1 GET http://localhost:5230/Export - 200 null text/html; charset=utf-8 32.4736ms
